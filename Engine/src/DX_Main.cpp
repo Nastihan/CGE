@@ -330,6 +330,20 @@ ComPtr<IDXGISwapChain4> CreateSwapChain(HWND hWnd, ComPtr<ID3D12CommandQueue> co
     return dxgiSwapChain4;
 }
 
+
+ComPtr<ID3D12DescriptorHeap> CreateDescriptorHeap(ComPtr<ID3D12Device2> device, D3D12_DESCRIPTOR_HEAP_TYPE type, uint32_t numDescriptors)
+{
+    ComPtr<ID3D12DescriptorHeap> descriptorHeap;
+
+    D3D12_DESCRIPTOR_HEAP_DESC desc = {};
+    desc.NumDescriptors = numDescriptors;
+    desc.Type = type;
+
+    ThrowIfFailed(device->CreateDescriptorHeap(&desc, IID_PPV_ARGS(&descriptorHeap)));
+
+    return descriptorHeap;
+}
+
 int main()
 {
     return 0;
