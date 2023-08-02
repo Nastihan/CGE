@@ -385,6 +385,46 @@ ComPtr<ID3D12GraphicsCommandList> CreateCommandList(ComPtr<ID3D12Device2> device
     return commandList;
 }
 
+ComPtr<ID3D12Fence> CreateFence(ComPtr<ID3D12Device2> device)
+{
+    ComPtr<ID3D12Fence> fence;
+    ThrowIfFailed(device->CreateFence(0, D3D12_FENCE_FLAG_NONE, IID_PPV_ARGS(&fence)));
+    return fence;
+}
+
+// event handle to block cpu until the fence is signaled
+HANDLE CreateEventHandle()
+{
+    HANDLE fenceEvent;
+    fenceEvent = ::CreateEvent(NULL, FALSE, FALSE, NULL);
+    assert(fenceEvent && "Failed to create fence event.");
+    return fenceEvent;
+}
+
+// signal fence after gpu finished the command queue execution
+uint64_t Signal(ComPtr<ID3D12CommandQueue> commandQueue, ComPtr<ID3D12Fence> fence, uint64_t& fenceValue)
+{
+    uint64_t fenceValueForSignal = ++fenceValue;
+    ThrowIfFailed(commandQueue->Signal(fence.Get(), fenceValueForSignal));
+    return fenceValueForSignal;
+}
+
+void WaitForFenceValue(ComPtr<ID3D12Fence> fence, uint64_t fenceValue, HANDLE fenceEvent, std::chrono::milliseconds duration = std::chrono::milliseconds::max())
+{
+    if (fence->GetCompletedValue() < fenceValue)
+    {
+        ThrowIfFailed(fence->SetEventOnCompletion(fenceValue, fenceEvent));
+        ::WaitForSingleObject(fenceEvent, static_cast<DWORD>(duration.count()));
+    }
+}
+
+// used to wait all in-flight gpu commands to finish execution 
+void Flush(ComPtr<ID3D12CommandQueue> commandQueue, ComPtr<ID3D12Fence> fence, uint64_t& fenceValue, HANDLE fenceEvent)
+{
+    uint64_t fenceValueForSignal = Signal(commandQueue, fence, fenceValue);
+    WaitForFenceValue(fence, fenceValueForSignal, fenceEvent);
+}
+
 int main()
 {
     return 0;
