@@ -19,15 +19,15 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\DX_Device.cpp" />
-    <ClCompile Include="src\DX_Main.cpp" />
+    <ClCompile Include="src\DX_Interface\DX_Device.cpp" />
+    <ClCompile Include="src\DX_Interface\DX_Main.cpp" />
     <ClCompile Include="src\Main.cpp" />
-    <ClCompile Include="src\VK_Device.cpp" />
+    <ClCompile Include="src\VK_Interface\VK_Device.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\DX_Device.h" />
-    <ClInclude Include="src\DX_Helper.h" />
-    <ClInclude Include="src\VK_Device.h" />
+    <ClInclude Include="src\DX_Interface\DX_Device.h" />
+    <ClInclude Include="src\DX_Interface\DX_Helper.h" />
+    <ClInclude Include="src\VK_Interface\VK_Device.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
