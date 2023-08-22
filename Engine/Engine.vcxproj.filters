@@ -62,5 +62,11 @@
     <ClInclude Include="src\App.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\DX_Interface\DX_CommonHeaders.h">
+      <Filter>Header Files\DX</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ConsoleLog.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
