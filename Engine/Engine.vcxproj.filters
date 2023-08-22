@@ -39,6 +39,12 @@
     <ClCompile Include="src\VK_Interface\VK_Device.cpp">
       <Filter>Source Files\VK</Filter>
     </ClCompile>
+    <ClCompile Include="src\Window.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\App.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\DX_Interface\DX_Device.h">
@@ -49,6 +55,18 @@
     </ClInclude>
     <ClInclude Include="src\VK_Interface\VK_Device.h">
       <Filter>Header Files\VK</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Window.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\App.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\DX_Interface\DX_CommonHeaders.h">
+      <Filter>Header Files\DX</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ConsoleLog.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
