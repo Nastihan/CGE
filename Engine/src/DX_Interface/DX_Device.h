@@ -16,7 +16,7 @@ namespace CGE
 		DX_Device& operator=(const DX_Device&) = delete;
 		DX_Device& operator=(DX_Device&&) = delete;
 	public:
-		const ID3D12Device8* GetDevice() const;
+		ID3D12Device8* GetDevice() const;
 		const IDXGIFactory7* GetDxgiFactory() const;
 	private:
 		void InitDxgi();

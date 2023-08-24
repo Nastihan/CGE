@@ -45,6 +45,9 @@
     <ClCompile Include="src\App.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\DX_Interface\DX_Commands.cpp">
+      <Filter>Source Files\DX</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\DX_Interface\DX_Device.h">
@@ -67,6 +70,9 @@
     </ClInclude>
     <ClInclude Include="src\ConsoleLog.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\DX_Interface\DX_Commands.h">
+      <Filter>Header Files\DX</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

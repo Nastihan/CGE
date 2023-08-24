@@ -20,6 +20,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\App.cpp" />
+    <ClCompile Include="src\DX_Interface\DX_Commands.cpp" />
     <ClCompile Include="src\DX_Interface\DX_Device.cpp" />
     <ClCompile Include="src\DX_Interface\DX_Main.cpp" />
     <ClCompile Include="src\Main.cpp" />
@@ -29,6 +30,7 @@
   <ItemGroup>
     <ClInclude Include="src\App.h" />
     <ClInclude Include="src\ConsoleLog.h" />
+    <ClInclude Include="src\DX_Interface\DX_Commands.h" />
     <ClInclude Include="src\DX_Interface\DX_CommonHeaders.h" />
     <ClInclude Include="src\DX_Interface\DX_Device.h" />
     <ClInclude Include="src\DX_Interface\DX_Helper.h" />

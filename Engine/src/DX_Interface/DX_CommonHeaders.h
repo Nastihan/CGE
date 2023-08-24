@@ -18,7 +18,7 @@ namespace CGE
     }
 
     template<typename T>
-    constexpr void release(T*& resource)
+    constexpr void Release(T*& resource)
     {
         if (resource)
         {
@@ -29,11 +29,21 @@ namespace CGE
 
 #ifdef _DEBUG
 // sets the name of the d3d object and outputs to vs console
-#define NAME_D3D12_OBJECT(obj, name) \
-obj->SetName(name); OutputDebugString(L"::D3D12 Object Created: "); OutputDebugString(name); OutputDebugString(L"\n"); \
-LOG_CONSOLE(LogLevel::Info, L"::D3D12 Object Created: " << name << L"\n");
+#define NAME_D3D12_OBJECT(obj, name) obj->SetName(name); OutputDebugString(L"::D3D12 Object Created: "); OutputDebugString(name); OutputDebugString(L"\n");
+#define NAME_D3D12_OBJECT_INDEXED(obj, n, name) \
+{ \
+    wchar_t fullName[128]; \
+    if(swprintf_s(fullName, L"%s[%u]", name, n) > 0) \
+    { \
+        obj->SetName(fullName); \
+        OutputDebugString(L"::D3D12 Object Created: "); \
+        OutputDebugString(fullName); \
+        OutputDebugString(L"\n"); \
+    } \
+}
 #else
 #define NAME_D3D12_OBJECT(obj, name)
+#define NAME_D3D12_OBJECT_INDEXED(obj, n, name)
 #endif // _DEBUG
 
 }

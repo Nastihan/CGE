@@ -13,7 +13,7 @@ namespace CGE
 
 	DX_Device::~DX_Device()
 	{
-		release(dxgiFactory);
+		Release(dxgiFactory);
 		#ifdef _DEBUG
 		{
 			{
@@ -27,11 +27,11 @@ namespace CGE
 			// check if all com pointers created by device are released
 			ComPtr<ID3D12DebugDevice2> debugDevice;
 			ThrowIfFailed(device->QueryInterface(IID_PPV_ARGS(&debugDevice)));
-			release(device);
+			Release(device);
 			ThrowIfFailed(debugDevice->ReportLiveDeviceObjects(D3D12_RLDO_SUMMARY | D3D12_RLDO_DETAIL | D3D12_RLDO_IGNORE_INTERNAL));
 		}
 		#endif // _DEBUG
-		release(device);
+		Release(device);
 		LOG_CONSOLE(LogLevel::Info, "Cleaned up resources.");
 	}
 
@@ -68,6 +68,7 @@ namespace CGE
 		LOG_CONSOLE(LogLevel::Info, desc.Description);
 
 		NAME_D3D12_OBJECT(device, L"Main D3D12 Device");
+		LOG_CONSOLE(LogLevel::Info, L"D3D12 Device Created");
 
 		#ifdef _DEBUG
 		{
@@ -92,7 +93,7 @@ namespace CGE
 			{
 				return adapter;
 			}
-			release(adapter);
+			Release(adapter);
 		}
 		return nullptr;
 	}
@@ -118,7 +119,7 @@ namespace CGE
 		return DXDeviceInstance;
 	}
 
-	const ID3D12Device8* DX_Device::GetDevice() const
+	ID3D12Device8* DX_Device::GetDevice() const
 	{
 		return device;
 	}
