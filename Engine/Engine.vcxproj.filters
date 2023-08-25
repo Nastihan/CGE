@@ -45,8 +45,11 @@
     <ClCompile Include="src\App.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\DX_Interface\DX_Commands.cpp">
+    <ClCompile Include="src\DX_Interface\DX_Commander.cpp">
       <Filter>Source Files\DX</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Graphics.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -71,8 +74,14 @@
     <ClInclude Include="src\ConsoleLog.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\DX_Interface\DX_Commands.h">
+    <ClInclude Include="src\DX_Interface\DX_Commander.h">
       <Filter>Header Files\DX</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Graphics.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Backend_API_Headers.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

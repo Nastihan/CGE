@@ -4,6 +4,7 @@
 
 namespace CGE
 {
+	// [todo] might change from being a singleton
 	class DX_Device
 	{
 	public:

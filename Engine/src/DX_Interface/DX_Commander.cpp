@@ -1,8 +1,8 @@
-#include "DX_Commands.h"
+#include "DX_Commander.h"
 
 namespace CGE
 {
-	DX_Commands::DX_Commands(D3D12_COMMAND_LIST_TYPE type)
+	DX_Commander::DX_Commander(D3D12_COMMAND_LIST_TYPE type)
 	{
 		const auto& device = DX_Device::GetInstance().GetDevice();
 
@@ -22,7 +22,7 @@ namespace CGE
 			DX_Command_Frame& frame{ cmdFrames[i] };
 			ThrowIfFailed(device->CreateCommandAllocator(type, IID_PPV_ARGS(&frame.cmdAllocator)));
 			NAME_D3D12_OBJECT_INDEXED(frame.cmdAllocator, i, type == D3D12_COMMAND_LIST_TYPE_DIRECT ? L"GFX Command List" : type == D3D12_COMMAND_LIST_TYPE_COMPUTE ? L"Compute Command List" : L"Command List");
-			LOG_CONSOLE(LogLevel::Info, L"D3D12 Command Allocator " << i << L"Created");
+			LOG_CONSOLE(LogLevel::Info, L"D3D12 Command Allocator " << i << L" Created");
 		}
 
 		// create command list
@@ -31,15 +31,46 @@ namespace CGE
 		ThrowIfFailed(cmdList->Close());
 		NAME_D3D12_OBJECT(cmdList, type == D3D12_COMMAND_LIST_TYPE_DIRECT ? L"GFX Command List" : type == D3D12_COMMAND_LIST_TYPE_COMPUTE ? L"Compute Command List" : L"Command List");
 		LOG_CONSOLE(LogLevel::Info, L"D3D12 Command List Created");
+
+		// create the fence
+		ThrowIfFailed(device->CreateFence(0, D3D12_FENCE_FLAG_NONE, IID_PPV_ARGS(&fence)));
+		NAME_D3D12_OBJECT(fence, L"D3D12 fence");
+		LOG_CONSOLE(LogLevel::Info, L"D2D12 fence created");
+
+		// create windows event
+		fenceEvent = CreateEventEx(nullptr, nullptr, 0, EVENT_ALL_ACCESS);
+		assert(fenceEvent);
 	}
 
-	void DX_Commands::Record()
+	DX_Commander::~DX_Commander()
 	{
-		// get current frame commander
+		FlushGPU();
+		Release(fence);
+		fenceValue = 0;
+		if (fenceEvent)
+		{
+			CloseHandle(fenceEvent);
+			fenceEvent = nullptr;
+		}
+		Release(cmdQueue);
+		Release(cmdList);
+		for (UINT32 i{ 0 }; i < FRAME_BUFFER_COUNT; i++)
+		{
+			cmdFrames[i].release(i);
+		}
+		LOG_CONSOLE(LogLevel::Info, "Released Command Queue");
+		LOG_CONSOLE(LogLevel::Info, "Released Command List");
+		LOG_CONSOLE(LogLevel::Info, "Released Fence");
+		assert(!cmdQueue && !cmdList && !fence);
+	}
+
+	void DX_Commander::Record()
+	{
+		// get current frame
 		DX_Command_Frame& frame{ cmdFrames[currentFrameIdx] };
 
-		// before we start recording wait for the fence value
-		frame.Wait();
+		// before we start recording wait for the current frame to be signaled
+		frame.Wait(fenceEvent, fence);
 
 		// resetting the command allocator will free memory used by previously recorded commands
 		ThrowIfFailed(frame.cmdAllocator->Reset());
@@ -48,7 +79,7 @@ namespace CGE
 		ThrowIfFailed(cmdList->Reset(frame.cmdAllocator, nullptr));
 	}
 
-	void DX_Commands::Submit()
+	void DX_Commander::Submit()
 	{
 		// close before submiting
 		ThrowIfFailed(cmdList->Close());
@@ -56,6 +87,24 @@ namespace CGE
 		ID3D12CommandList* const cmdLists[]{ cmdList };
 		cmdQueue->ExecuteCommandLists(_countof(cmdLists), &cmdLists[0]);
 
+		// signal the fence with the new fence value
+		fenceValue++;
+		cmdFrames[currentFrameIdx].fenceValue = fenceValue;
+		cmdQueue->Signal(fence, fenceValue);
 		currentFrameIdx = (currentFrameIdx + 1) % FRAME_BUFFER_COUNT;
+	}
+
+	void DX_Commander::FlushGPU()
+	{
+		for (UINT32 i{ 0 }; i < FRAME_BUFFER_COUNT; i++)
+		{
+			cmdFrames[i].Wait(fenceEvent, fence);
+		}
+		currentFrameIdx = 0;
+	}
+
+	UINT64 DX_Commander::GetCurrentFrameIdx()
+	{
+		return currentFrameIdx;
 	}
 }

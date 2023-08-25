@@ -14,6 +14,7 @@ namespace CGE
 	DX_Device::~DX_Device()
 	{
 		Release(dxgiFactory);
+		LOG_CONSOLE(LogLevel::Info, "Released DXGI Factory.");
 		#ifdef _DEBUG
 		{
 			{
@@ -32,7 +33,7 @@ namespace CGE
 		}
 		#endif // _DEBUG
 		Release(device);
-		LOG_CONSOLE(LogLevel::Info, "Cleaned up resources.");
+		LOG_CONSOLE(LogLevel::Info, "Released D3D12 Device.");
 	}
 
 	void DX_Device::InitDxgi()
@@ -49,6 +50,7 @@ namespace CGE
 		}
 		#endif // _DEBUG
 		ThrowIfFailed(CreateDXGIFactory2(dxgiFactoryFlags, __uuidof(IDXGIFactory7), (void**)&dxgiFactory));
+		LOG_CONSOLE(LogLevel::Info, L"DXGI Factory Created");
 	}
 
 	void DX_Device::InitAdapter()
@@ -129,5 +131,6 @@ namespace CGE
 		return dxgiFactory;
 	}
 
+	// [todo] need to move its creation to the GetInstance function
 	DX_Device DX_Device::DXDeviceInstance;
 }
