@@ -13,17 +13,59 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Header Files\DX">
+      <UniqueIdentifier>{718e0809-0441-4c86-b659-8c0f59d8f6ef}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\DX">
+      <UniqueIdentifier>{7bcec167-2a15-4c0e-b998-b73d81078734}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\VK">
+      <UniqueIdentifier>{01d55248-4acd-4d5a-8bd7-fec09544d9e1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\VK">
+      <UniqueIdentifier>{22d27627-f780-4440-bef0-46dd32251369}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Main.cpp">
+    <ClCompile Include="src\Main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="DX_Device.cpp">
+    <ClCompile Include="src\DX_Interface\DX_Device.cpp">
+      <Filter>Source Files\DX</Filter>
+    </ClCompile>
+    <ClCompile Include="src\DX_Interface\DX_Main.cpp">
+      <Filter>Source Files\DX</Filter>
+    </ClCompile>
+    <ClCompile Include="src\VK_Interface\VK_Device.cpp">
+      <Filter>Source Files\VK</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Window.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\App.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="DX_Device.h">
+    <ClInclude Include="src\DX_Interface\DX_Device.h">
+      <Filter>Header Files\DX</Filter>
+    </ClInclude>
+    <ClInclude Include="src\DX_Interface\DX_Helper.h">
+      <Filter>Header Files\DX</Filter>
+    </ClInclude>
+    <ClInclude Include="src\VK_Interface\VK_Device.h">
+      <Filter>Header Files\VK</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Window.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\App.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\DX_Interface\DX_CommonHeaders.h">
+      <Filter>Header Files\DX</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ConsoleLog.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
