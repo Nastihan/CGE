@@ -1,6 +1,7 @@
 #pragma once
 #include <vulkan/vulkan.h>
 #include <exception>
+#include <stdexcept>
 
 namespace CGE
 {
@@ -8,7 +9,7 @@ namespace CGE
     {
         if (result != VK_SUCCESS)
         {
-            throw std::exception();
+            throw std::runtime_error("VK fail");
         }
     }
 }
