@@ -34,6 +34,7 @@
     <ClInclude Include="src\DX_Interface\DX_Helper.h" />
     <ClInclude Include="src\VK_Interface\VK_Device.h" />
     <ClInclude Include="src\Window.h" />
+    <ClInclude Include="VK_CommonHeaders.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
