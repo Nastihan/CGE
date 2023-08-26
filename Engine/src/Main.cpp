@@ -9,7 +9,13 @@ int main()
 {
 	const auto& device = DX_Device::GetInstance().GetDevice();
 	const auto& vkI = VK_Device::GetInstance();
-	CGE::App engine;
-	engine.Run();
+	try
+	{
+		CGE::App{}.Run();
+	}
+	catch (const std::exception& e)
+	{
+		MessageBoxA(nullptr, e.what(), "Error", MB_ICONERROR | MB_SETFOREGROUND);
+	}
 	return 0;
 }
