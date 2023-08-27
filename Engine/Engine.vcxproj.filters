@@ -68,5 +68,8 @@
     <ClInclude Include="src\ConsoleLog.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\VK_Interface\VK_CommonHeaders.h">
+      <Filter>Header Files\VK</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

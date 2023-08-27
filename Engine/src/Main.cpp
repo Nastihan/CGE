@@ -7,10 +7,11 @@ using namespace CGE;
 
 int main()
 {
-	const auto& device = DX_Device::GetInstance().GetDevice();
-	const auto& vkI = VK_Device::GetInstance();
+	
 	try
 	{
+		//const auto& device = DX_Device::GetInstance().GetDevice();
+		const auto& vkI = VK_Device::GetInstance();
 		CGE::App{}.Run();
 	}
 	catch (const std::exception& e)

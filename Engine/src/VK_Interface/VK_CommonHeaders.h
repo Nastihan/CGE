@@ -2,6 +2,7 @@
 #include <vulkan/vulkan.h>
 #include <exception>
 #include <stdexcept>
+#include "..\ConsoleLog.h"
 
 namespace CGE
 {
@@ -9,7 +10,7 @@ namespace CGE
     {
         if (result != VK_SUCCESS)
         {
-            throw std::runtime_error("VK fail");
+            throw std::runtime_error("VK Fail: " + result);
         }
     }
 }

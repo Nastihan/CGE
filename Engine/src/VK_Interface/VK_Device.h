@@ -1,5 +1,6 @@
 #pragma once
 #include "VK_CommonHeaders.h"
+#include <vector>
 
 namespace CGE
 {
@@ -18,11 +19,18 @@ namespace CGE
 	private:
 		void InitInstance();
 
+		std::vector<const char*> GetRequiredExtensions();
+
 	public: 
 
 	private:
 		static VK_Device VKDeviceInstance;
 		VkInstance instance{};
+
+		const std::vector<const char*> instanceExtensions =
+		{
+			VK_EXT_DEBUG_UTILS_EXTENSION_NAME, // Enable seting names
+		};
 
 	};
 }
