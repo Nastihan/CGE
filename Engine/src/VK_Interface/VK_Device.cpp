@@ -34,7 +34,7 @@ namespace CGE
         createInfo.ppEnabledExtensionNames = extensions.data();
         createInfo.enabledLayerCount = 0;
 
-        //ThrowIfFailed(vkCreateInstance(&createInfo, nullptr, &instance));
+        ThrowIfFailed(vkCreateInstance(&createInfo, nullptr, &instance));
         LOG_CONSOLE(LogLevel::Info, "Vulkan instance created");
         
 
@@ -51,7 +51,7 @@ namespace CGE
         std::vector<const char*> extensions{};
         extensions.push_back("VK_KHR_SURFACE");
         extensions.push_back("VK_KHR_win32_surface");
-        extensions.push_back(VK_EXT_DEBUG_UTILS_EXTENSION_NAME);
+        //extensions.push_back(VK_EXT_DEBUG_UTILS_EXTENSION_NAME);
 
         return extensions;
     }
