@@ -34,7 +34,7 @@ namespace CGE
         createInfo.ppEnabledExtensionNames = extensions.data();
         createInfo.enabledLayerCount = 0;
 
-        ThrowIfFailed(vkCreateInstance(&createInfo, nullptr, &instance));
+        //ThrowIfFailed(vkCreateInstance(&createInfo, nullptr, &instance));
         LOG_CONSOLE(LogLevel::Info, "Vulkan instance created");
         
 

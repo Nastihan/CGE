@@ -14,6 +14,7 @@ int main()
 		const auto& vkI = VK_Device::GetInstance();
 		CGE::App{}.Run();
 	}
+	// [todo] catch block is not catching any exception!!!! 
 	catch (const std::exception& e)
 	{
 		MessageBoxA(nullptr, e.what(), "Error", MB_ICONERROR | MB_SETFOREGROUND);
