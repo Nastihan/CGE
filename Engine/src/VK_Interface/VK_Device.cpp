@@ -6,7 +6,7 @@ namespace CGE
    
     VK_Device::VK_Device()
     {
-        InitInstance();
+        InitDevice();
     }
 
     VK_Device::~VK_Device()
@@ -15,7 +15,7 @@ namespace CGE
         LOG_CONSOLE(LogLevel::Info, "Cleaned up resources.");
     }
     
-    void VK_Device::InitInstance()
+    void VK_Device::InitDevice()
     {
         VkApplicationInfo appInfo{};
         appInfo.sType = VK_STRUCTURE_TYPE_APPLICATION_INFO;
@@ -36,7 +36,6 @@ namespace CGE
 
         ThrowIfFailed(vkCreateInstance(&createInfo, nullptr, &instance));
         LOG_CONSOLE(LogLevel::Info, "Vulkan instance created");
-        
 
     }
 

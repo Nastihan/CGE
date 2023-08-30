@@ -17,7 +17,7 @@ namespace CGE
 		VK_Device& operator=(const VK_Device&) = delete;
 		VK_Device& operator=(VK_Device&&) = delete;
 	private:
-		void InitInstance();
+		void InitDevice();
 
 		std::vector<const char*> GetRequiredExtensions();
 
