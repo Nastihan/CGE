@@ -49,9 +49,9 @@ namespace CGE
         std::vector<const char*> extensions(glfwExtensions, glfwExtensions + glfwExtensionCount);*/
 
         std::vector<const char*> extensions{};
-        extensions.push_back("VK_KHR_SURFACE");
+        extensions.push_back("VK_KHR_surface");
         extensions.push_back("VK_KHR_win32_surface");
-        //extensions.push_back(VK_EXT_DEBUG_UTILS_EXTENSION_NAME);
+        extensions.push_back(VK_EXT_DEBUG_UTILS_EXTENSION_NAME);
 
         return extensions;
     }
