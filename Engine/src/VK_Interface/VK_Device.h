@@ -20,12 +20,16 @@ namespace CGE
 		void InitDevice();
 
 		std::vector<const char*> GetRequiredExtensions();
+		VkPhysicalDevice PickDevice();
+		int RateDevice(VkPhysicalDevice device);
 
 	public: 
 
 	private:
 		static VK_Device VKDeviceInstance;
-		VkInstance instance{};
+
+		VkInstance instance = nullptr;
+		VkPhysicalDevice physicalDevice = nullptr;
 
 		const std::vector<const char*> instanceExtensions =
 		{

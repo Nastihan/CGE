@@ -1,5 +1,6 @@
 #include "VK_Device.h"
 #include <GLFW/glfw3.h>
+#include <map>
 
 namespace CGE
 {
@@ -11,7 +12,7 @@ namespace CGE
 
     VK_Device::~VK_Device()
     {
-
+        vkDestroyInstance(instance, nullptr);
         LOG_CONSOLE(LogLevel::Info, "Cleaned up resources.");
     }
     
@@ -37,6 +38,11 @@ namespace CGE
         ThrowIfFailed(vkCreateInstance(&createInfo, nullptr, &instance));
         LOG_CONSOLE(LogLevel::Info, "Vulkan instance created");
 
+        physicalDevice = PickDevice();
+        VkPhysicalDeviceProperties deviceProperties;
+        vkGetPhysicalDeviceProperties(physicalDevice, &deviceProperties);
+        LOG_CONSOLE(LogLevel::Info, deviceProperties.deviceName);
+
     }
 
     std::vector<const char*> VK_Device::GetRequiredExtensions()
@@ -53,6 +59,58 @@ namespace CGE
         extensions.push_back(VK_EXT_DEBUG_UTILS_EXTENSION_NAME);
 
         return extensions;
+    }
+
+    VkPhysicalDevice VK_Device::PickDevice()
+    {
+        uint32_t deviceCount = 0;
+        vkEnumeratePhysicalDevices(instance, &deviceCount, nullptr);
+        if (deviceCount == 0) {
+            throw std::runtime_error("failed to find GPUs with Vulkan support!");
+        }
+        std::vector<VkPhysicalDevice> devices(deviceCount);
+        vkEnumeratePhysicalDevices(instance, &deviceCount, devices.data());
+
+        // Use an ordered map to automatically sort candidates by increasing score
+        std::multimap<int, VkPhysicalDevice> candidates;
+
+        for (const auto& device : devices) {
+            int score = RateDevice(device);
+            candidates.insert(std::make_pair(score, device));
+        }
+
+        // Check if the best candidate is suitable at all
+        if (candidates.rbegin()->first > 0) {
+            return candidates.rbegin()->second;
+        }
+        else {
+            throw std::runtime_error("failed to find a suitable GPU!");
+        }
+    }
+
+    int VK_Device::RateDevice(VkPhysicalDevice device)
+    {
+        int score = 0;
+
+        VkPhysicalDeviceProperties deviceProperties;
+        vkGetPhysicalDeviceProperties(device, &deviceProperties);
+        VkPhysicalDeviceFeatures deviceFeatures;
+        vkGetPhysicalDeviceFeatures(device, &deviceFeatures);
+
+        // Discrete GPUs have a significant performance advantage
+        if (deviceProperties.deviceType == VK_PHYSICAL_DEVICE_TYPE_DISCRETE_GPU) {
+            score += 1000;
+        }
+
+        // Maximum possible size of textures affects graphics quality
+        score += deviceProperties.limits.maxImageDimension2D;
+
+        // Application can't function without geometry shaders
+        if (!deviceFeatures.geometryShader) {
+            return 0;
+        }
+
+        return score;
     }
 
     const VK_Device& VK_Device::GetInstance()
