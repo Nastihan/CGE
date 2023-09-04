@@ -5,10 +5,23 @@
 #include <wrl.h>
 #include <stdexcept>
 #include <cassert>
+#include "DX_Exception.h"
+#include "../CommonMacros.h"
 #include "../ConsoleLog.h"
 
 namespace CGE
 {
+#ifndef LOCAL_HR
+#define LOCAL_HR HRESULT hr;
+#endif // !LOCAL_HR
+
+#ifndef DX_THROW_FAILED
+#define DX_THROW_FAILED(hrCall) if(FAILED(hr = hrCall)) throw DX_Exception(__LINE__, __FILE__, hr);
+#endif // !DX_EXEPTION
+
+
+    namespace wrl = Microsoft::WRL;
+
     inline void ThrowIfFailed(HRESULT hr)
     {
         if (FAILED(hr))

@@ -51,6 +51,9 @@
     <ClCompile Include="src\Graphics.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\DX_Interface\DX_Exception.cpp">
+      <Filter>Source Files\DX</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\DX_Interface\DX_Device.h">
@@ -82,6 +85,12 @@
     </ClInclude>
     <ClInclude Include="src\Backend_API_Headers.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\CommonMacros.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\DX_Interface\DX_Exception.h">
+      <Filter>Header Files\DX</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

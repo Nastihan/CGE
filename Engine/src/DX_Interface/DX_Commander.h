@@ -9,7 +9,7 @@ namespace CGE
 	private:
 		struct DX_Command_Frame
 		{
-			ID3D12CommandAllocator* cmdAllocator{ nullptr };
+			wrl::ComPtr<ID3D12CommandAllocator> cmdAllocator;
 			UINT64 fenceValue{ 0 };
 
 			void Wait(HANDLE fenceEvent, ID3D12Fence1* fence)
@@ -17,14 +17,10 @@ namespace CGE
 				assert(fence && fenceEvent);
 				if (fence->GetCompletedValue() < fenceValue)
 				{
-					ThrowIfFailed(fence->SetEventOnCompletion(fenceValue, fenceEvent));
+					LOCAL_HR;
+					DX_THROW_FAILED(fence->SetEventOnCompletion(fenceValue, fenceEvent));
 					WaitForSingleObject(fenceEvent, INFINITE);
 				}
-			}
-			void release(UINT32 logIdx)
-			{
-				CGE::Release(cmdAllocator);
-				LOG_CONSOLE(LogLevel::Info, "Released Command Allocator " << logIdx);
 			}
 		};
 	public:
@@ -42,9 +38,9 @@ namespace CGE
 	private:
 		void FlushGPU();
 	private:
-		ID3D12CommandQueue* cmdQueue{ nullptr };
-		ID3D12GraphicsCommandList6* cmdList{ nullptr };
-		ID3D12Fence1* fence{ nullptr };
+		wrl::ComPtr<ID3D12CommandQueue> cmdQueue;
+		wrl::ComPtr<ID3D12GraphicsCommandList6> cmdList;
+		wrl::ComPtr<ID3D12Fence1> fence;
 		UINT64 fenceValue{ 0 };
 		HANDLE fenceEvent{ nullptr };
 		static constexpr UINT32 FRAME_BUFFER_COUNT = 3;

@@ -17,7 +17,7 @@ namespace CGE
 		void Render();
 	private:
 		// [todo] garbage interface
-		const ID3D12Device8* const device = DX_Device::GetInstance().GetDevice();
+		const wrl::ComPtr<ID3D12Device8>& device = DX_Device::GetInstance().GetDevice();
 		DX_Commander commander;
 	};
 }

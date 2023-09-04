@@ -22,6 +22,7 @@
     <ClCompile Include="src\App.cpp" />
     <ClCompile Include="src\DX_Interface\DX_Commander.cpp" />
     <ClCompile Include="src\DX_Interface\DX_Device.cpp" />
+    <ClCompile Include="src\DX_Interface\DX_Exception.cpp" />
     <ClCompile Include="src\DX_Interface\DX_Main.cpp" />
     <ClCompile Include="src\Graphics.cpp" />
     <ClCompile Include="src\Main.cpp" />
@@ -31,10 +32,12 @@
   <ItemGroup>
     <ClInclude Include="src\App.h" />
     <ClInclude Include="src\Backend_API_Headers.h" />
+    <ClInclude Include="src\CommonMacros.h" />
     <ClInclude Include="src\ConsoleLog.h" />
     <ClInclude Include="src\DX_Interface\DX_Commander.h" />
     <ClInclude Include="src\DX_Interface\DX_CommonHeaders.h" />
     <ClInclude Include="src\DX_Interface\DX_Device.h" />
+    <ClInclude Include="src\DX_Interface\DX_Exception.h" />
     <ClInclude Include="src\DX_Interface\DX_Helper.h" />
     <ClInclude Include="src\Graphics.h" />
     <ClInclude Include="src\VK_Interface\VK_Device.h" />
