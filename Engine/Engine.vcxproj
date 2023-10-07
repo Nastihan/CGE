@@ -20,18 +20,24 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\App.cpp" />
+    <ClCompile Include="src\CGE_Exception.cpp" />
     <ClCompile Include="src\DX_Interface\DX_Commander.cpp" />
     <ClCompile Include="src\DX_Interface\DX_Device.cpp" />
     <ClCompile Include="src\DX_Interface\DX_Exception.cpp" />
     <ClCompile Include="src\DX_Interface\DX_Main.cpp" />
+    <ClCompile Include="src\DX_Interface\DX_PhysicalDevice.cpp" />
+    <ClCompile Include="src\DX_Interface\DX_Resources.cpp" />
     <ClCompile Include="src\Graphics.cpp" />
     <ClCompile Include="src\Main.cpp" />
+    <ClCompile Include="src\RHI\Device.cpp" />
+    <ClCompile Include="src\RHI\PhysicalDevice.cpp" />
     <ClCompile Include="src\VK_Interface\VK_Device.cpp" />
     <ClCompile Include="src\Window.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\App.h" />
     <ClInclude Include="src\Backend_API_Headers.h" />
+    <ClInclude Include="src\CGE_Exception.h" />
     <ClInclude Include="src\CommonMacros.h" />
     <ClInclude Include="src\ConsoleLog.h" />
     <ClInclude Include="src\DX_Interface\DX_Commander.h" />
@@ -39,7 +45,15 @@
     <ClInclude Include="src\DX_Interface\DX_Device.h" />
     <ClInclude Include="src\DX_Interface\DX_Exception.h" />
     <ClInclude Include="src\DX_Interface\DX_Helper.h" />
+    <ClInclude Include="src\DX_Interface\DX_PhysicalDevice.h" />
+    <ClInclude Include="src\DX_Interface\DX_Resources.h" />
     <ClInclude Include="src\Graphics.h" />
+    <ClInclude Include="src\RHI\Device.h" />
+    <ClInclude Include="src\RHI\DeviceFeatures.h" />
+    <ClInclude Include="src\RHI\DeviceLimits.h" />
+    <ClInclude Include="src\RHI\PhysicalDevice.h" />
+    <ClInclude Include="src\RHI\PhysicalDeviceDescriptor.h" />
+    <ClInclude Include="src\RHI\RHI_Common.h" />
     <ClInclude Include="src\VK_Interface\VK_Device.h" />
     <ClInclude Include="src\Window.h" />
   </ItemGroup>

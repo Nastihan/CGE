@@ -25,6 +25,12 @@
     <Filter Include="Source Files\VK">
       <UniqueIdentifier>{22d27627-f780-4440-bef0-46dd32251369}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\RHI">
+      <UniqueIdentifier>{4deb495f-97c7-4f4d-b806-8824123c5530}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\RHI">
+      <UniqueIdentifier>{0d2db4c0-b51b-4f39-a281-08799b1ecc4c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Main.cpp">
@@ -52,6 +58,21 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\DX_Interface\DX_Exception.cpp">
+      <Filter>Source Files\DX</Filter>
+    </ClCompile>
+    <ClCompile Include="src\DX_Interface\DX_Resources.cpp">
+      <Filter>Source Files\DX</Filter>
+    </ClCompile>
+    <ClCompile Include="src\CGE_Exception.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\RHI\Device.cpp">
+      <Filter>Source Files\RHI</Filter>
+    </ClCompile>
+    <ClCompile Include="src\RHI\PhysicalDevice.cpp">
+      <Filter>Source Files\RHI</Filter>
+    </ClCompile>
+    <ClCompile Include="src\DX_Interface\DX_PhysicalDevice.cpp">
       <Filter>Source Files\DX</Filter>
     </ClCompile>
   </ItemGroup>
@@ -90,6 +111,33 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\DX_Interface\DX_Exception.h">
+      <Filter>Header Files\DX</Filter>
+    </ClInclude>
+    <ClInclude Include="src\DX_Interface\DX_Resources.h">
+      <Filter>Header Files\DX</Filter>
+    </ClInclude>
+    <ClInclude Include="src\CGE_Exception.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\RHI\Device.h">
+      <Filter>Header Files\RHI</Filter>
+    </ClInclude>
+    <ClInclude Include="src\RHI\DeviceFeatures.h">
+      <Filter>Header Files\RHI</Filter>
+    </ClInclude>
+    <ClInclude Include="src\RHI\DeviceLimits.h">
+      <Filter>Header Files\RHI</Filter>
+    </ClInclude>
+    <ClInclude Include="src\RHI\RHI_Common.h">
+      <Filter>Header Files\RHI</Filter>
+    </ClInclude>
+    <ClInclude Include="src\RHI\PhysicalDevice.h">
+      <Filter>Header Files\RHI</Filter>
+    </ClInclude>
+    <ClInclude Include="src\RHI\PhysicalDeviceDescriptor.h">
+      <Filter>Header Files\RHI</Filter>
+    </ClInclude>
+    <ClInclude Include="src\DX_Interface\DX_PhysicalDevice.h">
       <Filter>Header Files\DX</Filter>
     </ClInclude>
   </ItemGroup>
