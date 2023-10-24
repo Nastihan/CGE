@@ -1,5 +1,7 @@
 #pragma once
+#include "RHI_Common.h"
 #include "PhysicalDeviceDescriptor.h"
+#include "Object.h"
 
 // std
 #include <vector>
@@ -9,17 +11,15 @@ namespace CGE
 {
 	namespace RHI
 	{
-		class PhysicalDevice
+		class PhysicalDevice : public Object
 		{
 		public:
 			virtual ~PhysicalDevice() = default;
 			const PhysicalDeviceDescriptor& GetDescriptor() const;
-			virtual void Shutdown() = 0;
 
 		protected:
 			PhysicalDeviceDescriptor m_descriptor;
 		};
-
-		using PhysicalDeviceList = std::vector<std::shared_ptr<PhysicalDevice>>;
+		using PhysicalDeviceList = std::vector<RHI::Ptr<PhysicalDevice>>;
 	}
 }

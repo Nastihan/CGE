@@ -51,16 +51,7 @@
     <ClCompile Include="src\App.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\DX_Interface\DX_Commander.cpp">
-      <Filter>Source Files\DX</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Graphics.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\DX_Interface\DX_Exception.cpp">
-      <Filter>Source Files\DX</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DX_Interface\DX_Resources.cpp">
       <Filter>Source Files\DX</Filter>
     </ClCompile>
     <ClCompile Include="src\CGE_Exception.cpp">
@@ -74,6 +65,18 @@
     </ClCompile>
     <ClCompile Include="src\DX_Interface\DX_PhysicalDevice.cpp">
       <Filter>Source Files\DX</Filter>
+    </ClCompile>
+    <ClCompile Include="src\RHI\Graphics.cpp">
+      <Filter>Source Files\RHI</Filter>
+    </ClCompile>
+    <ClCompile Include="src\DX_Interface\DX_Graphics.cpp">
+      <Filter>Source Files\DX</Filter>
+    </ClCompile>
+    <ClCompile Include="src\DX_Interface\DX_Factory.cpp">
+      <Filter>Source Files\DX</Filter>
+    </ClCompile>
+    <ClCompile Include="src\RHI\Object.cpp">
+      <Filter>Source Files\RHI</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -100,9 +103,6 @@
     </ClInclude>
     <ClInclude Include="src\DX_Interface\DX_Commander.h">
       <Filter>Header Files\DX</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Graphics.h">
-      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\Backend_API_Headers.h">
       <Filter>Header Files</Filter>
@@ -139,6 +139,24 @@
     </ClInclude>
     <ClInclude Include="src\DX_Interface\DX_PhysicalDevice.h">
       <Filter>Header Files\DX</Filter>
+    </ClInclude>
+    <ClInclude Include="src\RHI\Graphics.h">
+      <Filter>Header Files\RHI</Filter>
+    </ClInclude>
+    <ClInclude Include="src\DX_Interface\DX_Graphics.h">
+      <Filter>Header Files\DX</Filter>
+    </ClInclude>
+    <ClInclude Include="src\RHI\Factory.h">
+      <Filter>Header Files\RHI</Filter>
+    </ClInclude>
+    <ClInclude Include="src\DX_Interface\DX_Factory.h">
+      <Filter>Header Files\DX</Filter>
+    </ClInclude>
+    <ClInclude Include="src\RHI\Object.h">
+      <Filter>Header Files\RHI</Filter>
+    </ClInclude>
+    <ClInclude Include="src\RHI\intrusive_ptr.h">
+      <Filter>Header Files\RHI</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -1,5 +1,5 @@
 #pragma once
-#include "Graphics.h"
+#include "RHI/Graphics.h"
 #include "Window.h"
 
 namespace CGE
@@ -12,6 +12,6 @@ namespace CGE
 		void Run();
 	private:
 		Window window;
-		Graphics gfx;
+		RHI::Graphics gfx;
 	};
 }

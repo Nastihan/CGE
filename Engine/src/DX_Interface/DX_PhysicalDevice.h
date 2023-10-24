@@ -1,7 +1,6 @@
 #pragma once
 #include "DX_CommonHeaders.h"
 #include "../RHI/PhysicalDevice.h"
-#include <memory>
 
 namespace CGE
 {
@@ -12,10 +11,10 @@ namespace CGE
 			using Base = RHI::PhysicalDevice;
 			
 		public:
-			~DX_PhysicalDevice() = default;
+			static RHI::Ptr<RHI::PhysicalDevice> Create();
 
-			static std::shared_ptr<RHI::PhysicalDevice> EnumerateHighPerformanceDevice();
-			// static RHI::PhysicalDeviceList Enumirate();
+		public:
+			~DX_PhysicalDevice() = default;
 
 			IDXGIFactoryX* GetFactory() const;
 			IDXGIAdapterX* GetAdapter() const;
@@ -25,8 +24,8 @@ namespace CGE
 			void Init(IDXGIFactoryX* factory, IDXGIAdapterX* adapter);
 			void Shutdown() override;
 		private:
-			std::shared_ptr<IDXGIFactoryX> m_dxgiFactory;
-			std::shared_ptr<IDXGIAdapterX> m_dxgiAdapter;
+			RHI::Ptr<IDXGIFactoryX> m_dxgiFactory;
+			RHI::Ptr<IDXGIAdapterX> m_dxgiAdapter;
 		};
 	}
 }

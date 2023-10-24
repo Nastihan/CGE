@@ -1,20 +1,28 @@
 #pragma once
 #include <vector>
 #include <mutex>
+#include "../RHI/RHI_Common.h"
 #include "DX_CommonHeaders.h"
+#include "../RHI/Device.h"
 
 namespace CGE
 {
 	namespace DX12
 	{
 		// [todo] might change from being a singleton
-		class DX_Device
+		class DX_Device final : public RHI::Device
 		{
+			// new ===================================================================================
 		public:
-			static const DX_Device& GetInstance();
-			~DX_Device();
+			static RHI::Ptr<RHI::Device> Create();
 		private:
-			DX_Device();
+			RHI::ResultCode InitInternal(RHI::PhysicalDevice& physicalDevice) override;
+			void ShutdownInternal() override;
+			//========================================================================================
+		public:
+			~DX_Device() = default;
+		private:
+			DX_Device() = default;
 			REMOVE_COPY_AND_MOVE(DX_Device);
 		public:
 			const wrl::ComPtr<ID3D12DeviceX>& GetDevice() const;
@@ -22,16 +30,14 @@ namespace CGE
 			std::string GetDeviceRemovedReason() const;
 			void OnDeviceRemoved();
 		private:
-			void InitDxgi();
-			void InitAdapter();
-			IDXGIAdapter4* FindAdapter();
-			D3D_FEATURE_LEVEL GetAdaptersMaxFeatureLevel(IDXGIAdapter4* adapter);
-			void EnableBreakOnD3DError();
 			void EnableD3DDebugLayer();
+			void EnableGPUBasedValidation();
+			void EnableDebugDeviceFeatures();
+			void EnableBreakOnD3DError();
 		private:
-			wrl::ComPtr<IDXGIFactoryX> dxgiFactory;
-			wrl::ComPtr<IDXGIAdapterX> dxgiAdapter;
-			wrl::ComPtr<ID3D12DeviceX> device;
+			wrl::ComPtr<IDXGIFactoryX> m_dxgiFactory;
+			wrl::ComPtr<IDXGIAdapterX> m_dxgiAdapter;
+			wrl::ComPtr<ID3D12DeviceX> m_device;
 			static constexpr D3D_FEATURE_LEVEL MINIMUM_FEATURE_LEVEL{ D3D_FEATURE_LEVEL_11_0 };
 
 			std::mutex deviceRemovedMtx;

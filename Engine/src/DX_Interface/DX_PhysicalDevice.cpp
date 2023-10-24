@@ -4,11 +4,11 @@ namespace CGE
 {
 	namespace DX12
 	{
-		std::shared_ptr<RHI::PhysicalDevice> DX_PhysicalDevice::EnumerateHighPerformanceDevice()
+		RHI::Ptr<RHI::PhysicalDevice> DX_PhysicalDevice::Create()
 		{
 			LOCAL_HR;
-			DX_PhysicalDevice* ptr = new DX_PhysicalDevice();
-			std::shared_ptr<DX_PhysicalDevice> physicalDevice = std::make_shared<DX_PhysicalDevice>(ptr);
+			RHI::Ptr<PhysicalDevice> physicalDevice;
+			RHI::Ptr<DX_PhysicalDevice> dxPhysicalDevice = new DX_PhysicalDevice();
 
 			wrl::ComPtr<IDXGIFactoryX> dxgiFactory;
 			DX_THROW_FAILED(CreateDXGIFactory2(0, __uuidof(IDXGIFactoryX), (void**)&dxgiFactory));
@@ -16,15 +16,16 @@ namespace CGE
 			wrl::ComPtr<IDXGIAdapterX> dxgiAdapter;
 			for (uint32_t i{ 0 }; dxgiFactory->EnumAdapterByGpuPreference(i, DXGI_GPU_PREFERENCE_HIGH_PERFORMANCE, IID_PPV_ARGS(&dxgiAdapter)) != DXGI_ERROR_NOT_FOUND; i++)
 			{
-				physicalDevice->Init(dxgiFactory.Get(), dxgiAdapter.Get());
+				dxPhysicalDevice->Init(dxgiFactory.Get(), dxgiAdapter.Get());
 				break;
 			}
+			physicalDevice = dxPhysicalDevice;
 			return physicalDevice;
 		}
 		void DX_PhysicalDevice::Init(IDXGIFactoryX* factory, IDXGIAdapterX* adapter)
 		{
-			m_dxgiFactory = std::make_shared<IDXGIFactoryX>(factory);
-			m_dxgiAdapter = std::make_shared<IDXGIAdapterX>(adapter);
+			m_dxgiFactory = factory;
+			m_dxgiAdapter = adapter;
 
 			DXGI_ADAPTER_DESC adapterDesc;
 			adapter->GetDesc(&adapterDesc);

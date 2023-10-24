@@ -1,9 +1,14 @@
 #pragma once
+#include "intrusive_ptr.h"
+#include "../CommonMacros.h"
 
 namespace CGE
 {
 	namespace RHI
 	{
+        template<typename T>
+        using Ptr = intrusive_ptr<T>;
+
         typedef signed   __int8  int8_t;
         typedef unsigned __int8  uint8_t;
         typedef signed   __int16 int16_t;
@@ -36,5 +41,11 @@ namespace CGE
             // The operation is not ready
             NotReady
         };
+
+        #ifdef _DEBUG
+        static constexpr bool ISDEBUG = true;
+        #else
+        static constexpr bool ISDEBUG = false;
+        #endif
 	}
 }

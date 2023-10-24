@@ -1,5 +1,6 @@
 #include "DX_Device.h"
 #include <iostream>
+#include "DX_PhysicalDevice.h"
 
 using namespace Microsoft::WRL;
 
@@ -7,145 +8,80 @@ namespace CGE
 {
 	namespace DX12
 	{
-		DX_Device::DX_Device()
+		// ===============================================================
+		RHI::Ptr<RHI::Device> DX_Device::Create()
 		{
-			InitDxgi();
-			InitAdapter();
+			return new DX_Device();
 		}
-
-		DX_Device::~DX_Device()
+		//[todo] More can be added check ATOM
+		RHI::ResultCode DX_Device::InitInternal(RHI::PhysicalDevice& physicalDevice)
 		{
 			LOCAL_HR;
-			#ifdef _DEBUG
-			{
-				{
-					ComPtr<ID3D12InfoQueue> infoQueue;
-					DX_THROW_FAILED(device->QueryInterface(IID_PPV_ARGS(&infoQueue)));
-					infoQueue->SetBreakOnSeverity(D3D12_MESSAGE_SEVERITY_CORRUPTION, false);
-					infoQueue->SetBreakOnSeverity(D3D12_MESSAGE_SEVERITY_WARNING, false);
-					infoQueue->SetBreakOnSeverity(D3D12_MESSAGE_SEVERITY_ERROR, false);
-				}
-
-				// check if all com pointers created by device are released
-				ComPtr<ID3D12DebugDevice2> debugDevice;
-				DX_THROW_FAILED(device->QueryInterface(IID_PPV_ARGS(&debugDevice)));
-				DX_THROW_FAILED(debugDevice->ReportLiveDeviceObjects(D3D12_RLDO_SUMMARY | D3D12_RLDO_DETAIL | D3D12_RLDO_IGNORE_INTERNAL));
-			}
-			#endif // _DEBUG
-		}
-
-		void DX_Device::InitDxgi()
-		{
-			LOCAL_HR;
-			// init dgxi factory
-			UINT dxgiFactoryFlags{ 0 };
-			#ifdef _DEBUG
+			DX_PhysicalDevice& dxPhysicalDevice = static_cast<DX_PhysicalDevice&>(physicalDevice);
+			if (RHI::ISDEBUG)
 			{
 				EnableD3DDebugLayer();
-				// enable debug factory in debug build
-				dxgiFactoryFlags |= DXGI_CREATE_FACTORY_DEBUG;
+				EnableGPUBasedValidation();
 			}
-			#endif // _DEBUG
-			DX_THROW_FAILED(CreateDXGIFactory2(dxgiFactoryFlags, __uuidof(IDXGIFactory7), (void**)&dxgiFactory));
-			LOG_CONSOLE(LogLevel::Info, L"DXGI Created");
-		}
+			
+			DX_THROW_FAILED(D3D12CreateDevice(dxPhysicalDevice.GetAdapter(), D3D_FEATURE_LEVEL_12_0, IID_PPV_ARGS(m_device.GetAddressOf())));
 
-		void DX_Device::InitAdapter()
-		{
-			LOCAL_HR;
-			ComPtr<IDXGIAdapter4> mainAdapter;
-			mainAdapter.Attach(FindAdapter());
-			if (!mainAdapter) throw std::exception();
-			// check if max feature level isnt lower than what we need
-			D3D_FEATURE_LEVEL maxFeatureLevel{ GetAdaptersMaxFeatureLevel(mainAdapter.Get()) };
-			assert(maxFeatureLevel >= MINIMUM_FEATURE_LEVEL);
-			if (maxFeatureLevel < MINIMUM_FEATURE_LEVEL) throw std::exception();
-			DX_THROW_FAILED(D3D12CreateDevice(mainAdapter.Get(), maxFeatureLevel, IID_PPV_ARGS(&device)));
-
-			// check adapters name
-			DXGI_ADAPTER_DESC1 desc;
-			DX_THROW_FAILED(mainAdapter->GetDesc1(&desc));
-			LOG_CONSOLE(LogLevel::Info, desc.Description);
-
-			NAME_D3D12_OBJECT(device, L"Main D3D12 Device");
-			LOG_CONSOLE(LogLevel::Info, L"D3D12 Device Created");
-
-			#ifdef _DEBUG
+			if (RHI::ISDEBUG)
 			{
+				EnableDebugDeviceFeatures();
 				EnableBreakOnD3DError();
 			}
-			#endif // _DEBUG
-		}
 
-		// get the first most performing adapter that supports the minimum feature level
-		IDXGIAdapter4* DX_Device::FindAdapter()
+			m_dxgiFactory = dxPhysicalDevice.GetFactory();
+			m_dxgiAdapter = dxPhysicalDevice.GetAdapter();
+
+			return RHI::ResultCode::Success;
+		}
+		void DX_Device::ShutdownInternal()
 		{
-			IDXGIAdapter4* adapter{ nullptr };
-			for (UINT i{ 0 }; dxgiFactory->EnumAdapterByGpuPreference(i, DXGI_GPU_PREFERENCE_HIGH_PERFORMANCE, IID_PPV_ARGS(&adapter)) != DXGI_ERROR_NOT_FOUND; i++)
-			{
-				if (SUCCEEDED(D3D12CreateDevice(adapter, MINIMUM_FEATURE_LEVEL, __uuidof(ID3D12Device), nullptr)))
-				{
-					return adapter;
-				}
-				Release(adapter);
-			}
-			return nullptr;
-		}
 
-		D3D_FEATURE_LEVEL DX_Device::GetAdaptersMaxFeatureLevel(IDXGIAdapter4* adapter)
+		}
+		// ===============================================================
+
+		void DX_Device::EnableD3DDebugLayer()
 		{
 			LOCAL_HR;
-
-			// feature levels we want to check
-			constexpr D3D_FEATURE_LEVEL featureLevels[4] = { D3D_FEATURE_LEVEL_11_0, D3D_FEATURE_LEVEL_11_1, D3D_FEATURE_LEVEL_12_0, D3D_FEATURE_LEVEL_12_1 };
-			D3D12_FEATURE_DATA_FEATURE_LEVELS featureLevelInfo{};
-			featureLevelInfo.NumFeatureLevels = _countof(featureLevels);
-			featureLevelInfo.pFeatureLevelsRequested = featureLevels;
-
-			ComPtr<ID3D12Device> device;
-			DX_THROW_FAILED(D3D12CreateDevice(adapter, MINIMUM_FEATURE_LEVEL, IID_PPV_ARGS(&device)));
-			DX_THROW_FAILED(device->CheckFeatureSupport(D3D12_FEATURE_FEATURE_LEVELS, &featureLevelInfo, sizeof(featureLevelInfo)));
-			return featureLevelInfo.MaxSupportedFeatureLevel;
+			ComPtr<ID3D12Debug> debugController;
+			DX_THROW_FAILED(D3D12GetDebugInterface(IID_PPV_ARGS(&debugController)));
+			debugController->EnableDebugLayer();
 		}
-
-		const DX_Device& DX_Device::GetInstance()
+		void DX_Device::EnableGPUBasedValidation()
 		{
-			static DX_Device DXDeviceInstance;
-			return DXDeviceInstance;
-		}
+			LOCAL_HR;
+			ComPtr<ID3D12Debug1> debugController1;
+			DX_THROW_FAILED(D3D12GetDebugInterface(IID_PPV_ARGS(&debugController1)))
+			debugController1->SetEnableGPUBasedValidation(TRUE);
+			debugController1->SetEnableSynchronizedCommandQueueValidation(TRUE);
 
-		const wrl::ComPtr< ID3D12Device8>& DX_Device::GetDevice() const
+			ComPtr<ID3D12Debug2> debugController2;
+			DX_THROW_FAILED(D3D12GetDebugInterface(IID_PPV_ARGS(&debugController2)))
+			debugController2->SetGPUBasedValidationFlags(D3D12_GPU_BASED_VALIDATION_FLAGS_NONE);
+		}
+		void DX_Device::EnableDebugDeviceFeatures()
 		{
-			return device;
+			LOCAL_HR;
+			ComPtr<ID3D12DebugDevice> debugDevice;
+			DX_THROW_FAILED(m_device->QueryInterface(debugDevice.GetAddressOf()))
+			debugDevice->SetFeatureMask(D3D12_DEBUG_FEATURE_ALLOW_BEHAVIOR_CHANGING_DEBUG_AIDS | D3D12_DEBUG_FEATURE_CONSERVATIVE_RESOURCE_STATE_TRACKING);
 		}
-
-		const wrl::ComPtr< IDXGIFactory7>& DX_Device::GetDxgiFactory() const
-		{
-			return dxgiFactory;
-		}
-
 		void DX_Device::EnableBreakOnD3DError()
 		{
 			LOCAL_HR;
 			ComPtr<ID3D12InfoQueue> infoQueue;
-			DX_THROW_FAILED(device->QueryInterface(IID_PPV_ARGS(&infoQueue)));
-			// these flags will cause a break in the application
+			DX_THROW_FAILED(m_device->QueryInterface(IID_PPV_ARGS(&infoQueue)));
 			infoQueue->SetBreakOnSeverity(D3D12_MESSAGE_SEVERITY_CORRUPTION, true);
 			infoQueue->SetBreakOnSeverity(D3D12_MESSAGE_SEVERITY_WARNING, true);
 			infoQueue->SetBreakOnSeverity(D3D12_MESSAGE_SEVERITY_ERROR, true);
 		}
 
-		void DX_Device::EnableD3DDebugLayer()
-		{
-			LOCAL_HR;
-			ComPtr<ID3D12Debug3> debugInterface;
-			DX_THROW_FAILED(D3D12GetDebugInterface(IID_PPV_ARGS(&debugInterface)));
-			debugInterface->EnableDebugLayer();
-		}
-
 		std::string DX_Device::GetDeviceRemovedReason() const
 		{
-			ID3D12Device* removedDevice = device.Get();
+			ID3D12Device* removedDevice = m_device.Get();
 			HRESULT removedReason = removedDevice->GetDeviceRemovedReason();
 
 			switch (removedReason)

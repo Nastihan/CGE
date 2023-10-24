@@ -112,12 +112,12 @@ namespace CGE
 
         const char* DX_DeviceRemovedException::what() const noexcept
         {
-            const auto& device = DX_Device::GetInstance();
+            //const auto& device = DX_Device::GetInstance();
             std::ostringstream oss;
             oss << GetType() << std::endl
                 << "[Error Code] 0x" << std::hex << std::uppercase << GetErrorCode()
                 << std::dec << " (" << (unsigned long)GetErrorCode() << ")" << std::endl << std::endl
-                << "[Description] " << device.GetDeviceRemovedReason() << std::endl
+                //<< "[Description] " << device.GetDeviceRemovedReason() << std::endl
                 << GetOriginString();
             whatBuffer = oss.str();
             return whatBuffer.c_str();

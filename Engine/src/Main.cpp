@@ -9,7 +9,6 @@ int main()
 {
 	try
 	{
-		const auto& device = DX_Device::GetInstance().GetDevice();
 		CGE::App engine;
 		engine.Run();
 		return 0;

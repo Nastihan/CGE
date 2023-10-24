@@ -8,12 +8,28 @@
 #include "../CommonMacros.h"
 #include "../ConsoleLog.h"
 #include "DX_Exception.h"
+#include "../RHI/intrusive_ptr.h"
 
 namespace wrl = Microsoft::WRL;
+
+#define AZ_DX12_REFCOUNTED(DXTypeName) \
+    namespace CGE \
+    { \
+        template <> \
+        struct IntrusivePtrCountPolicy<DXTypeName> \
+        { \
+            static void add_ref(DXTypeName* p) { p->AddRef(); } \
+            static void release(DXTypeName* p) { p->Release(); } \
+        }; \
+    }
 
 using IDXGIFactoryX = IDXGIFactory7;
 using IDXGIAdapterX = IDXGIAdapter4;
 using ID3D12DeviceX = ID3D12Device8;
+
+AZ_DX12_REFCOUNTED(IDXGIFactoryX);
+AZ_DX12_REFCOUNTED(IDXGIAdapterX);
+AZ_DX12_REFCOUNTED(ID3D12DeviceX);
 
 #ifndef LOCAL_HR
 #define LOCAL_HR HRESULT hr;
