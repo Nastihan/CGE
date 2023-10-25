@@ -27,6 +27,8 @@
     <ClCompile Include="src\DX_Interface\DX_Graphics.cpp" />
     <ClCompile Include="src\DX_Interface\DX_Main.cpp" />
     <ClCompile Include="src\DX_Interface\DX_PhysicalDevice.cpp" />
+    <ClCompile Include="src\RHI\CommandQueue.cpp" />
+    <ClCompile Include="src\RHI\DeviceObject.cpp" />
     <ClCompile Include="src\RHI\Graphics.cpp" />
     <ClCompile Include="src\Main.cpp" />
     <ClCompile Include="src\RHI\Device.cpp" />
@@ -41,7 +43,6 @@
     <ClInclude Include="src\CGE_Exception.h" />
     <ClInclude Include="src\CommonMacros.h" />
     <ClInclude Include="src\ConsoleLog.h" />
-    <ClInclude Include="src\DX_Interface\DX_Commander.h" />
     <ClInclude Include="src\DX_Interface\DX_CommonHeaders.h" />
     <ClInclude Include="src\DX_Interface\DX_Device.h" />
     <ClInclude Include="src\DX_Interface\DX_Exception.h" />
@@ -50,12 +51,15 @@
     <ClInclude Include="src\DX_Interface\DX_Helper.h" />
     <ClInclude Include="src\DX_Interface\DX_PhysicalDevice.h" />
     <ClInclude Include="src\DX_Interface\DX_Resources.h" />
+    <ClInclude Include="src\RHI\CommandQueue.h" />
+    <ClInclude Include="src\RHI\DeviceObject.h" />
     <ClInclude Include="src\RHI\Factory.h" />
     <ClInclude Include="src\RHI\Graphics.h" />
     <ClInclude Include="src\RHI\Device.h" />
     <ClInclude Include="src\RHI\DeviceFeatures.h" />
     <ClInclude Include="src\RHI\DeviceLimits.h" />
     <ClInclude Include="src\RHI\intrusive_ptr.h" />
+    <ClInclude Include="src\RHI\Limits.h" />
     <ClInclude Include="src\RHI\Object.h" />
     <ClInclude Include="src\RHI\PhysicalDevice.h" />
     <ClInclude Include="src\RHI\PhysicalDeviceDescriptor.h" />

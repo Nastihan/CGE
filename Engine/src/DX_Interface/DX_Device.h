@@ -38,7 +38,6 @@ namespace CGE
 			wrl::ComPtr<IDXGIFactoryX> m_dxgiFactory;
 			wrl::ComPtr<IDXGIAdapterX> m_dxgiAdapter;
 			wrl::ComPtr<ID3D12DeviceX> m_device;
-			static constexpr D3D_FEATURE_LEVEL MINIMUM_FEATURE_LEVEL{ D3D_FEATURE_LEVEL_11_0 };
 
 			std::mutex deviceRemovedMtx;
 			bool onDeviceRemoved = false;

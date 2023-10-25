@@ -78,6 +78,12 @@
     <ClCompile Include="src\RHI\Object.cpp">
       <Filter>Source Files\RHI</Filter>
     </ClCompile>
+    <ClCompile Include="src\RHI\DeviceObject.cpp">
+      <Filter>Source Files\RHI</Filter>
+    </ClCompile>
+    <ClCompile Include="src\RHI\CommandQueue.cpp">
+      <Filter>Source Files\DX</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\DX_Interface\DX_Device.h">
@@ -100,9 +106,6 @@
     </ClInclude>
     <ClInclude Include="src\ConsoleLog.h">
       <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\DX_Interface\DX_Commander.h">
-      <Filter>Header Files\DX</Filter>
     </ClInclude>
     <ClInclude Include="src\Backend_API_Headers.h">
       <Filter>Header Files</Filter>
@@ -156,6 +159,15 @@
       <Filter>Header Files\RHI</Filter>
     </ClInclude>
     <ClInclude Include="src\RHI\intrusive_ptr.h">
+      <Filter>Header Files\RHI</Filter>
+    </ClInclude>
+    <ClInclude Include="src\RHI\CommandQueue.h">
+      <Filter>Header Files\RHI</Filter>
+    </ClInclude>
+    <ClInclude Include="src\RHI\Limits.h">
+      <Filter>Header Files\RHI</Filter>
+    </ClInclude>
+    <ClInclude Include="src\RHI\DeviceObject.h">
       <Filter>Header Files\RHI</Filter>
     </ClInclude>
   </ItemGroup>
