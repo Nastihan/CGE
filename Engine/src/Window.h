@@ -6,6 +6,7 @@
 
 namespace CGE
 {
+	static void FramebufferResizeCallback(GLFWwindow* window, int width, int height);
 	class Window
 	{
 	public:
@@ -24,6 +25,7 @@ namespace CGE
 		GLFWwindow* pWindow;
 		// [todo] remove for VK backend
 		HWND hwnd;
+		RECT windowRect;
 		uint16_t width;
 		uint16_t height;
 	};

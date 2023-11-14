@@ -20,6 +20,7 @@
  //  See http://www.boost.org/libs/smart_ptr/intrusive_ptr.html for documentation.
  //
 
+#include <functional>
 #include <type_traits>
 #include <assert.h>
 
@@ -287,11 +288,11 @@ namespace CGE
 
     // hashing support for STL containers
     template <typename T>
-    struct hash<intrusive_ptr<T>>
+    struct std::hash<CGE::intrusive_ptr<T>>
     {
-        inline size_t operator()(const intrusive_ptr<T>& value) const
+        inline std::size_t operator()(const CGE::intrusive_ptr<T>& value) const
         {
-            return hash<T*>()(value.get());
+            return std::hash<T*>()(value.get());
         }
     };
 

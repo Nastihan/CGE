@@ -1,0 +1,49 @@
+#pragma once
+#include "DX_CommonHeaders.h"
+#include "../RHI/CommandQueue.h"
+
+namespace CGE
+{
+	namespace DX12
+	{
+		struct ExecuteWorkRequest : public RHI::ExecuteWorkRequest
+		{
+		};
+
+		enum class HardwareQueueSubclass
+		{
+			Primary = 0,
+			Secondary
+		};
+
+		struct CommandQueueDescriptor
+			: public RHI::CommandQueueDescriptor
+		{
+			HardwareQueueSubclass m_hardwareQueueSubclass;
+		};
+
+		class CommandQueue final : public RHI::CommandQueue
+		{
+		public:
+			static RHI::Ptr<RHI::CommandQueue> Create();
+
+			// RHI overrides
+			void ExecuteWork(const RHI::ExecuteWorkRequest& request) override;
+			void WaitForIdle() override;
+
+		private:
+			CommandQueue() = default;
+
+			RHI::ResultCode InitInternal(RHI::Device& device, const RHI::CommandQueueDescriptor& descriptor) override;
+			void ShutdownInternal() override;
+
+			HRESULT CreateCommandQueue(ID3D12DeviceX* device, RHI::HardwareQueueClass hardwareQueueClass, HardwareQueueSubclass hardwareQueueSubclass, ID3D12CommandQueueX** commandQueue);
+			const char* GetQueueName(RHI::HardwareQueueClass hardwareQueueClass, HardwareQueueSubclass hardwareQueueSubclass);
+		private:
+			RHI::Ptr<ID3D12CommandQueueX> m_queue;
+			RHI::Ptr<ID3D12DeviceX> m_device;
+
+			HardwareQueueSubclass m_hardwareQueueSubclass = HardwareQueueSubclass::Primary;
+		};
+	}
+}

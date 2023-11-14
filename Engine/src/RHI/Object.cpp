@@ -36,5 +36,6 @@ namespace CGE
 				delete object;
 			}
 		}
+		void Object::SetNameInternal(const std::string& name) {}
 	}
 }

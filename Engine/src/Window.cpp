@@ -5,6 +5,7 @@
 
 namespace CGE
 {
+    void FramebufferResizeCallback(GLFWwindow* window, int width, int height) {}
 	Window::Window(uint16_t width, uint16_t height, std::string title)
 	{
 		glfwInit();
@@ -13,6 +14,7 @@ namespace CGE
 		glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE);
 
 		pWindow = glfwCreateWindow(width, height, title.c_str(), nullptr, nullptr);
+        glfwSetFramebufferSizeCallback(pWindow, FramebufferResizeCallback);
         // [todo] remove for VK backend
         hwnd = glfwGetWin32Window(pWindow);
 	}

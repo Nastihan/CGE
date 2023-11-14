@@ -12,7 +12,7 @@
 
 namespace wrl = Microsoft::WRL;
 
-#define AZ_DX12_REFCOUNTED(DXTypeName) \
+#define DX12_REFCOUNTED(DXTypeName) \
     namespace CGE \
     { \
         template <> \
@@ -26,10 +26,31 @@ namespace wrl = Microsoft::WRL;
 using IDXGIFactoryX = IDXGIFactory7;
 using IDXGIAdapterX = IDXGIAdapter4;
 using ID3D12DeviceX = ID3D12Device8;
+using ID3D12CommandQueueX = ID3D12CommandQueue;
+using ID3D12GraphicsCommandListX = ID3D12GraphicsCommandList4;
 
-AZ_DX12_REFCOUNTED(IDXGIFactoryX);
-AZ_DX12_REFCOUNTED(IDXGIAdapterX);
-AZ_DX12_REFCOUNTED(ID3D12DeviceX);
+DX12_REFCOUNTED(IDXGIFactory);
+DX12_REFCOUNTED(IDXGIFactory1);
+DX12_REFCOUNTED(IDXGIFactory2);
+DX12_REFCOUNTED(IDXGIFactory3);
+DX12_REFCOUNTED(IDXGIFactory4);
+DX12_REFCOUNTED(IDXGIFactory5);
+DX12_REFCOUNTED(IDXGIFactory6);
+DX12_REFCOUNTED(IDXGIFactory7);
+
+DX12_REFCOUNTED(IDXGIAdapter);
+DX12_REFCOUNTED(IDXGIAdapter1);
+DX12_REFCOUNTED(IDXGIAdapter2);
+DX12_REFCOUNTED(IDXGIAdapter3);
+DX12_REFCOUNTED(IDXGIAdapter4);
+
+DX12_REFCOUNTED(ID3D12Device);
+DX12_REFCOUNTED(ID3D12Device5);
+DX12_REFCOUNTED(ID3D12Device8);
+
+DX12_REFCOUNTED(ID3D12CommandQueue);
+DX12_REFCOUNTED(ID3D12CommandAllocator);
+DX12_REFCOUNTED(ID3D12Fence);
 
 #ifndef LOCAL_HR
 #define LOCAL_HR HRESULT hr;
@@ -38,6 +59,14 @@ AZ_DX12_REFCOUNTED(ID3D12DeviceX);
 #ifndef DX_THROW_FAILED
 #define DX_THROW_FAILED(hrCall) if(FAILED(hr = hrCall)) ThrowFailed(__LINE__, __FILE__, hr);
 #endif // !DX_EXEPTION
+
+namespace CGE
+{
+    namespace DX12
+    {
+        bool DXAssertSuccess(HRESULT hr);
+    }
+}
 
 inline void ThrowFailed(int line, const char* file, HRESULT hr)
 {

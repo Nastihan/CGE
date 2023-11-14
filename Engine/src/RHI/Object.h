@@ -23,6 +23,7 @@ namespace CGE
 			void release() const;
 		private:
 			virtual void Shutdown() {};
+			virtual void SetNameInternal(const std::string& name);
 
 		protected:
 			mutable std::atomic_int m_useCount = 0;

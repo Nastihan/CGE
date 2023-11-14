@@ -6,7 +6,12 @@ namespace CGE
 	{
 		ResultCode Device::Init(PhysicalDevice& physicalDevice)
 		{
-			return InitInternal(physicalDevice);
+			ResultCode resultCode = InitInternal(physicalDevice);
+			if (resultCode == ResultCode::Success)
+			{
+				resultCode = InitializeLimits();
+			}
+			return resultCode;
 		}
 	}
 }

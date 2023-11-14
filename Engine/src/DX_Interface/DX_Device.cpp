@@ -8,7 +8,6 @@ namespace CGE
 {
 	namespace DX12
 	{
-		// ===============================================================
 		RHI::Ptr<RHI::Device> DX_Device::Create()
 		{
 			return new DX_Device();
@@ -41,7 +40,6 @@ namespace CGE
 		{
 
 		}
-		// ===============================================================
 
 		void DX_Device::EnableD3DDebugLayer()
 		{
@@ -107,6 +105,31 @@ namespace CGE
 		void DX_Device::OnDeviceRemoved()
 		{
 			//[todo]
+		}
+		ID3D12DeviceX* DX_Device::GetDevice() const
+		{
+			return m_device.Get();
+		}
+		const wrl::ComPtr<IDXGIFactoryX>& DX_Device::GetDxgiFactory() const
+		{
+			return m_dxgiFactory;
+		}
+		bool DX_Device::DXAssertSuccess(HRESULT hr)
+		{
+			return DX12::DXAssertSuccess(hr);
+		}
+
+		RHI::ResultCode DX_Device::BeginFrameInternal()
+		{
+			return RHI::ResultCode::Success;
+		}
+		void DX_Device::EndFrameInternal()
+		{
+
+		}
+		RHI::ResultCode DX_Device::InitializeLimits()
+		{
+			return RHI::ResultCode::Success;
 		}
 	}
 }

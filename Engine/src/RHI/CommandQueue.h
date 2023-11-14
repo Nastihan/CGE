@@ -12,8 +12,11 @@ namespace CGE
 		{
 			Graphics = 0,
 			Compute,
-			Copy
+			Copy,
+			Count
 		};
+		const uint32_t HardwareQueueClassCount = static_cast<uint32_t>(HardwareQueueClass::Count);
+
 		class SwapChain;
 		struct ExecuteWorkRequest
 		{
@@ -43,7 +46,7 @@ namespace CGE
 			virtual void WaitForIdle() = 0;
 			virtual void ShutdownInternal() = 0;
 
-		private:
+		protected:
 			CommandQueueDescriptor m_descriptor;
 		};
 	}

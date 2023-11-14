@@ -18,6 +18,9 @@ namespace CGE
 		private:
 			virtual ResultCode InitInternal(PhysicalDevice& physicalDevice) = 0;
 			virtual void ShutdownInternal() = 0;
+			virtual ResultCode BeginFrameInternal() = 0;
+			virtual void EndFrameInternal() = 0;
+			virtual ResultCode InitializeLimits() = 0;
 		protected:
 			DeviceFeatures m_features;
 			DeviceLimits m_deviceLimits;

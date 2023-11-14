@@ -10,6 +10,9 @@ namespace CGE
 			namespace Device
 			{
 				constexpr uint32_t FrameCountMax = 3;
+
+				constexpr uint32_t ClientWidth = 800;
+				constexpr uint32_t ClientHeight = 600;
 			}
 		}
 	}

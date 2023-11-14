@@ -1,9 +1,16 @@
 #pragma once
+
+//DX12
+#include "DX_CommonHeaders.h"
+#include "DX_CommandListPool.h"
+
+// RHI
+#include "../RHI/RHI_Common.h"
+#include "../RHI/Device.h"
+
+// std
 #include <vector>
 #include <mutex>
-#include "../RHI/RHI_Common.h"
-#include "DX_CommonHeaders.h"
-#include "../RHI/Device.h"
 
 namespace CGE
 {
@@ -12,23 +19,26 @@ namespace CGE
 		// [todo] might change from being a singleton
 		class DX_Device final : public RHI::Device
 		{
-			// new ===================================================================================
 		public:
 			static RHI::Ptr<RHI::Device> Create();
 		private:
+			// RHI
 			RHI::ResultCode InitInternal(RHI::PhysicalDevice& physicalDevice) override;
 			void ShutdownInternal() override;
-			//========================================================================================
+			RHI::ResultCode BeginFrameInternal() override;
+			void EndFrameInternal() override;
+			RHI::ResultCode InitializeLimits() override;
 		public:
 			~DX_Device() = default;
 		private:
 			DX_Device() = default;
 			REMOVE_COPY_AND_MOVE(DX_Device);
 		public:
-			const wrl::ComPtr<ID3D12DeviceX>& GetDevice() const;
+			ID3D12DeviceX* GetDevice() const;
 			const wrl::ComPtr<IDXGIFactoryX>& GetDxgiFactory() const;
 			std::string GetDeviceRemovedReason() const;
 			void OnDeviceRemoved();
+			bool DXAssertSuccess(HRESULT hr);
 		private:
 			void EnableD3DDebugLayer();
 			void EnableGPUBasedValidation();
@@ -41,6 +51,8 @@ namespace CGE
 
 			std::mutex deviceRemovedMtx;
 			bool onDeviceRemoved = false;
+
+			DX_CommandListSubAllocator m_commandListSubAllocator;
 		};
 	}
 }

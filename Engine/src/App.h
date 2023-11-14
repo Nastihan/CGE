@@ -13,5 +13,6 @@ namespace CGE
 	private:
 		Window window;
 		RHI::Graphics gfx;
+		uint64_t currentFrame = 0;
 	};
 }
