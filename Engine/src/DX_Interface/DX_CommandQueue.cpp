@@ -6,12 +6,12 @@ namespace CGE
 {
 	namespace DX12
 	{
-		RHI::Ptr<RHI::CommandQueue> CommandQueue::Create()
+		RHI::Ptr<DX_CommandQueue> DX_CommandQueue::Create()
 		{
-			return new CommandQueue();
+			return new DX_CommandQueue();
 		}
 
-		RHI::ResultCode CommandQueue::InitInternal(RHI::Device& device, const RHI::CommandQueueDescriptor& descriptor)
+		RHI::ResultCode DX_CommandQueue::InitInternal(RHI::Device& device, const RHI::CommandQueueDescriptor& descriptor)
 		{
 			DeviceObject::Init(device);
 			wrl::ComPtr<ID3D12CommandQueueX> queue = nullptr;
@@ -35,7 +35,7 @@ namespace CGE
             return RHI::ResultCode::Success;
 		}
 
-        void CommandQueue::ShutdownInternal()
+        void DX_CommandQueue::ShutdownInternal()
         {
             if (m_queue)
             {
@@ -43,7 +43,7 @@ namespace CGE
             }
         }
 
-		HRESULT CommandQueue::CreateCommandQueue(ID3D12DeviceX* device, RHI::HardwareQueueClass hardwareQueueClass, HardwareQueueSubclass hardwareQueueSubclass, ID3D12CommandQueueX** commandQueue)
+		HRESULT DX_CommandQueue::CreateCommandQueue(ID3D12DeviceX* device, RHI::HardwareQueueClass hardwareQueueClass, HardwareQueueSubclass hardwareQueueSubclass, ID3D12CommandQueueX** commandQueue)
 		{
 			D3D12_COMMAND_QUEUE_DESC queueDesc = {};
 			queueDesc.Type = ConvertHardwareQueueClass(hardwareQueueClass);
@@ -51,7 +51,7 @@ namespace CGE
 			return device->CreateCommandQueue(&queueDesc, IID_PPV_ARGS(commandQueue));
 		}
 
-		const char* CommandQueue::GetQueueName(RHI::HardwareQueueClass hardwareQueueClass, HardwareQueueSubclass hardwareQueueSubclass)
+		const char* DX_CommandQueue::GetQueueName(RHI::HardwareQueueClass hardwareQueueClass, HardwareQueueSubclass hardwareQueueSubclass)
 		{
             switch (hardwareQueueClass)
             {
@@ -85,7 +85,34 @@ namespace CGE
             }
 		}
 
-        void CommandQueue::ExecuteWork(const RHI::ExecuteWorkRequest& request) {}
-        void CommandQueue::WaitForIdle() {}
+        void DX_CommandQueue::ExecuteWork(const RHI::ExecuteWorkRequest& request) {}
+        void DX_CommandQueue::WaitForIdle()
+        {
+            DX_Fence fence;
+
+            // fence value = 0 | fence m_pendingValue = 1
+            fence.Init(m_device.get(), RHI::FenceState::Reset);
+            QueueGpuSignal(fence);
+
+            // [todo] doing nothing
+            FlushCommands();
+
+            DX_FenceEvent event("WaitForIdel");
+            fence.Wait(event);
+        }
+
+        void DX_CommandQueue::QueueGpuSignal(DX_Fence& fence)
+        {
+            QueueCommand([&fence](void* commandQueue)
+            {
+                ID3D12CommandQueue* dx12CommandQueue = static_cast<ID3D12CommandQueue*>(commandQueue);
+                dx12CommandQueue->Signal(fence.Get(), fence.GetPendingValue());
+            });
+        }
+
+        ID3D12CommandQueue* DX_CommandQueue::GetPlatformQueue() const
+        {
+            return m_queue.get();
+        }
 	}
 }

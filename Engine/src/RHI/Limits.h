@@ -13,6 +13,9 @@ namespace CGE
 
 				constexpr uint32_t ClientWidth = 800;
 				constexpr uint32_t ClientHeight = 600;
+
+				// DX12 only supports flip model
+				constexpr uint32_t MinSwapChainImages = 2;
 			}
 		}
 	}

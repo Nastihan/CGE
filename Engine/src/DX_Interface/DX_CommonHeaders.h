@@ -10,6 +10,14 @@
 #include "DX_Exception.h"
 #include "../RHI/intrusive_ptr.h"
 
+#if defined(min)
+#undef min
+#endif
+
+#if defined(max)
+#undef max
+#endif
+
 namespace wrl = Microsoft::WRL;
 
 #define DX12_REFCOUNTED(DXTypeName) \
@@ -25,6 +33,9 @@ namespace wrl = Microsoft::WRL;
 
 using IDXGIFactoryX = IDXGIFactory7;
 using IDXGIAdapterX = IDXGIAdapter4;
+using IDXGISwapChainX = IDXGISwapChain4;
+using DXGI_SWAP_CHAIN_DESCX = DXGI_SWAP_CHAIN_DESC1;
+
 using ID3D12DeviceX = ID3D12Device8;
 using ID3D12CommandQueueX = ID3D12CommandQueue;
 using ID3D12GraphicsCommandListX = ID3D12GraphicsCommandList4;
@@ -44,6 +55,12 @@ DX12_REFCOUNTED(IDXGIAdapter2);
 DX12_REFCOUNTED(IDXGIAdapter3);
 DX12_REFCOUNTED(IDXGIAdapter4);
 
+DX12_REFCOUNTED(IDXGISwapChain);
+DX12_REFCOUNTED(IDXGISwapChain1);
+DX12_REFCOUNTED(IDXGISwapChain2);
+DX12_REFCOUNTED(IDXGISwapChain3);
+DX12_REFCOUNTED(IDXGISwapChain4);
+
 DX12_REFCOUNTED(ID3D12Device);
 DX12_REFCOUNTED(ID3D12Device5);
 DX12_REFCOUNTED(ID3D12Device8);
@@ -51,6 +68,7 @@ DX12_REFCOUNTED(ID3D12Device8);
 DX12_REFCOUNTED(ID3D12CommandQueue);
 DX12_REFCOUNTED(ID3D12CommandAllocator);
 DX12_REFCOUNTED(ID3D12Fence);
+
 
 #ifndef LOCAL_HR
 #define LOCAL_HR HRESULT hr;

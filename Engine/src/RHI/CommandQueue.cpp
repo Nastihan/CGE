@@ -22,13 +22,27 @@ namespace CGE
 				DeviceObject::Shutdown();
 			}
 		}
+
 		HardwareQueueClass CommandQueue::GetHardwareQueueClass() const
 		{
 			return m_descriptor.m_hardwareQueueClass;
 		}
+
 		const CommandQueueDescriptor& CommandQueue::GetDescriptor() const
 		{
 			return m_descriptor;
+		}
+
+		// [todo]
+		void CommandQueue::QueueCommand(Command command)
+		{
+			std::lock_guard<std::mutex> lock(m_workQueueMutex);
+			m_workQueue.emplace(command);
+		}
+
+		// [todo] Implement
+		void CommandQueue::FlushCommands()
+		{
 		}
 	}
 }

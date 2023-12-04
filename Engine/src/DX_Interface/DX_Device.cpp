@@ -1,6 +1,10 @@
+
+// DX12
 #include "DX_Device.h"
-#include <iostream>
 #include "DX_PhysicalDevice.h"
+
+// RHI
+#include <iostream>
 
 using namespace Microsoft::WRL;
 
@@ -12,7 +16,7 @@ namespace CGE
 		{
 			return new DX_Device();
 		}
-		//[todo] More can be added check ATOM
+
 		RHI::ResultCode DX_Device::InitInternal(RHI::PhysicalDevice& physicalDevice)
 		{
 			LOCAL_HR;
@@ -36,6 +40,7 @@ namespace CGE
 
 			return RHI::ResultCode::Success;
 		}
+
 		void DX_Device::ShutdownInternal()
 		{
 
@@ -48,6 +53,7 @@ namespace CGE
 			DX_THROW_FAILED(D3D12GetDebugInterface(IID_PPV_ARGS(&debugController)));
 			debugController->EnableDebugLayer();
 		}
+
 		void DX_Device::EnableGPUBasedValidation()
 		{
 			LOCAL_HR;
@@ -60,6 +66,7 @@ namespace CGE
 			DX_THROW_FAILED(D3D12GetDebugInterface(IID_PPV_ARGS(&debugController2)))
 			debugController2->SetGPUBasedValidationFlags(D3D12_GPU_BASED_VALIDATION_FLAGS_NONE);
 		}
+
 		void DX_Device::EnableDebugDeviceFeatures()
 		{
 			LOCAL_HR;
@@ -67,6 +74,7 @@ namespace CGE
 			DX_THROW_FAILED(m_device->QueryInterface(debugDevice.GetAddressOf()))
 			debugDevice->SetFeatureMask(D3D12_DEBUG_FEATURE_ALLOW_BEHAVIOR_CHANGING_DEBUG_AIDS | D3D12_DEBUG_FEATURE_CONSERVATIVE_RESOURCE_STATE_TRACKING);
 		}
+
 		void DX_Device::EnableBreakOnD3DError()
 		{
 			LOCAL_HR;
@@ -102,18 +110,22 @@ namespace CGE
 				return "Unknown DXGI Error code, please check output log";
 			}
 		}
+
 		void DX_Device::OnDeviceRemoved()
 		{
 			//[todo]
 		}
+
 		ID3D12DeviceX* DX_Device::GetDevice() const
 		{
 			return m_device.Get();
 		}
+
 		const wrl::ComPtr<IDXGIFactoryX>& DX_Device::GetDxgiFactory() const
 		{
 			return m_dxgiFactory;
 		}
+
 		bool DX_Device::DXAssertSuccess(HRESULT hr)
 		{
 			return DX12::DXAssertSuccess(hr);
@@ -123,13 +135,20 @@ namespace CGE
 		{
 			return RHI::ResultCode::Success;
 		}
+
 		void DX_Device::EndFrameInternal()
 		{
 
 		}
+
 		RHI::ResultCode DX_Device::InitializeLimits()
 		{
 			return RHI::ResultCode::Success;
+		}
+
+		DX_CommandQueueContext& DX_Device::GetCommandQueueContext()
+		{
+			return m_commandQueueContext;
 		}
 	}
 }

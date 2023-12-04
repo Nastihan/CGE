@@ -1,11 +1,18 @@
 #pragma once
+
+// DX12
 #include "DX_CommonHeaders.h"
+#include "DX_Fence.h"
+
+// RHI
 #include "../RHI/CommandQueue.h"
 
 namespace CGE
 {
 	namespace DX12
 	{
+		class DX_Fence;
+
 		struct ExecuteWorkRequest : public RHI::ExecuteWorkRequest
 		{
 		};
@@ -16,23 +23,27 @@ namespace CGE
 			Secondary
 		};
 
-		struct CommandQueueDescriptor
-			: public RHI::CommandQueueDescriptor
+		struct CommandQueueDescriptor : public RHI::CommandQueueDescriptor
 		{
 			HardwareQueueSubclass m_hardwareQueueSubclass;
 		};
 
-		class CommandQueue final : public RHI::CommandQueue
+		class DX_CommandQueue final : public RHI::CommandQueue
 		{
 		public:
-			static RHI::Ptr<RHI::CommandQueue> Create();
+			static RHI::Ptr<DX_CommandQueue> Create();
 
 			// RHI overrides
 			void ExecuteWork(const RHI::ExecuteWorkRequest& request) override;
+			// Flush work on command queue (after this the commandQueue will be empty)
 			void WaitForIdle() override;
 
+			void QueueGpuSignal(DX_Fence& fence);
+
+			ID3D12CommandQueue* GetPlatformQueue() const;
+
 		private:
-			CommandQueue() = default;
+			DX_CommandQueue() = default;
 
 			RHI::ResultCode InitInternal(RHI::Device& device, const RHI::CommandQueueDescriptor& descriptor) override;
 			void ShutdownInternal() override;

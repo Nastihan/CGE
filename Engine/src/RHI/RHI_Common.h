@@ -48,4 +48,25 @@ namespace CGE
         static constexpr bool ISDEBUG = false;
         #endif
 	}
+    // Functions
+    namespace RHI
+    {
+        //! Aligns value up to the given alignment. It doesn't require the alignment to be a power of two
+        //! AlignUpNPOT(13, 4) => 16
+        template <typename T> constexpr T AlignUpNPOT(T value, size_t alignment)
+        {
+            return value + (value % alignment > 0 ? (alignment - (value % alignment)) : 0);
+        }
+        //! Returns whether value is divisible by divisor.
+        template <typename T> bool IsDivisible(T value, T divisor)
+        {
+            return (value / divisor) * divisor == value;
+        }
+        //! Returns whether all the set bits in bits are set in v.
+        template <typename T>
+        inline bool CheckBitsAll(T v, T bits)
+        {
+            return (v & bits) == bits;
+        }
+    }
 }

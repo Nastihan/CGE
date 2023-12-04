@@ -6,22 +6,22 @@ namespace CGE
 {
 	namespace DX12
 	{
-		FenceEvent::FenceEvent(const char* name) : m_EventHandle(nullptr), m_name(name)
+		DX_FenceEvent::DX_FenceEvent(const char* name) : m_EventHandle(nullptr), m_name(name)
 		{
 			std::wstring wName;
 			wName = s2ws(name);
 			m_EventHandle = CreateEvent(nullptr, false, false, wName.c_str());
 		}
-		FenceEvent::~FenceEvent()
+		DX_FenceEvent::~DX_FenceEvent()
 		{
 			CloseHandle(m_EventHandle);
 		}
-		const char* FenceEvent::GetName() const
+		const char* DX_FenceEvent::GetName() const
 		{
 			return m_name;
 		}
 
-		RHI::ResultCode Fence::Init(ID3D12DeviceX* dxDevice, RHI::FenceState initialState)
+		RHI::ResultCode DX_Fence::Init(ID3D12DeviceX* dxDevice, RHI::FenceState initialState)
 		{
 			wrl::ComPtr<ID3D12Fence> fencePtr;
 			if (!DXAssertSuccess(dxDevice->CreateFence(0, D3D12_FENCE_FLAG_NONE, IID_PPV_ARGS(fencePtr.GetAddressOf()))))
@@ -34,23 +34,23 @@ namespace CGE
 			m_pendingValue = (initialState == RHI::FenceState::Signaled) ? 0 : 1;
 			return RHI::ResultCode::Success;
 		}
-		void Fence::Shutdown()
+		void DX_Fence::Shutdown()
 		{
 			m_fence = nullptr;
 		}
-		uint64_t Fence::Increment()
+		uint64_t DX_Fence::Increment()
 		{
 			return m_pendingValue++;
 		}
-		void Fence::Signal()
+		void DX_Fence::Signal()
 		{
 			m_fence->Signal(m_pendingValue);
 		}
-		void Fence::Wait(FenceEvent& fenceEvent) const
+		void DX_Fence::Wait(DX_FenceEvent& fenceEvent) const
 		{
 			Wait(fenceEvent, m_pendingValue);
 		}
-		void Fence::Wait(FenceEvent& fenceEvent, uint64_t fenceValue) const
+		void DX_Fence::Wait(DX_FenceEvent& fenceEvent, uint64_t fenceValue) const
 		{
 			if (fenceValue > GetCompletedValue())
 			{
@@ -58,91 +58,91 @@ namespace CGE
 				WaitForSingleObject(fenceEvent.m_EventHandle, INFINITE);
 			}
 		}
-		uint64_t Fence::GetPendingValue() const
+		uint64_t DX_Fence::GetPendingValue() const
 		{
 			return m_pendingValue;
 		}
-		uint64_t Fence::GetCompletedValue() const
+		uint64_t DX_Fence::GetCompletedValue() const
 		{
 			return m_fence->GetCompletedValue();
 		}
-		RHI::FenceState Fence::GetFenceState() const
+		RHI::FenceState DX_Fence::GetFenceState() const
 		{
 			const uint64_t completedValue = GetCompletedValue();
 			return (m_pendingValue <= completedValue) ? RHI::FenceState::Signaled : RHI::FenceState::Reset;
 		}
-		ID3D12Fence* Fence::Get() const
+		ID3D12Fence* DX_Fence::Get() const
 		{
 			return m_fence.get();
 		}
 
-		void FenceSet::Init(ID3D12DeviceX* dxDevice, RHI::FenceState initialState)
+		void DX_FenceSet::Init(ID3D12DeviceX* dxDevice, RHI::FenceState initialState)
 		{
 			for (uint32_t hardwareQueueIdx = 0; hardwareQueueIdx < RHI::HardwareQueueClassCount; hardwareQueueIdx++)
 			{
 				m_fences[hardwareQueueIdx].Init(dxDevice, initialState);
 			}
 		}
-		void FenceSet::Shutdown()
+		void DX_FenceSet::Shutdown()
 		{
 			for (uint32_t hardwareQueueIdx = 0; hardwareQueueIdx < RHI::HardwareQueueClassCount; hardwareQueueIdx++)
 			{
 				m_fences[hardwareQueueIdx].Shutdown();
 			}
 		}
-		void FenceSet::Wait(FenceEvent& event) const
+		void DX_FenceSet::Wait(DX_FenceEvent& event) const
 		{
 			for (uint32_t hardwareQueueIdx = 0; hardwareQueueIdx < RHI::HardwareQueueClassCount; ++hardwareQueueIdx)
 			{
 				m_fences[hardwareQueueIdx].Wait(event);
 			}
 		}
-		void FenceSet::Reset()
+		void DX_FenceSet::Reset()
 		{
 			for (uint32_t hardwareQueueIdx = 0; hardwareQueueIdx < RHI::HardwareQueueClassCount; ++hardwareQueueIdx)
 			{
 				m_fences[hardwareQueueIdx].Increment();
 			}
 		}
-		Fence& FenceSet::GetFence(RHI::HardwareQueueClass hardwareQueueClass)
+		DX_Fence& DX_FenceSet::GetFence(RHI::HardwareQueueClass hardwareQueueClass)
 		{
 			return m_fences[static_cast<uint32_t>(hardwareQueueClass)];
 		}
-		const Fence& FenceSet::GetFence(RHI::HardwareQueueClass hardwareQueueClass) const
+		const DX_Fence& DX_FenceSet::GetFence(RHI::HardwareQueueClass hardwareQueueClass) const
 		{
 			return m_fences[static_cast<uint32_t>(hardwareQueueClass)];
 		}
 
-		RHI::Ptr<FenceImpl> FenceImpl::Create()
+		RHI::Ptr<DX_FenceImpl> DX_FenceImpl::Create()
 		{
-			return new FenceImpl();
+			return new DX_FenceImpl();
 		}
-		DX12::Fence& FenceImpl::Get()
+		DX12::DX_Fence& DX_FenceImpl::Get()
 		{
 			return m_fence;
 		}
-		RHI::ResultCode FenceImpl::InitInternal(RHI::Device& device, RHI::FenceState initialState)
+		RHI::ResultCode DX_FenceImpl::InitInternal(RHI::Device& device, RHI::FenceState initialState)
 		{
 			return m_fence.Init(static_cast<DX_Device&>(device).GetDevice(), initialState);
 		}
-		void FenceImpl::ShutdownInternal()
+		void DX_FenceImpl::ShutdownInternal()
 		{
 			m_fence.Shutdown();
 		}
-		void FenceImpl::SignalOnCpuInternal()
+		void DX_FenceImpl::SignalOnCpuInternal()
 		{
 			m_fence.Signal();
 		}
-		void FenceImpl::WaitOnCpuInternal() const
+		void DX_FenceImpl::WaitOnCpuInternal() const
 		{
-			FenceEvent event("WaitOnCpu");
+			DX_FenceEvent event("WaitOnCpu");
 			m_fence.Wait(event);
 		}
-		void FenceImpl::ResetInternal()
+		void DX_FenceImpl::ResetInternal()
 		{
 			m_fence.Increment();
 		}
-		RHI::FenceState FenceImpl::GetFenceStateInternal() const
+		RHI::FenceState DX_FenceImpl::GetFenceStateInternal() const
 		{
 			return m_fence.GetFenceState();
 		}

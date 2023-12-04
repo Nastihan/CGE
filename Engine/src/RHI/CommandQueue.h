@@ -1,8 +1,13 @@
 #pragma once
+
+// RHI
 #include "Limits.h"
 #include "DeviceObject.h"
 
+// std
 #include <vector>
+#include <queue>
+#include <mutex>
 
 namespace CGE
 {
@@ -40,6 +45,10 @@ namespace CGE
 			HardwareQueueClass GetHardwareQueueClass() const;
 			const CommandQueueDescriptor& GetDescriptor() const;
 
+			using Command = std::function<void(void* commandQueue)>;
+			void QueueCommand(Command command);
+			void FlushCommands();
+
 		protected:
 			virtual ResultCode InitInternal(Device& device, const CommandQueueDescriptor& descriptor) = 0;
 			virtual void ExecuteWork(const ExecuteWorkRequest& request) = 0;
@@ -48,6 +57,10 @@ namespace CGE
 
 		protected:
 			CommandQueueDescriptor m_descriptor;
+
+			// Bunch of std::function that the queue will execute
+			std::queue<Command> m_workQueue;
+			std::mutex m_workQueueMutex;
 		};
 	}
 }

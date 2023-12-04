@@ -3,6 +3,7 @@
 //DX12
 #include "DX_CommonHeaders.h"
 #include "DX_CommandListPool.h"
+#include "DX_CommandQueueContext.h"
 
 // RHI
 #include "../RHI/RHI_Common.h"
@@ -39,6 +40,7 @@ namespace CGE
 			std::string GetDeviceRemovedReason() const;
 			void OnDeviceRemoved();
 			bool DXAssertSuccess(HRESULT hr);
+			DX_CommandQueueContext& GetCommandQueueContext();
 		private:
 			void EnableD3DDebugLayer();
 			void EnableGPUBasedValidation();
@@ -53,6 +55,7 @@ namespace CGE
 			bool onDeviceRemoved = false;
 
 			DX_CommandListSubAllocator m_commandListSubAllocator;
+			DX_CommandQueueContext m_commandQueueContext;
 		};
 	}
 }
