@@ -31,6 +31,7 @@ namespace CGE
 			wrl::ComPtr<IDXGISwapChainX> m_swapChain;
 			bool m_isTearingSupported = false;
 
+			// [todo] remove later
 			DX_DescriptorPool m_swapchainRTVDescriptorPool;
 		};
 	}

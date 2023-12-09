@@ -24,6 +24,7 @@ namespace CGE
 			return static_cast<DX_Device&>(RHI::SwapChain::GetDevice());
 		}
 
+		// In this function the swapchain descriptor has a hwnd so its platform dependant
 		RHI::ResultCode DX_SwapChain::InitInternal(RHI::Device& device, const RHI::SwapChainDescriptor& descriptor, RHI::SwapChainDimensions* nativeDimensions)
 		{
 			DX_Device& dxDevice = static_cast<DX_Device&>(device);
@@ -86,7 +87,6 @@ namespace CGE
 
 		void DX_SwapChain::SetVerticalSyncIntervalInternal(uint32_t previousVerticalSyncInterval)
 		{
-
 		}
 	}
 }

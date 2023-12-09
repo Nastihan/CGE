@@ -12,7 +12,7 @@ namespace CGE
 		class Graphics
 		{
 		public:
-			Graphics(std::string bakcendAPI);
+			Graphics(std::string bakcendAPI, const Window& window);
 			~Graphics() = default;
 			REMOVE_COPY_AND_MOVE(Graphics);
 		public:
@@ -25,6 +25,9 @@ namespace CGE
 		private:
 			RHI::Ptr<RHI::PhysicalDevice> m_physicalDevice;
 			RHI::Ptr<RHI::Device> m_device;
+			RHI::Ptr<RHI::SwapChain> m_swapChain;
+
+			const Window& m_window;
 		};
 	}
 }

@@ -2,6 +2,7 @@
 // DX12
 #include "DX_Device.h"
 #include "DX_PhysicalDevice.h"
+#include "DX_CommandList.h"
 
 // RHI
 #include <iostream>
@@ -143,6 +144,13 @@ namespace CGE
 
 		RHI::ResultCode DX_Device::InitializeLimits()
 		{
+			DX_CommandListAllocator::Descriptor commandListAllocatorDescriptor;
+			commandListAllocatorDescriptor.m_dxDevice = this;
+			commandListAllocatorDescriptor.m_frameCountMax = RHI::Limits::Device::FrameCountMax;
+			m_commandListAllocator.Init(commandListAllocatorDescriptor);
+
+			m_commandQueueContext.Init(*this);
+
 			return RHI::ResultCode::Success;
 		}
 

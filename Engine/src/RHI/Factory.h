@@ -3,6 +3,7 @@
 
 #include "PhysicalDevice.h"
 #include "Device.h"
+#include "SwapChain.h"
 
 namespace CGE
 {
@@ -22,6 +23,7 @@ namespace CGE
 		public:
 			virtual Ptr<PhysicalDevice> CreatePhysicalDevice() = 0;
 			virtual Ptr<Device> CreateDevice() = 0;
+			virtual Ptr<SwapChain> CreateSwapChain() = 0;
 		};
 	}
 }

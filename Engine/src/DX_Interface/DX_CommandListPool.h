@@ -106,6 +106,7 @@ namespace CGE
 
 		private:
 			bool m_isInitialized = false;
+
 			std::array<DX_CommandListPool, RHI::HardwareQueueClassCount> m_commandListPools;
 			std::array<DX_CommandAllocatorPool, RHI::HardwareQueueClassCount> m_commandAllocatorPools;
 
