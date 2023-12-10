@@ -2,6 +2,7 @@
 #include "RHI/Graphics.h"
 #include "Window.h"
 
+// some comment
 namespace CGE
 {
 	class App
