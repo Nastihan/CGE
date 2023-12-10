@@ -6,25 +6,29 @@
 
 namespace CGE
 {
+	static void FramebufferResizeCallback(GLFWwindow* window, int width, int height);
 	class Window
 	{
 	public:
 		Window(uint16_t width, uint16_t height, std::string title);
 		~Window();
-		GLFWwindow& Wnd();
-		HWND& Hwnd();
+		GLFWwindow& GetWnd() const;
+		const HWND& GetHwnd() const;
 		void EnableCursor();
 		void DisableCursor();
 		bool CursorEnabled();
+		uint16_t GetWidth() const;
+		uint16_t GetHeight() const;
 
 	private:
-		bool cursorEnabled = true;
-		float lastMouseX;
-		float lastMouseY;
-		GLFWwindow* pWindow;
+		bool m_cursorEnabled = true;
+		float m_lastMouseX;
+		float m_lastMouseY;
+		GLFWwindow* m_pWindow;
 		// [todo] remove for VK backend
-		HWND hwnd;
-		uint16_t width;
-		uint16_t height;
+		HWND m_hwnd;
+		RECT m_windowRect;
+		uint16_t m_width;
+		uint16_t m_height;
 	};
 }
