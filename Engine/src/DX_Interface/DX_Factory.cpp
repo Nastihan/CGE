@@ -3,6 +3,7 @@
 #include "DX_PhysicalDevice.h"
 #include "DX_Device.h"
 #include "DX_SwapChain.h"
+#include "DX_FrameGraphExecuter.h"
 
 namespace CGE
 {
@@ -21,6 +22,11 @@ namespace CGE
 		RHI::Ptr<RHI::SwapChain> DX_Factory::CreateSwapChain()
 		{
 			return DX_SwapChain::Create();
+		}
+
+		RHI::Ptr<RHI::FrameGraphExecuter> DX_Factory::CreateFrameGraphExecuter()
+		{
+			return DX_FrameGraphExecuter::Create();
 		}
 	}
 }

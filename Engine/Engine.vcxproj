@@ -35,6 +35,7 @@
     <ClCompile Include="src\DX_Interface\DX_Exception.cpp" />
     <ClCompile Include="src\DX_Interface\DX_Factory.cpp" />
     <ClCompile Include="src\DX_Interface\DX_Fence.cpp" />
+    <ClCompile Include="src\DX_Interface\DX_FrameGraphExecuter.cpp" />
     <ClCompile Include="src\DX_Interface\DX_Graphics.cpp" />
     <ClCompile Include="src\DX_Interface\DX_Main.cpp" />
     <ClCompile Include="src\DX_Interface\DX_PhysicalDevice.cpp" />
@@ -44,6 +45,7 @@
     <ClCompile Include="src\RHI\CommandQueue.cpp" />
     <ClCompile Include="src\RHI\DeviceObject.cpp" />
     <ClCompile Include="src\RHI\Fence.cpp" />
+    <ClCompile Include="src\RHI\FrameGraphExecuter.cpp" />
     <ClCompile Include="src\RHI\FreeListAllocator.cpp" />
     <ClCompile Include="src\RHI\Graphics.cpp" />
     <ClCompile Include="src\Main.cpp" />
@@ -75,6 +77,7 @@
     <ClInclude Include="src\DX_Interface\DX_Exception.h" />
     <ClInclude Include="src\DX_Interface\DX_Factory.h" />
     <ClInclude Include="src\DX_Interface\DX_Fence.h" />
+    <ClInclude Include="src\DX_Interface\DX_FrameGraphExecuter.h" />
     <ClInclude Include="src\DX_Interface\DX_Graphics.h" />
     <ClInclude Include="src\DX_Interface\DX_Helper.h" />
     <ClInclude Include="src\DX_Interface\DX_PhysicalDevice.h" />
@@ -86,6 +89,7 @@
     <ClInclude Include="src\RHI\Factory.h" />
     <ClInclude Include="src\RHI\Fence.h" />
     <ClInclude Include="src\RHI\Format.h" />
+    <ClInclude Include="src\RHI\FrameGraphExecuter.h" />
     <ClInclude Include="src\RHI\FreeListAllocator.h" />
     <ClInclude Include="src\RHI\Graphics.h" />
     <ClInclude Include="src\RHI\Device.h" />

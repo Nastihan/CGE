@@ -138,6 +138,12 @@
     <ClCompile Include="src\DX_Interface\DX_DescriptorContext.cpp">
       <Filter>Source Files\DX</Filter>
     </ClCompile>
+    <ClCompile Include="src\DX_Interface\DX_FrameGraphExecuter.cpp">
+      <Filter>Source Files\DX</Filter>
+    </ClCompile>
+    <ClCompile Include="src\RHI\FrameGraphExecuter.cpp">
+      <Filter>Source Files\RHI</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\DX_Interface\DX_Device.h">
@@ -286,6 +292,12 @@
     </ClInclude>
     <ClInclude Include="src\DX_Interface\DX_DescriptorContext.h">
       <Filter>Header Files\DX</Filter>
+    </ClInclude>
+    <ClInclude Include="src\DX_Interface\DX_FrameGraphExecuter.h">
+      <Filter>Header Files\DX</Filter>
+    </ClInclude>
+    <ClInclude Include="src\RHI\FrameGraphExecuter.h">
+      <Filter>Header Files\RHI</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
