@@ -151,12 +151,19 @@ namespace CGE
 
 			m_commandQueueContext.Init(*this);
 
+			m_descriptorContext.Init(m_device.Get());
+
 			return RHI::ResultCode::Success;
 		}
 
 		DX_CommandQueueContext& DX_Device::GetCommandQueueContext()
 		{
 			return m_commandQueueContext;
+		}
+
+		DX_DescriptorContext& DX_Device::GetDescriptorContext()
+		{
+			return m_descriptorContext;
 		}
 	}
 }

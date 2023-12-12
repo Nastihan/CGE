@@ -7,6 +7,7 @@
 // RHI
 #include "../RHI/SwapChain.h"
 #include "../RHI/Device.h"
+#include "../RHI/Limits.h"
 
 namespace CGE
 {
@@ -26,13 +27,15 @@ namespace CGE
 			RHI::ResultCode ResizeInternal(const RHI::SwapChainDimensions& dimensions, RHI::SwapChainDimensions* nativeDimensions) override;
 			uint32_t PresentInternal() override;
 			void SetVerticalSyncIntervalInternal(uint32_t previousVerticalSyncInterval) override;
+			RHI::ResultCode InitImagesInternal() override;
 
 		private:
 			wrl::ComPtr<IDXGISwapChainX> m_swapChain;
 			bool m_isTearingSupported = false;
 
-			// [todo] remove later
-			DX_DescriptorPool m_swapchainRTVDescriptorPool;
+			// [todo] Replace with proper image view later
+			wrl::ComPtr<ID3D12Resource> m_backBuffers[RHI::Limits::Device::FrameCountMax];
+			DX_DescriptorHandle m_swapChainDescriptorHandles[RHI::Limits::Device::FrameCountMax];
 		};
 	}
 }

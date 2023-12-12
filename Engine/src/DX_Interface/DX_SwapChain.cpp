@@ -70,8 +70,6 @@ namespace CGE
 				DXAssertSuccess(parentFactory->MakeWindowAssociation(descriptor.hWnd, DXGI_MWA_NO_ALT_ENTER));
 			}
 
-			m_swapchainRTVDescriptorPool.Init(dxDevice.GetDevice(), D3D12_DESCRIPTOR_HEAP_TYPE_RTV, D3D12_DESCRIPTOR_HEAP_FLAG_NONE, SwapBufferCount, SwapBufferCount);
-
 			return RHI::ResultCode::Success;
 		}
 
@@ -87,6 +85,21 @@ namespace CGE
 
 		void DX_SwapChain::SetVerticalSyncIntervalInternal(uint32_t previousVerticalSyncInterval)
 		{
+		}
+
+		RHI::ResultCode DX_SwapChain::InitImagesInternal()
+		{
+			DX_Device& dxDevice = static_cast<DX_Device&>(GetDevice());
+
+			for (size_t i = 0; i < RHI::Limits::Device::FrameCountMax; i++)
+			{
+				wrl::ComPtr<ID3D12Resource> backBuffer;
+				DXAssertSuccess(m_swapChain->GetBuffer(i, IID_PPV_ARGS(&backBuffer)));
+
+				dxDevice.GetDescriptorContext().CreateRenderTargetView(backBuffer.Get(), m_swapChainDescriptorHandles[i]);
+			}
+
+			return RHI::ResultCode::Success;
 		}
 	}
 }

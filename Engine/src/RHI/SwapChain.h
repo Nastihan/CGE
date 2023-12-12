@@ -30,6 +30,7 @@ namespace CGE
 
 		protected:
 			SwapChain();
+			ResultCode InitImages();
 
 		private:
 			bool ValidateDescriptor(const SwapChainDescriptor& descriptor) const;
@@ -38,6 +39,7 @@ namespace CGE
 			virtual ResultCode ResizeInternal(const SwapChainDimensions& dimensions, SwapChainDimensions* nativeDimensions) = 0;
 			virtual uint32_t PresentInternal() = 0;
 			virtual void SetVerticalSyncIntervalInternal(uint32_t previousVerticalSyncInterval) = 0;
+			virtual ResultCode InitImagesInternal() = 0;
 
 		private:
 			SwapChainDescriptor m_descriptor;

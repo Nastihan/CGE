@@ -2,7 +2,6 @@
 
 // DX12
 #include "DX_CommonHeaders.h"
-#include "DX_Device.h"
 #include "DX_DescriptorPool.h"
 
 // std
@@ -15,17 +14,25 @@ namespace CGE
 {
 	namespace DX12
 	{
+		class DX_Device;
+
 		class DX_DescriptorContext
 		{
 		public:
 			DX_DescriptorContext() = default;
 			void Init(ID3D12DeviceX* device);
 
+			// [todo] change to take in image view
+			void CreateRenderTargetView(ID3D12Resource* backBuffer, DX_DescriptorHandle& rtv);
+
 		private:
 			std::optional<D3D12_DESCRIPTOR_HEAP_TYPE> StringToDescriptorHeapType(std::string heapType);
 			bool IsShaderVisibleCbvSrvUavHeap(uint32_t type, uint32_t flag) const;
 			DX_DescriptorPool& GetPool(uint32_t type, uint32_t flag);
 			const DX_DescriptorPool& GetPool(uint32_t type, uint32_t flag) const;
+			// Allocates a single descriptor handle
+			DX_DescriptorHandle AllocateHandle(D3D12_DESCRIPTOR_HEAP_TYPE type, D3D12_DESCRIPTOR_HEAP_FLAGS flags, uint32_t count);
+			D3D12_CPU_DESCRIPTOR_HANDLE GetCpuPlatformHandle(DX_DescriptorHandle handle) const;
 
 		private:
 			static const uint32_t NumHeapFlags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE + 1;

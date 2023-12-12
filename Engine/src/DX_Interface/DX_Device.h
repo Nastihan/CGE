@@ -4,6 +4,7 @@
 #include "DX_CommonHeaders.h"
 #include "DX_CommandListPool.h"
 #include "DX_CommandQueueContext.h"
+#include "DX_DescriptorContext.h"
 
 // RHI
 #include "../RHI/RHI_Common.h"
@@ -41,6 +42,7 @@ namespace CGE
 			void OnDeviceRemoved();
 			bool DXAssertSuccess(HRESULT hr);
 			DX_CommandQueueContext& GetCommandQueueContext();
+			DX_DescriptorContext& GetDescriptorContext();
 		private:
 			void EnableD3DDebugLayer();
 			void EnableGPUBasedValidation();
@@ -54,6 +56,7 @@ namespace CGE
 			std::mutex deviceRemovedMtx;
 			bool onDeviceRemoved = false;
 
+			DX_DescriptorContext m_descriptorContext;
 			DX_CommandListAllocator m_commandListAllocator;
 			DX_CommandQueueContext m_commandQueueContext;
 		};

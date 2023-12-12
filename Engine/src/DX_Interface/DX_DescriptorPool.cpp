@@ -49,7 +49,6 @@ namespace CGE
             {
                 // Non-shader-visible heaps don't require contiguous descriptors. Therefore, we can allocate
                 // them using a block allocator.
-
                 RHI::PoolAllocator::Descriptor descriptor;
                 descriptor.m_alignmentInBytes = 1;
                 descriptor.m_elementSize = 1;
