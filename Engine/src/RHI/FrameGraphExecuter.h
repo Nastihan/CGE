@@ -22,6 +22,9 @@ namespace CGE
 		private:
 			virtual ResultCode InitInternal(Device& device) = 0;
 			virtual void RenderFrameInternal() = 0;
+
+		protected:
+			uint64_t m_currentFrame = 0;
 		};
 	}
 }

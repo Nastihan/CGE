@@ -139,7 +139,8 @@ namespace CGE
 
 		void DX_Device::EndFrameInternal()
 		{
-
+			m_commandQueueContext.End();
+			m_commandListAllocator.Collect();
 		}
 
 		RHI::ResultCode DX_Device::InitializeLimits()

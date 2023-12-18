@@ -11,6 +11,9 @@ namespace CGE
 		~App();
 		void Run();
 	private:
+		void Update();
+		void SetGLFWUserPointer();
+	private:
 		Window window;
 		RHI::Graphics gfx;
 		uint64_t currentFrame = 0;

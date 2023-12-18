@@ -68,5 +68,10 @@ namespace CGE
 
             return resultCode;
         }
+
+        const RHI::SwapChainDescriptor& SwapChain::GetDescriptor() const
+        {
+            return m_descriptor;
+        }
 	}
 }

@@ -18,7 +18,7 @@ namespace CGE
 
 		void DX_FrameGraphExecuter::RenderFrameInternal()
 		{
-
+			m_currentFrame++;
 		}
 	}
 }

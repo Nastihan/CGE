@@ -37,7 +37,6 @@
     <ClCompile Include="src\DX_Interface\DX_Fence.cpp" />
     <ClCompile Include="src\DX_Interface\DX_FrameGraphExecuter.cpp" />
     <ClCompile Include="src\DX_Interface\DX_Graphics.cpp" />
-    <ClCompile Include="src\DX_Interface\DX_Main.cpp" />
     <ClCompile Include="src\DX_Interface\DX_PhysicalDevice.cpp" />
     <ClCompile Include="src\DX_Interface\DX_SwapChain.cpp" />
     <ClCompile Include="src\RHI\Allocator.cpp" />
