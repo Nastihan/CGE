@@ -30,7 +30,7 @@ namespace CGE
             void QueueGpuSignals(DX_FenceSet& fenceSet);
             void WaitForIdle();
             void End();
-            void ExecuteWork(RHI::HardwareQueueClass hardwareQueueClass, const ExecuteWorkRequest& request);
+            void ExecuteWork(RHI::HardwareQueueClass hardwareQueueClass, const DX_ExecuteWorkRequest& request);
             // Fences across all queues that are compiled by the frame graph compilation phase
             const DX_FenceSet& GetCompiledFences();
             // Get frame fences for the specified frame

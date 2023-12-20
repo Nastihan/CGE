@@ -14,6 +14,8 @@ namespace CGE
 		{
 		public:
 			ResultCode Init(PhysicalDevice& physicalDevice);
+
+			void EndFrame();
 		protected:
 		private:
 			virtual ResultCode InitInternal(PhysicalDevice& physicalDevice) = 0;

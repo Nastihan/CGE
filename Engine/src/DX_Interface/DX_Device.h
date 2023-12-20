@@ -22,20 +22,9 @@ namespace CGE
 		class DX_Device final : public RHI::Device
 		{
 		public:
-			static RHI::Ptr<RHI::Device> Create();
-		private:
-			// RHI
-			RHI::ResultCode InitInternal(RHI::PhysicalDevice& physicalDevice) override;
-			void ShutdownInternal() override;
-			RHI::ResultCode BeginFrameInternal() override;
-			void EndFrameInternal() override;
-			RHI::ResultCode InitializeLimits() override;
-		public:
 			~DX_Device() = default;
-		private:
-			DX_Device() = default;
-			REMOVE_COPY_AND_MOVE(DX_Device);
-		public:
+			static RHI::Ptr<RHI::Device> Create();
+
 			ID3D12DeviceX* GetDevice() const;
 			const wrl::ComPtr<IDXGIFactoryX>& GetDxgiFactory() const;
 			std::string GetDeviceRemovedReason() const;
@@ -43,7 +32,19 @@ namespace CGE
 			bool DXAssertSuccess(HRESULT hr);
 			DX_CommandQueueContext& GetCommandQueueContext();
 			DX_DescriptorContext& GetDescriptorContext();
+			// The CommandList and allocator will get collected every frame in DX_Device::EndFrameInternal (deferred release)
+			DX_CommandList* AcquireCommandList(RHI::HardwareQueueClass hardwareQueueClass);
 		private:
+			DX_Device() = default;
+			REMOVE_COPY_AND_MOVE(DX_Device);
+
+			// RHI
+			RHI::ResultCode InitInternal(RHI::PhysicalDevice& physicalDevice) override;
+			void ShutdownInternal() override;
+			RHI::ResultCode BeginFrameInternal() override;
+			void EndFrameInternal() override;
+			RHI::ResultCode InitializeLimits() override;
+
 			void EnableD3DDebugLayer();
 			void EnableGPUBasedValidation();
 			void EnableDebugDeviceFeatures();

@@ -1,5 +1,6 @@
 
 // DX12
+#include "DX_Device.h"
 #include "DX_FrameGraphExecuter.h"
 
 namespace CGE
@@ -18,7 +19,7 @@ namespace CGE
 
 		void DX_FrameGraphExecuter::RenderFrameInternal()
 		{
-			m_currentFrame++;
+			const auto& dxDevice = static_cast<DX_Device&>(GetDevice());
 		}
 	}
 }

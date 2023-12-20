@@ -19,6 +19,7 @@ namespace CGE
 		void FrameGraphExecuter::RenderFrame()
 		{
 			RenderFrameInternal();
+			GetDevice().EndFrame();
 		}
 	}
 }

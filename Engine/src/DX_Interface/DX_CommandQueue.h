@@ -7,14 +7,32 @@
 // RHI
 #include "../RHI/CommandQueue.h"
 
+// std
+#include <vector>
+#include <array>
+
 namespace CGE
 {
 	namespace DX12
 	{
 		class DX_Fence;
+		class DX_CommandList;
 
-		struct ExecuteWorkRequest : public RHI::ExecuteWorkRequest
+		struct DX_ExecuteWorkRequest : public RHI::ExecuteWorkRequest
 		{
+			static const uint64_t FenceValueNull = 0;
+
+			// Command lists to queue
+			std::vector<DX_CommandList*> m_commandLists;
+
+			// Fence values for the queue to wait on before execution
+			std::array<uint64_t, RHI::HardwareQueueClassCount> m_waitFences{ {FenceValueNull} };
+
+			// Fence value to signal after execution
+			uint64_t m_signalFence = FenceValueNull;
+
+			// Set of user fences to signal after execution
+			std::vector<DX_Fence*> m_userFencesToSignal;
 		};
 
 		enum class HardwareQueueSubclass
@@ -34,7 +52,7 @@ namespace CGE
 			static RHI::Ptr<DX_CommandQueue> Create();
 
 			// RHI overrides
-			void ExecuteWork(const RHI::ExecuteWorkRequest& request) override;
+			void ExecuteWork(const RHI::ExecuteWorkRequest& rhiRequest) override;
 			// Flush work on command queue (after this the commandQueue will be empty)
 			void WaitForIdle() override;
 

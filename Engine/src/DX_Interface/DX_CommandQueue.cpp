@@ -85,7 +85,12 @@ namespace CGE
             }
 		}
 
-        void DX_CommandQueue::ExecuteWork(const RHI::ExecuteWorkRequest& request) {}
+        void DX_CommandQueue::ExecuteWork(const RHI::ExecuteWorkRequest& rhiRequest) 
+        {
+            auto& dxDevice = static_cast<DX_Device&>(GetDevice());
+            const DX_ExecuteWorkRequest& request = static_cast<const DX_ExecuteWorkRequest&>(rhiRequest);
+        }
+
         void DX_CommandQueue::WaitForIdle()
         {
             DX_Fence fence;

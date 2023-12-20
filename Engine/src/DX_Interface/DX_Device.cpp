@@ -166,5 +166,10 @@ namespace CGE
 		{
 			return m_descriptorContext;
 		}
+
+		DX_CommandList* DX_Device::AcquireCommandList(RHI::HardwareQueueClass hardwareQueueClass)
+		{
+			return m_commandListAllocator.Allocate(hardwareQueueClass);
+		}
 	}
 }

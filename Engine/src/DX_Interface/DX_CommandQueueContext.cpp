@@ -116,5 +116,10 @@ namespace CGE
                 m_frameFences[m_currentFrameIndex].Reset();
             }
         }
+
+        void DX_CommandQueueContext::ExecuteWork(RHI::HardwareQueueClass hardwareQueueClass, const DX_ExecuteWorkRequest& request)
+        {
+            GetCommandQueue(hardwareQueueClass).ExecuteWork(request);
+        }
 	}
 }

@@ -13,5 +13,10 @@ namespace CGE
 			}
 			return resultCode;
 		}
+
+		void Device::EndFrame()
+		{
+			EndFrameInternal();
+		}
 	}
 }
