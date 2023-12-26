@@ -75,6 +75,17 @@ namespace CGE
 
 		RHI::ResultCode DX_SwapChain::ResizeInternal(const RHI::SwapChainDimensions& dimensions, RHI::SwapChainDimensions* nativeDimensions)
 		{
+			GetDevice().WaitForIdle();
+
+			for (size_t i = 0; i < RHI::Limits::Device::FrameCountMax; i++)
+			{
+				m_backBuffers[i].Reset();
+			}
+			DXGI_SWAP_CHAIN_DESC swapChainDesc = {};
+			DXAssertSuccess(m_swapChain->GetDesc(&swapChainDesc));
+			DXAssertSuccess(m_swapChain->ResizeBuffers(dimensions.m_imageCount, dimensions.m_imageWidth, dimensions.m_imageHeight, swapChainDesc.BufferDesc.Format, swapChainDesc.Flags));
+			m_currentImageIndex = m_swapChain->GetCurrentBackBufferIndex();
+
 			return RHI::ResultCode::Success;
 		}
 

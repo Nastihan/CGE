@@ -1,9 +1,12 @@
 #pragma once
 
+// RHI
 #include "PhysicalDevice.h"
 #include "DeviceFeatures.h"
 #include "DeviceLimits.h"
 #include "Object.h"
+
+// std
 #include <memory>
 
 namespace CGE
@@ -20,6 +23,8 @@ namespace CGE
 			void SetSwapChain(SwapChain* swapChain);
 			SwapChain* GetSwapChain();
 			void EndFrame();
+			ResultCode WaitForIdle();
+
 		protected:
 		private:
 			virtual ResultCode InitInternal(PhysicalDevice& physicalDevice) = 0;
@@ -27,6 +32,7 @@ namespace CGE
 			virtual ResultCode BeginFrameInternal() = 0;
 			virtual void EndFrameInternal() = 0;
 			virtual ResultCode InitializeLimits() = 0;
+			virtual void WaitForIdleInternal() = 0;
 		protected:
 			DeviceFeatures m_features;
 			DeviceLimits m_deviceLimits;

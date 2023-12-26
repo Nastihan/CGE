@@ -175,5 +175,10 @@ namespace CGE
 		{
 			return m_commandListAllocator.Allocate(hardwareQueueClass);
 		}
+
+		void DX_Device::WaitForIdleInternal()
+		{
+			m_commandQueueContext.WaitForIdle();
+		}
 	}
 }

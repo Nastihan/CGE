@@ -29,5 +29,11 @@ namespace CGE
 		{
 			return m_swapChain.get();
 		}
+
+		ResultCode Device::WaitForIdle()
+		{
+			WaitForIdleInternal();
+			return ResultCode::Success;
+		}
 	}
 }

@@ -66,6 +66,7 @@ namespace CGE
             if (resultCode == ResultCode::Success)
             {
                 m_descriptor.m_dimensions = nativeDimensions;
+                resultCode = InitImages();
             }
 
             return resultCode;

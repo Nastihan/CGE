@@ -22,6 +22,7 @@ namespace CGE
 		bool GetResizeFlag() const;
 		void ResetResizeFlag();
 
+		// [todo] handle full screen borderless window
 		static void FramebufferResizeCallback(GLFWwindow* window, int width, int height);
 	private:
 		bool m_cursorEnabled = true;

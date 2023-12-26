@@ -44,6 +44,7 @@ namespace CGE
 			RHI::ResultCode BeginFrameInternal() override;
 			void EndFrameInternal() override;
 			RHI::ResultCode InitializeLimits() override;
+			void WaitForIdleInternal() override;
 
 			void EnableD3DDebugLayer();
 			void EnableGPUBasedValidation();

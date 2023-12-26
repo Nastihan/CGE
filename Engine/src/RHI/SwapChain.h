@@ -41,9 +41,10 @@ namespace CGE
 			virtual void SetVerticalSyncIntervalInternal(uint32_t previousVerticalSyncInterval) = 0;
 			virtual ResultCode InitImagesInternal() = 0;
 
+		protected:
+			uint32_t m_currentImageIndex = 0;
 		private:
 			SwapChainDescriptor m_descriptor;
-			uint32_t m_currentImageIndex = 0;
 		};
 	}
 }
