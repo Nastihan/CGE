@@ -42,6 +42,8 @@ namespace CGE
                 resultCode = InitImages();
             }
 
+            device.SetSwapChain(this);
+
             return resultCode;
         }
 
@@ -72,6 +74,11 @@ namespace CGE
         const RHI::SwapChainDescriptor& SwapChain::GetDescriptor() const
         {
             return m_descriptor;
+        }
+
+        uint32_t SwapChain::GetCurrentImageIndex() const
+        {
+            return m_currentImageIndex;
         }
 	}
 }

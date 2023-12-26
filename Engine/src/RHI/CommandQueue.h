@@ -54,6 +54,8 @@ namespace CGE
 			virtual void ExecuteWork(const ExecuteWorkRequest& request) = 0;
 			virtual void WaitForIdle() = 0;
 			virtual void ShutdownInternal() = 0;
+			// This function will return the native queue. You have to reinterpret_cast it after.
+			virtual void* GetNativeQueue() = 0;
 
 		protected:
 			CommandQueueDescriptor m_descriptor;

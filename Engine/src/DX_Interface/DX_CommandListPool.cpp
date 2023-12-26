@@ -11,7 +11,7 @@ namespace CGE
 		{
 			m_descriptor = descriptor;
 		}
-		RHI::Ptr<ID3D12CommandAllocator> DX_CommandAllocatorFactory::CreateObjct()
+		RHI::Ptr<ID3D12CommandAllocator> DX_CommandAllocatorFactory::CreateObject()
 		{
 			wrl::ComPtr<ID3D12CommandAllocator> allocator;
 			DXAssertSuccess(m_descriptor.m_dxDevice->CreateCommandAllocator(ConvertHardwareQueueClass(m_descriptor.m_hardwareQueueClass), IID_PPV_ARGS(allocator.GetAddressOf())));
@@ -29,7 +29,7 @@ namespace CGE
 		RHI::Ptr<DX_CommandList> DX_CommandListFactory::CreateObject(ID3D12CommandAllocator* commandAllocator)
 		{
 			RHI::Ptr<DX_CommandList> commandList = DX_CommandList::Create();
-			commandList->Init(*m_descriptor.m_dxDevice, m_descriptor.m_hardwareQueueClass, commandAllocator);
+			commandList->Init(*m_descriptor.m_dxDevice, m_descriptor.m_hardwareQueueClass, commandAllocator, m_descriptor.m_descriptorContext);
 			return commandList;
 		}
 		void DX_CommandListFactory::ResetObject(DX_CommandList& commandList, ID3D12CommandAllocator* commandAllocator)

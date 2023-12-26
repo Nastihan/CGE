@@ -141,6 +141,9 @@
     <ClCompile Include="src\RHI\FrameGraphExecuter.cpp">
       <Filter>Source Files\RHI</Filter>
     </ClCompile>
+    <ClCompile Include="src\RHI\ClearValue.cpp">
+      <Filter>Source Files\RHI</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\DX_Interface\DX_Device.h">
@@ -294,6 +297,9 @@
       <Filter>Header Files\DX</Filter>
     </ClInclude>
     <ClInclude Include="src\RHI\FrameGraphExecuter.h">
+      <Filter>Header Files\RHI</Filter>
+    </ClInclude>
+    <ClInclude Include="src\RHI\ClearValue.h">
       <Filter>Header Files\RHI</Filter>
     </ClInclude>
   </ItemGroup>

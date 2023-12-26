@@ -28,6 +28,7 @@ namespace CGE
 			RHI::Ptr<RHI::PhysicalDevice> m_physicalDevice;
 			RHI::Ptr<RHI::Device> m_device;
 			RHI::Ptr<RHI::SwapChain> m_swapChain;
+			RHI::Ptr<RHI::FrameGraphExecuter> m_frameGraphExecuter;
 
 			Window& m_window;
 		};

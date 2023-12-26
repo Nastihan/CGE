@@ -2,6 +2,7 @@
 // RHI
 #include "Graphics.h"
 #include "RHI_Common.h"
+#include "FrameGraphExecuter.h"
 
 // DX12
 #include "../DX_Interface/DX_Factory.h"
@@ -41,7 +42,7 @@ namespace CGE
 			m_swapChain = m_factory->CreateSwapChain();
 			SwapChainDescriptor swapChainDesc{};
 			swapChainDesc.hWnd = m_window.GetHwnd();
-			swapChainDesc.m_verticalSyncInterval = 1;
+			swapChainDesc.m_verticalSyncInterval = 0;
 			swapChainDesc.m_scalingMode = Scaling::None;
 			swapChainDesc.m_dimensions.m_imageWidth = m_window.GetWidth();
 			swapChainDesc.m_dimensions.m_imageHeight = m_window.GetHeight();
@@ -49,12 +50,16 @@ namespace CGE
 			swapChainDesc.m_dimensions.m_imageFormat = RHI::Format::R8G8B8A8_UNORM;
 
 			m_swapChain->Init(*m_device.get(), swapChainDesc);
+
+			m_frameGraphExecuter = m_factory->CreateFrameGraphExecuter();
+			m_frameGraphExecuter->Init(*m_device);
 		}
 
 		// [todo] 30.2 : 14:20
 		void Graphics::Render()
 		{
-
+			m_frameGraphExecuter->RenderFrame();
+			m_device->EndFrame();
 		}
 
 		ResultCode Graphics::RecreateSwapChain()

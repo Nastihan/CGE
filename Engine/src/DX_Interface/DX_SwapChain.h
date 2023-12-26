@@ -21,6 +21,9 @@ namespace CGE
 			static RHI::Ptr<DX_SwapChain> Create();
 			DX_Device& GetDevice() const;
 
+			ID3D12Resource* GetBackBuffer();
+			DX_DescriptorHandle& GetBackBufferDescriptorHandle();
+
 		private:
 			DX_SwapChain() = default;
 			RHI::ResultCode InitInternal(RHI::Device& device, const RHI::SwapChainDescriptor& descriptor, RHI::SwapChainDimensions* nativeDimensions) override;

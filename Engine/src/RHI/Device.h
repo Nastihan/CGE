@@ -10,11 +10,15 @@ namespace CGE
 {
 	namespace RHI
 	{
+		class SwapChain;
+
 		class Device : public Object
 		{
 		public:
 			ResultCode Init(PhysicalDevice& physicalDevice);
 
+			void SetSwapChain(SwapChain* swapChain);
+			SwapChain* GetSwapChain();
 			void EndFrame();
 		protected:
 		private:
@@ -29,6 +33,7 @@ namespace CGE
 			//[todo] add device descriptor which houses frames in flight
 		private:
 			RHI::Ptr<PhysicalDevice> m_physicalDevice;
+			RHI::Ptr<SwapChain> m_swapChain;
 		};
 	}
 }

@@ -1,4 +1,5 @@
 #include "Device.h"
+#include "SwapChain.h"
 
 namespace CGE
 {
@@ -17,6 +18,16 @@ namespace CGE
 		void Device::EndFrame()
 		{
 			EndFrameInternal();
+		}
+
+		void Device::SetSwapChain(SwapChain* swapChain)
+		{
+			m_swapChain = swapChain;
+		}
+
+		SwapChain* Device::GetSwapChain()
+		{
+			return m_swapChain.get();
 		}
 	}
 }

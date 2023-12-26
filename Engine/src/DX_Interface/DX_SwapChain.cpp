@@ -80,7 +80,14 @@ namespace CGE
 
 		uint32_t DX_SwapChain::PresentInternal()
 		{
-			return 1;
+			if (m_swapChain)
+			{
+				UINT presentFlags = (m_isTearingSupported) ? DXGI_PRESENT_ALLOW_TEARING : 0;
+				HRESULT hr = m_swapChain->Present(GetDescriptor().m_verticalSyncInterval, presentFlags);
+				GetDevice().DXAssertSuccess(hr);
+				return m_swapChain->GetCurrentBackBufferIndex();
+			}
+			return -1;
 		}
 
 		void DX_SwapChain::SetVerticalSyncIntervalInternal(uint32_t previousVerticalSyncInterval)
@@ -97,9 +104,21 @@ namespace CGE
 				DXAssertSuccess(m_swapChain->GetBuffer(i, IID_PPV_ARGS(&backBuffer)));
 
 				dxDevice.GetDescriptorContext().CreateRenderTargetView(backBuffer.Get(), m_swapChainDescriptorHandles[i]);
+
+				m_backBuffers[i] = backBuffer;
 			}
 
 			return RHI::ResultCode::Success;
+		}
+
+		ID3D12Resource* DX_SwapChain::GetBackBuffer()
+		{
+			return m_backBuffers[GetCurrentImageIndex()].Get();
+		}
+
+		DX_DescriptorHandle& DX_SwapChain::GetBackBufferDescriptorHandle()
+		{
+			return m_swapChainDescriptorHandles[GetCurrentImageIndex()];
 		}
 	}
 }

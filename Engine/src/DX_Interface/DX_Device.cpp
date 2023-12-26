@@ -5,6 +5,9 @@
 #include "DX_CommandList.h"
 
 // RHI
+#include "../RHI/SwapChain.h"
+
+// std
 #include <iostream>
 
 using namespace Microsoft::WRL;
@@ -152,7 +155,8 @@ namespace CGE
 
 			m_commandQueueContext.Init(*this);
 
-			m_descriptorContext.Init(m_device.Get());
+			m_descriptorContext = std::make_shared<DX_DescriptorContext>();
+			m_descriptorContext->Init(m_device.Get());
 
 			return RHI::ResultCode::Success;
 		}
@@ -164,7 +168,7 @@ namespace CGE
 
 		DX_DescriptorContext& DX_Device::GetDescriptorContext()
 		{
-			return m_descriptorContext;
+			return *m_descriptorContext;
 		}
 
 		DX_CommandList* DX_Device::AcquireCommandList(RHI::HardwareQueueClass hardwareQueueClass)

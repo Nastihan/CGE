@@ -12,6 +12,7 @@ namespace CGE
 	namespace DX12
 	{
         class DX_Device;
+        class DX_SwapChain;
 
 		// The device will own an instance
 		class DX_CommandQueueContext
@@ -29,6 +30,7 @@ namespace CGE
             uint64_t IncrementFence(RHI::HardwareQueueClass hardwareQueueClass);
             void QueueGpuSignals(DX_FenceSet& fenceSet);
             void WaitForIdle();
+            // This function will signal the current frames fences and also wait on the next frames fences.
             void End();
             void ExecuteWork(RHI::HardwareQueueClass hardwareQueueClass, const DX_ExecuteWorkRequest& request);
             // Fences across all queues that are compiled by the frame graph compilation phase

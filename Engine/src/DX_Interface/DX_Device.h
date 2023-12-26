@@ -57,7 +57,7 @@ namespace CGE
 			std::mutex deviceRemovedMtx;
 			bool onDeviceRemoved = false;
 
-			DX_DescriptorContext m_descriptorContext;
+			std::shared_ptr<DX_DescriptorContext> m_descriptorContext;
 			DX_CommandListAllocator m_commandListAllocator;
 			DX_CommandQueueContext m_commandQueueContext;
 		};

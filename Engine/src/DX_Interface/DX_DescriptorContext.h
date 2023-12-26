@@ -25,6 +25,8 @@ namespace CGE
 			// [todo] change to take in image view
 			void CreateRenderTargetView(ID3D12Resource* backBuffer, DX_DescriptorHandle& rtv);
 
+			D3D12_CPU_DESCRIPTOR_HANDLE GetCpuPlatformHandle(DX_DescriptorHandle handle) const;
+
 		private:
 			std::optional<D3D12_DESCRIPTOR_HEAP_TYPE> StringToDescriptorHeapType(std::string heapType);
 			bool IsShaderVisibleCbvSrvUavHeap(uint32_t type, uint32_t flag) const;
@@ -32,7 +34,6 @@ namespace CGE
 			const DX_DescriptorPool& GetPool(uint32_t type, uint32_t flag) const;
 			// Allocates a single descriptor handle
 			DX_DescriptorHandle AllocateHandle(D3D12_DESCRIPTOR_HEAP_TYPE type, D3D12_DESCRIPTOR_HEAP_FLAGS flags, uint32_t count);
-			D3D12_CPU_DESCRIPTOR_HANDLE GetCpuPlatformHandle(DX_DescriptorHandle handle) const;
 
 		private:
 			static const uint32_t NumHeapFlags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE + 1;
@@ -44,7 +45,7 @@ namespace CGE
 						{ std::string("DESCRIPTOR_HEAP_TYPE_SAMPLER"), { 2048, 2048 } },
 						{ std::string("DESCRIPTOR_HEAP_TYPE_RTV"), { 2048, 0 } },
 						{ std::string("DESCRIPTOR_HEAP_TYPE_DSV"), { 2048, 0 } }
-				});;
+				});
 
 			// Descriptors that persist for the lifetime of the resource view they reference
 			DX_DescriptorPool m_staticPool;

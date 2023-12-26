@@ -1,6 +1,12 @@
+
+// DX12
 #include "DX_CommandQueue.h"
 #include "DX_Device.h"
 #include "DX_Conversions.h"
+#include "DX_CommandList.h"
+
+// RHI
+#include "../RHI/SwapChain.h"
 
 namespace CGE
 {
@@ -89,6 +95,29 @@ namespace CGE
         {
             auto& dxDevice = static_cast<DX_Device&>(GetDevice());
             const DX_ExecuteWorkRequest& request = static_cast<const DX_ExecuteWorkRequest&>(rhiRequest);
+
+            QueueCommand([=](void* commandQueue)
+                {
+                    ID3D12CommandQueue* dxCommandQueue = static_cast<ID3D12CommandQueue*>(commandQueue);
+                    static const uint32_t CommandListCountMax = 128;
+
+                    if (request.m_commandLists.size())
+                    {
+                        uint32_t executeCount = 0;
+                        ID3D12CommandList* executeLists[CommandListCountMax];
+                        for (uint32_t commandListIdx = 0; commandListIdx < (uint32_t)request.m_commandLists.size(); commandListIdx++)
+                        {
+                            DX_CommandList& commandList = *request.m_commandLists[commandListIdx];
+                            executeLists[executeCount++] = commandList.GetCommandList();
+                        }
+                        assert(executeCount <= CommandListCountMax);
+                        dxCommandQueue->ExecuteCommandLists(executeCount, executeLists);
+                    }
+                    for (RHI::SwapChain* swapChain : request.m_swapChainsToPresent)
+                    {
+                        swapChain->Present();
+                    }
+                });
         }
 
         void DX_CommandQueue::WaitForIdle()
@@ -116,6 +145,11 @@ namespace CGE
         }
 
         ID3D12CommandQueue* DX_CommandQueue::GetPlatformQueue() const
+        {
+            return m_queue.get();
+        }
+
+        void* DX_CommandQueue::GetNativeQueue()
         {
             return m_queue.get();
         }

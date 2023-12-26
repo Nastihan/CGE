@@ -14,6 +14,7 @@ namespace CGE
 {
 	namespace DX12
 	{
+		class DX_DescriptorContext;
 		class DX_CommandList;
 		class DX_Device;
 
@@ -28,7 +29,7 @@ namespace CGE
 			};
 
 			void Init(const Descriptor& descriptor);
-			RHI::Ptr<ID3D12CommandAllocator> CreateObjct();
+			RHI::Ptr<ID3D12CommandAllocator> CreateObject();
 			void ResetObject(ID3D12CommandAllocator& allocator);
 
 		private:
@@ -51,6 +52,7 @@ namespace CGE
 			{
 				DX_Device* m_dxDevice;
 				RHI::HardwareQueueClass m_hardwareQueueClass = RHI::HardwareQueueClass::Graphics;
+				std::shared_ptr<DX_DescriptorContext> m_descriptorContext;
 			};
 
 			void Init(const Descriptor& descriptor);
