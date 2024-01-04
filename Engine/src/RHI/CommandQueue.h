@@ -3,6 +3,7 @@
 // RHI
 #include "Limits.h"
 #include "DeviceObject.h"
+#include "AttachmentEnums.h"
 
 // std
 #include <vector>
@@ -13,13 +14,6 @@ namespace CGE
 {
 	namespace RHI
 	{
-		enum class HardwareQueueClass : uint32_t
-		{
-			Graphics = 0,
-			Compute,
-			Copy,
-			Count
-		};
 		const uint32_t HardwareQueueClassCount = static_cast<uint32_t>(HardwareQueueClass::Count);
 
 		class SwapChain;

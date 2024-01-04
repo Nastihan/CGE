@@ -1,5 +1,6 @@
 // DX12
 #include "DX_Conversions.h"
+#include "DX_CommonHeaders.h"
 
 namespace CGE
 {
@@ -226,6 +227,62 @@ namespace CGE
             default:
                 return DXGI_SCALING_STRETCH;
             }
+        }
+
+        D3D12_HEAP_TYPE ConvertHeapType(RHI::HeapMemoryLevel heapMemoryLevel, RHI::HostMemoryAccess hostMemoryAccess)
+        {
+            switch (heapMemoryLevel)
+            {
+            case RHI::HeapMemoryLevel::Host:
+                switch (hostMemoryAccess)
+                {
+                case RHI::HostMemoryAccess::Write:
+                    return D3D12_HEAP_TYPE_UPLOAD;
+                case RHI::HostMemoryAccess::Read:
+                    return D3D12_HEAP_TYPE_READBACK;
+                };
+            case RHI::HeapMemoryLevel::Device:
+                return D3D12_HEAP_TYPE_DEFAULT;
+            }
+            assert(false);
+            return D3D12_HEAP_TYPE_CUSTOM;
+        }
+
+        D3D12_RESOURCE_STATES ConvertInitialResourceState(RHI::HeapMemoryLevel heapMemoryLevel, RHI::HostMemoryAccess hostMemoryAccess)
+        {
+            if (heapMemoryLevel == RHI::HeapMemoryLevel::Host)
+            {
+                return hostMemoryAccess == RHI::HostMemoryAccess::Write ? D3D12_RESOURCE_STATE_GENERIC_READ : D3D12_RESOURCE_STATE_COPY_DEST;
+            }
+            return D3D12_RESOURCE_STATE_COMMON;
+        }
+
+        void ConvertBufferDescriptor(const RHI::BufferDescriptor& descriptor, D3D12_RESOURCE_DESC& resourceDesc)
+        {
+            resourceDesc.Dimension = D3D12_RESOURCE_DIMENSION_BUFFER;
+            resourceDesc.Alignment = 0;
+            resourceDesc.Width = RHI::AlignUp(descriptor.m_byteCount, DX_Alignment::CommittedBuffer);
+            resourceDesc.Height = 1;
+            resourceDesc.DepthOrArraySize = 1;
+            resourceDesc.MipLevels = 1;
+            resourceDesc.Format = DXGI_FORMAT_UNKNOWN;
+            resourceDesc.SampleDesc = DXGI_SAMPLE_DESC{ 1, 0 };
+            resourceDesc.Layout = D3D12_TEXTURE_LAYOUT_ROW_MAJOR;
+            resourceDesc.Flags = ConvertBufferBindFlags(descriptor.m_bindFlags);
+        }
+
+        D3D12_RESOURCE_FLAGS ConvertBufferBindFlags(RHI::BufferBindFlags bufferFlags)
+        {
+            D3D12_RESOURCE_FLAGS resourceFlags = D3D12_RESOURCE_FLAG_DENY_SHADER_RESOURCE;
+            if (RHI::CheckBitsAll(static_cast<uint32_t>(bufferFlags), static_cast<uint32_t>(RHI::BufferBindFlags::ShaderWrite)))
+            {
+                resourceFlags = RHI::SetBits(resourceFlags, D3D12_RESOURCE_FLAG_ALLOW_UNORDERED_ACCESS);
+            }
+            if (RHI::CheckBitsAny(static_cast<uint32_t>(bufferFlags), static_cast<uint32_t>(RHI::BufferBindFlags::ShaderRead)))
+            {
+                resourceFlags = RHI::ResetBits(resourceFlags, D3D12_RESOURCE_FLAG_DENY_SHADER_RESOURCE);
+            }
+            return resourceFlags;
         }
     }
 }

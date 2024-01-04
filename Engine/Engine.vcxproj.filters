@@ -31,6 +31,9 @@
     <Filter Include="Source Files\RHI">
       <UniqueIdentifier>{0d2db4c0-b51b-4f39-a281-08799b1ecc4c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Shaders">
+      <UniqueIdentifier>{949d0208-04a6-4fae-a068-0abecb249cbe}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Main.cpp">
@@ -142,6 +145,18 @@
       <Filter>Source Files\RHI</Filter>
     </ClCompile>
     <ClCompile Include="src\RHI\ClearValue.cpp">
+      <Filter>Source Files\RHI</Filter>
+    </ClCompile>
+    <ClCompile Include="src\DX_Interface\DX_MemoryView.cpp">
+      <Filter>Source Files\DX</Filter>
+    </ClCompile>
+    <ClCompile Include="src\DX_Interface\DX_BufferMemoryView.cpp">
+      <Filter>Source Files\DX</Filter>
+    </ClCompile>
+    <ClCompile Include="src\DX_Interface\DX_MemoryPageAllocator.cpp">
+      <Filter>Source Files\DX</Filter>
+    </ClCompile>
+    <ClCompile Include="src\RHI\MemoryUsage.cpp">
       <Filter>Source Files\RHI</Filter>
     </ClCompile>
   </ItemGroup>
@@ -300,6 +315,30 @@
       <Filter>Header Files\RHI</Filter>
     </ClInclude>
     <ClInclude Include="src\RHI\ClearValue.h">
+      <Filter>Header Files\RHI</Filter>
+    </ClInclude>
+    <ClInclude Include="src\DX_Interface\DX_MemoryView.h">
+      <Filter>Header Files\DX</Filter>
+    </ClInclude>
+    <ClInclude Include="src\RHI\MemoryAllocation.h">
+      <Filter>Header Files\RHI</Filter>
+    </ClInclude>
+    <ClInclude Include="src\RHI\MemoryEnums.h">
+      <Filter>Header Files\RHI</Filter>
+    </ClInclude>
+    <ClInclude Include="src\RHI\BufferDescriptor.h">
+      <Filter>Header Files\RHI</Filter>
+    </ClInclude>
+    <ClInclude Include="src\RHI\AttachmentEnums.h">
+      <Filter>Header Files\RHI</Filter>
+    </ClInclude>
+    <ClInclude Include="src\DX_Interface\DX_BufferMemoryView.h">
+      <Filter>Header Files\DX</Filter>
+    </ClInclude>
+    <ClInclude Include="src\DX_Interface\DX_MemoryPageAllocator.h">
+      <Filter>Header Files\DX</Filter>
+    </ClInclude>
+    <ClInclude Include="src\RHI\MemoryUsage.h">
       <Filter>Header Files\RHI</Filter>
     </ClInclude>
   </ItemGroup>

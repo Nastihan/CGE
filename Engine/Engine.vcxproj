@@ -21,6 +21,7 @@
   <ItemGroup>
     <ClCompile Include="src\App.cpp" />
     <ClCompile Include="src\CGE_Exception.cpp" />
+    <ClCompile Include="src\DX_Interface\DX_BufferMemoryView.cpp" />
     <ClCompile Include="src\DX_Interface\DX_CommandList.cpp" />
     <ClCompile Include="src\DX_Interface\DX_CommandListBase.cpp" />
     <ClCompile Include="src\DX_Interface\DX_CommandListPool.cpp" />
@@ -37,6 +38,8 @@
     <ClCompile Include="src\DX_Interface\DX_Fence.cpp" />
     <ClCompile Include="src\DX_Interface\DX_FrameGraphExecuter.cpp" />
     <ClCompile Include="src\DX_Interface\DX_Graphics.cpp" />
+    <ClCompile Include="src\DX_Interface\DX_MemoryPageAllocator.cpp" />
+    <ClCompile Include="src\DX_Interface\DX_MemoryView.cpp" />
     <ClCompile Include="src\DX_Interface\DX_PhysicalDevice.cpp" />
     <ClCompile Include="src\DX_Interface\DX_SwapChain.cpp" />
     <ClCompile Include="src\RHI\Allocator.cpp" />
@@ -50,6 +53,7 @@
     <ClCompile Include="src\RHI\Graphics.cpp" />
     <ClCompile Include="src\Main.cpp" />
     <ClCompile Include="src\RHI\Device.cpp" />
+    <ClCompile Include="src\RHI\MemoryUsage.cpp" />
     <ClCompile Include="src\RHI\Object.cpp" />
     <ClCompile Include="src\RHI\PhysicalDevice.cpp" />
     <ClCompile Include="src\RHI\PoolAllocator.cpp" />
@@ -63,6 +67,7 @@
     <ClInclude Include="src\CGE_Exception.h" />
     <ClInclude Include="src\CommonMacros.h" />
     <ClInclude Include="src\ConsoleLog.h" />
+    <ClInclude Include="src\DX_Interface\DX_BufferMemoryView.h" />
     <ClInclude Include="src\DX_Interface\DX_CommandListPool.h" />
     <ClInclude Include="src\DX_Interface\DX_CommandList.h" />
     <ClInclude Include="src\DX_Interface\DX_CommandListBase.h" />
@@ -80,9 +85,13 @@
     <ClInclude Include="src\DX_Interface\DX_FrameGraphExecuter.h" />
     <ClInclude Include="src\DX_Interface\DX_Graphics.h" />
     <ClInclude Include="src\DX_Interface\DX_Helper.h" />
+    <ClInclude Include="src\DX_Interface\DX_MemoryPageAllocator.h" />
+    <ClInclude Include="src\DX_Interface\DX_MemoryView.h" />
     <ClInclude Include="src\DX_Interface\DX_PhysicalDevice.h" />
     <ClInclude Include="src\DX_Interface\DX_SwapChain.h" />
     <ClInclude Include="src\RHI\Allocator.h" />
+    <ClInclude Include="src\RHI\AttachmentEnums.h" />
+    <ClInclude Include="src\RHI\BufferDescriptor.h" />
     <ClInclude Include="src\RHI\ClearValue.h" />
     <ClInclude Include="src\RHI\CommandList.h" />
     <ClInclude Include="src\RHI\CommandQueue.h" />
@@ -99,6 +108,9 @@
     <ClInclude Include="src\RHI\Handle.h" />
     <ClInclude Include="src\RHI\intrusive_ptr.h" />
     <ClInclude Include="src\RHI\Limits.h" />
+    <ClInclude Include="src\RHI\MemoryAllocation.h" />
+    <ClInclude Include="src\RHI\MemoryEnums.h" />
+    <ClInclude Include="src\RHI\MemoryUsage.h" />
     <ClInclude Include="src\RHI\Object.h" />
     <ClInclude Include="src\RHI\ObjectCollector.h" />
     <ClInclude Include="src\RHI\ObjectPool.h" />

@@ -71,6 +71,8 @@ DX12_REFCOUNTED(ID3D12GraphicsCommandList);
 DX12_REFCOUNTED(ID3D12GraphicsCommandList1);
 DX12_REFCOUNTED(ID3D12Fence);
 
+DX12_REFCOUNTED(ID3D12Resource);
+
 
 #ifndef LOCAL_HR
 #define LOCAL_HR HRESULT hr;
@@ -85,6 +87,23 @@ namespace CGE
     namespace DX12
     {
         bool DXAssertSuccess(HRESULT hr);
+    }
+}
+
+namespace CGE
+{
+    namespace DX12
+    {
+        namespace DX_Alignment
+        {
+            enum
+            {
+                Buffer = 16,
+                Constant = 256,
+                Image = 512,
+                CommittedBuffer = D3D12_DEFAULT_RESOURCE_PLACEMENT_ALIGNMENT
+            };
+        }
     }
 }
 
@@ -124,3 +143,4 @@ constexpr void Release(T*& resource)
 #define NAME_D3D12_OBJECT(obj, name)
 #define NAME_D3D12_OBJECT_INDEXED(obj, n, name)
 #endif // _DEBUG
+

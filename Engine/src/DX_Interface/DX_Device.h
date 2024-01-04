@@ -16,8 +16,15 @@
 
 namespace CGE
 {
+	namespace RHI
+	{
+		struct BufferDescriptor;
+	}
+
 	namespace DX12
 	{
+		class DX_MemoryView;
+
 		// [todo] might change from being a singleton
 		class DX_Device final : public RHI::Device
 		{
@@ -34,6 +41,8 @@ namespace CGE
 			DX_DescriptorContext& GetDescriptorContext();
 			// The CommandList and allocator will get collected every frame in DX_Device::EndFrameInternal (deferred release)
 			DX_CommandList* AcquireCommandList(RHI::HardwareQueueClass hardwareQueueClass);
+
+			DX_MemoryView CreateBufferCommitted(const RHI::BufferDescriptor& bufferDescriptor, D3D12_RESOURCE_STATES initialState, D3D12_HEAP_TYPE heapType);
 		private:
 			DX_Device() = default;
 			REMOVE_COPY_AND_MOVE(DX_Device);

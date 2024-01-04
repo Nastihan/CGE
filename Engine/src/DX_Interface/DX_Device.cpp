@@ -3,12 +3,16 @@
 #include "DX_Device.h"
 #include "DX_PhysicalDevice.h"
 #include "DX_CommandList.h"
+#include "DX_MemoryView.h"
+#include "DX_Conversions.h"
 
 // RHI
 #include "../RHI/SwapChain.h"
 
 // std
 #include <iostream>
+
+#include "D3dx12.h"
 
 using namespace Microsoft::WRL;
 
@@ -179,6 +183,22 @@ namespace CGE
 		void DX_Device::WaitForIdleInternal()
 		{
 			m_commandQueueContext.WaitForIdle();
+		}
+
+		DX_MemoryView DX_Device::CreateBufferCommitted(const RHI::BufferDescriptor& bufferDescriptor, D3D12_RESOURCE_STATES initialState, D3D12_HEAP_TYPE heapType)
+		{
+			D3D12_RESOURCE_DESC resourceDesc = {};
+			ConvertBufferDescriptor(bufferDescriptor, resourceDesc);
+			CD3DX12_HEAP_PROPERTIES heapProperties(heapType);
+
+			wrl::ComPtr<ID3D12Resource> resource;
+			DXAssertSuccess(m_device->CreateCommittedResource(&heapProperties, D3D12_HEAP_FLAG_NONE, &resourceDesc, initialState, nullptr, IID_PPV_ARGS(resource.GetAddressOf())));
+
+			D3D12_RESOURCE_ALLOCATION_INFO allocationInfo;
+			allocationInfo.Alignment = D3D12_DEFAULT_RESOURCE_PLACEMENT_ALIGNMENT;
+			allocationInfo.SizeInBytes = RHI::AlignUp(resourceDesc.Width, D3D12_DEFAULT_RESOURCE_PLACEMENT_ALIGNMENT);
+
+			return DX_MemoryView(resource.Get(), 0, allocationInfo.SizeInBytes, allocationInfo.Alignment, DX_MemoryViewType::Buffer);
 		}
 	}
 }
