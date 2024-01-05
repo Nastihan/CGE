@@ -21,6 +21,7 @@
   <ItemGroup>
     <ClCompile Include="src\App.cpp" />
     <ClCompile Include="src\CGE_Exception.cpp" />
+    <ClCompile Include="src\DX_Interface\DX_BufferMemoryAllocator.cpp" />
     <ClCompile Include="src\DX_Interface\DX_BufferMemoryView.cpp" />
     <ClCompile Include="src\DX_Interface\DX_CommandList.cpp" />
     <ClCompile Include="src\DX_Interface\DX_CommandListBase.cpp" />
@@ -67,6 +68,7 @@
     <ClInclude Include="src\CGE_Exception.h" />
     <ClInclude Include="src\CommonMacros.h" />
     <ClInclude Include="src\ConsoleLog.h" />
+    <ClInclude Include="src\DX_Interface\DX_BufferMemoryAllocator.h" />
     <ClInclude Include="src\DX_Interface\DX_BufferMemoryView.h" />
     <ClInclude Include="src\DX_Interface\DX_CommandListPool.h" />
     <ClInclude Include="src\DX_Interface\DX_CommandList.h" />
@@ -110,6 +112,7 @@
     <ClInclude Include="src\RHI\Limits.h" />
     <ClInclude Include="src\RHI\MemoryAllocation.h" />
     <ClInclude Include="src\RHI\MemoryEnums.h" />
+    <ClInclude Include="src\RHI\MemorySubAllocator.h" />
     <ClInclude Include="src\RHI\MemoryUsage.h" />
     <ClInclude Include="src\RHI\Object.h" />
     <ClInclude Include="src\RHI\ObjectCollector.h" />

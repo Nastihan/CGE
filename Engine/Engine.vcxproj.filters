@@ -159,6 +159,9 @@
     <ClCompile Include="src\RHI\MemoryUsage.cpp">
       <Filter>Source Files\RHI</Filter>
     </ClCompile>
+    <ClCompile Include="src\DX_Interface\DX_BufferMemoryAllocator.cpp">
+      <Filter>Source Files\DX</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\DX_Interface\DX_Device.h">
@@ -340,6 +343,12 @@
     </ClInclude>
     <ClInclude Include="src\RHI\MemoryUsage.h">
       <Filter>Header Files\RHI</Filter>
+    </ClInclude>
+    <ClInclude Include="src\RHI\MemorySubAllocator.h">
+      <Filter>Header Files\RHI</Filter>
+    </ClInclude>
+    <ClInclude Include="src\DX_Interface\DX_BufferMemoryAllocator.h">
+      <Filter>Header Files\DX</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
