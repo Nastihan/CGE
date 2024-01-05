@@ -88,6 +88,7 @@
     <ClInclude Include="src\DX_Interface\DX_Graphics.h" />
     <ClInclude Include="src\DX_Interface\DX_Helper.h" />
     <ClInclude Include="src\DX_Interface\DX_MemoryPageAllocator.h" />
+    <ClInclude Include="src\DX_Interface\DX_MemorySubAllocator.h" />
     <ClInclude Include="src\DX_Interface\DX_MemoryView.h" />
     <ClInclude Include="src\DX_Interface\DX_PhysicalDevice.h" />
     <ClInclude Include="src\DX_Interface\DX_SwapChain.h" />
