@@ -353,5 +353,8 @@
     <ClInclude Include="src\DX_Interface\DX_MemorySubAllocator.h">
       <Filter>Header Files\DX</Filter>
     </ClInclude>
+    <ClInclude Include="src\DX_Interface\DX_ReleaseQueue.h">
+      <Filter>Header Files\DX</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

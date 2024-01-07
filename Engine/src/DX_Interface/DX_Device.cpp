@@ -51,7 +51,7 @@ namespace CGE
 
 		void DX_Device::ShutdownInternal()
 		{
-
+			m_releaseQueue.Shutdown();
 		}
 
 		void DX_Device::EnableD3DDebugLayer()
@@ -148,10 +148,17 @@ namespace CGE
 		{
 			m_commandQueueContext.End();
 			m_commandListAllocator.Collect();
+			m_releaseQueue.Collect();
 		}
 
 		RHI::ResultCode DX_Device::InitializeLimits()
 		{
+			{
+				DX_ReleaseQueue::Descriptor releaseQueueDescriptor;
+				releaseQueueDescriptor.m_collectLatency = RHI::Limits::Device::FrameCountMax - 1;
+				m_releaseQueue.Init(releaseQueueDescriptor);
+			}
+
 			DX_CommandListAllocator::Descriptor commandListAllocatorDescriptor;
 			commandListAllocatorDescriptor.m_dxDevice = this;
 			commandListAllocatorDescriptor.m_frameCountMax = RHI::Limits::Device::FrameCountMax;
@@ -183,6 +190,7 @@ namespace CGE
 		void DX_Device::WaitForIdleInternal()
 		{
 			m_commandQueueContext.WaitForIdle();
+			m_releaseQueue.Collect(true);
 		}
 
 		DX_MemoryView DX_Device::CreateBufferCommitted(const RHI::BufferDescriptor& bufferDescriptor, D3D12_RESOURCE_STATES initialState, D3D12_HEAP_TYPE heapType)
@@ -199,6 +207,16 @@ namespace CGE
 			allocationInfo.SizeInBytes = RHI::AlignUp(resourceDesc.Width, D3D12_DEFAULT_RESOURCE_PLACEMENT_ALIGNMENT);
 
 			return DX_MemoryView(resource.Get(), 0, allocationInfo.SizeInBytes, allocationInfo.Alignment, DX_MemoryViewType::Buffer);
+		}
+
+		void DX_Device::QueueForRelease(RHI::Ptr<ID3D12Object> dxObject)
+		{
+			m_releaseQueue.QueueForCollect(std::move(dxObject));
+		}
+
+		void DX_Device::QueueForRelease(const DX_MemoryView memoryView)
+		{
+			m_releaseQueue.QueueForCollect(memoryView.GetMemory());
 		}
 	}
 }

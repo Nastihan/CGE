@@ -5,6 +5,7 @@
 #include "DX_CommandListPool.h"
 #include "DX_CommandQueueContext.h"
 #include "DX_DescriptorContext.h"
+#include "DX_ReleaseQueue.h"
 
 // RHI
 #include "../RHI/RHI_Common.h"
@@ -43,6 +44,9 @@ namespace CGE
 			DX_CommandList* AcquireCommandList(RHI::HardwareQueueClass hardwareQueueClass);
 
 			DX_MemoryView CreateBufferCommitted(const RHI::BufferDescriptor& bufferDescriptor, D3D12_RESOURCE_STATES initialState, D3D12_HEAP_TYPE heapType);
+
+			void QueueForRelease(RHI::Ptr<ID3D12Object> dxObject);
+			void QueueForRelease(const DX_MemoryView memoryView);
 		private:
 			DX_Device() = default;
 			REMOVE_COPY_AND_MOVE(DX_Device);
@@ -70,6 +74,8 @@ namespace CGE
 			std::shared_ptr<DX_DescriptorContext> m_descriptorContext;
 			DX_CommandListAllocator m_commandListAllocator;
 			DX_CommandQueueContext m_commandQueueContext;
+
+			DX_ReleaseQueue m_releaseQueue;
 		};
 	}
 }

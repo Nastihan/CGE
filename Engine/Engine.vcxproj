@@ -91,6 +91,7 @@
     <ClInclude Include="src\DX_Interface\DX_MemorySubAllocator.h" />
     <ClInclude Include="src\DX_Interface\DX_MemoryView.h" />
     <ClInclude Include="src\DX_Interface\DX_PhysicalDevice.h" />
+    <ClInclude Include="src\DX_Interface\DX_ReleaseQueue.h" />
     <ClInclude Include="src\DX_Interface\DX_SwapChain.h" />
     <ClInclude Include="src\RHI\Allocator.h" />
     <ClInclude Include="src\RHI\AttachmentEnums.h" />

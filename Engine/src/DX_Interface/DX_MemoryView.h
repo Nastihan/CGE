@@ -24,6 +24,8 @@ namespace CGE
 
 		class DX_MemoryView
 		{
+			friend class DX_BufferMemoryAllocator;
+
 		public:
 			DX_MemoryView() = default;
 			DX_MemoryView(RHI::Ptr<DX_Memory> memory, size_t offset, size_t size, size_t alignment, DX_MemoryViewType viewType);
