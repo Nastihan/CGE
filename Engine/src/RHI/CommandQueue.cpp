@@ -16,7 +16,7 @@ namespace CGE
 		}
 		void CommandQueue::Shutdown()
 		{
-			if (IsInitilized())
+			if (IsInitialized())
 			{
 				ShutdownInternal();
 				DeviceObject::Shutdown();

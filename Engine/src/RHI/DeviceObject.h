@@ -9,7 +9,7 @@ namespace CGE
 		{
 		public:
 			virtual ~DeviceObject() = default;
-			bool IsInitilized() const;
+			bool IsInitialized() const;
 			Device& GetDevice() const;
 		protected:
 			DeviceObject() = default;

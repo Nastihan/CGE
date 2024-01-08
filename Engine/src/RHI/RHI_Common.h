@@ -9,6 +9,9 @@ namespace CGE
         template<typename T>
         using Ptr = intrusive_ptr<T>;
 
+        template <typename T>
+        using ConstPtr = intrusive_ptr<const T>;
+
         typedef signed   __int8  int8_t;
         typedef unsigned __int8  uint8_t;
         typedef signed   __int16 int16_t;
@@ -18,6 +21,7 @@ namespace CGE
         typedef signed   __int64 int64_t;
         typedef unsigned __int64 uint64_t;
 
+        using u32 = uint32_t;
         using u64 = unsigned long long;
 
         enum class ResultCode : uint32_t

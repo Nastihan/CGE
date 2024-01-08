@@ -58,7 +58,10 @@
     <ClCompile Include="src\RHI\Object.cpp" />
     <ClCompile Include="src\RHI\PhysicalDevice.cpp" />
     <ClCompile Include="src\RHI\PoolAllocator.cpp" />
+    <ClCompile Include="src\RHI\Resource.cpp" />
+    <ClCompile Include="src\RHI\ResourceView.cpp" />
     <ClCompile Include="src\RHI\SwapChain.cpp" />
+    <ClCompile Include="src\RHI\TypeHash.cpp" />
     <ClCompile Include="src\VK_Interface\VK_Device.cpp" />
     <ClCompile Include="src\Window.cpp" />
   </ItemGroup>
@@ -122,9 +125,12 @@
     <ClInclude Include="src\RHI\PhysicalDevice.h" />
     <ClInclude Include="src\RHI\PhysicalDeviceDescriptor.h" />
     <ClInclude Include="src\RHI\PoolAllocator.h" />
+    <ClInclude Include="src\RHI\Resource.h" />
+    <ClInclude Include="src\RHI\ResourceView.h" />
     <ClInclude Include="src\RHI\RHI_Common.h" />
     <ClInclude Include="src\RHI\SwapChain.h" />
     <ClInclude Include="src\RHI\SwapChainDescriptor.h" />
+    <ClInclude Include="src\RHI\TypeHash.h" />
     <ClInclude Include="src\VK_Interface\VK_Device.h" />
     <ClInclude Include="src\Window.h" />
   </ItemGroup>
@@ -228,10 +234,10 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions);COMPILE_CITY_CC</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpplatest</LanguageStandard>
-      <AdditionalIncludeDirectories>$(ProjectDir)Dependencies\GLFW\include;$(ProjectDir)Dependencies\d3dx12;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)Dependencies\GLFW\include;$(ProjectDir)Dependencies\d3dx12;$(ProjectDir)Dependencies\CityHash;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
       <FloatingPointModel>Fast</FloatingPointModel>
@@ -249,10 +255,10 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions);COMPILE_CITY_CC</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpplatest</LanguageStandard>
-      <AdditionalIncludeDirectories>$(ProjectDir)Dependencies\GLFW\include;$(ProjectDir)Dependencies\d3dx12;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)Dependencies\GLFW\include;$(ProjectDir)Dependencies\d3dx12;$(ProjectDir)Dependencies\CityHash;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
       <FloatingPointModel>Fast</FloatingPointModel>

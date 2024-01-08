@@ -162,6 +162,15 @@
     <ClCompile Include="src\DX_Interface\DX_BufferMemoryAllocator.cpp">
       <Filter>Source Files\DX</Filter>
     </ClCompile>
+    <ClCompile Include="src\RHI\Resource.cpp">
+      <Filter>Source Files\RHI</Filter>
+    </ClCompile>
+    <ClCompile Include="src\RHI\TypeHash.cpp">
+      <Filter>Source Files\RHI</Filter>
+    </ClCompile>
+    <ClCompile Include="src\RHI\ResourceView.cpp">
+      <Filter>Source Files\RHI</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\DX_Interface\DX_Device.h">
@@ -355,6 +364,15 @@
     </ClInclude>
     <ClInclude Include="src\DX_Interface\DX_ReleaseQueue.h">
       <Filter>Header Files\DX</Filter>
+    </ClInclude>
+    <ClInclude Include="src\RHI\Resource.h">
+      <Filter>Header Files\RHI</Filter>
+    </ClInclude>
+    <ClInclude Include="src\RHI\TypeHash.h">
+      <Filter>Header Files\RHI</Filter>
+    </ClInclude>
+    <ClInclude Include="src\RHI\ResourceView.h">
+      <Filter>Header Files\RHI</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

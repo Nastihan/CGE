@@ -5,7 +5,7 @@ namespace CGE
 	namespace RHI
 	{
 
-		bool DeviceObject::IsInitilized() const
+		bool DeviceObject::IsInitialized() const
 		{
 			return m_device != nullptr;
 		}

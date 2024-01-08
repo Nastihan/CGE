@@ -11,7 +11,7 @@ namespace CGE
 
 		bool DX_CommandList::IsInitilized() const
 		{
-			return DX_CommandListBase::IsInitilized();
+			return DX_CommandListBase::IsInitialized();
 		}
 
 		void DX_CommandList::Init(DX_Device& device, RHI::HardwareQueueClass hardwareQueueClass, ID3D12CommandAllocator* commandAllocator, const std::shared_ptr<DX_DescriptorContext>& descriptorContext)
