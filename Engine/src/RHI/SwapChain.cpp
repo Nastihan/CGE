@@ -8,6 +8,11 @@ namespace CGE
 		SwapChain::SwapChain() {}
 		SwapChain::~SwapChain() {}
 
+        ResultCode SwapChain::InitImages()
+        {
+            return InitImagesInternal();
+        }
+
 		bool SwapChain::ValidateDescriptor(const SwapChainDescriptor& descriptor) const
 		{
 			const bool isValidDescriptor = descriptor.m_dimensions.m_imageWidth != 0 && descriptor.m_dimensions.m_imageHeight != 0 && descriptor.m_dimensions.m_imageCount != 0;
@@ -33,7 +38,11 @@ namespace CGE
                 m_descriptor = descriptor;
                 // Overwrite descriptor dimensions with the native ones (the ones assigned by the platform) returned by InitInternal.
                 m_descriptor.m_dimensions = nativeDimensions;
+                
+                resultCode = InitImages();
             }
+
+            device.SetSwapChain(this);
 
             return resultCode;
         }
@@ -57,9 +66,20 @@ namespace CGE
             if (resultCode == ResultCode::Success)
             {
                 m_descriptor.m_dimensions = nativeDimensions;
+                resultCode = InitImages();
             }
 
             return resultCode;
+        }
+
+        const RHI::SwapChainDescriptor& SwapChain::GetDescriptor() const
+        {
+            return m_descriptor;
+        }
+
+        uint32_t SwapChain::GetCurrentImageIndex() const
+        {
+            return m_currentImageIndex;
         }
 	}
 }

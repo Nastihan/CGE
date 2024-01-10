@@ -2,7 +2,6 @@
 #include "RHI/Graphics.h"
 #include "Window.h"
 
-// some comment
 namespace CGE
 {
 	class App
@@ -11,6 +10,9 @@ namespace CGE
 		App();
 		~App();
 		void Run();
+	private:
+		void Update();
+		void SetGLFWUserPointer();
 	private:
 		Window window;
 		RHI::Graphics gfx;

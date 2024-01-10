@@ -12,9 +12,11 @@ namespace CGE
 		class Graphics
 		{
 		public:
-			Graphics(std::string bakcendAPI, const Window& window);
+			Graphics(std::string bakcendAPI, Window& window);
 			~Graphics() = default;
 			REMOVE_COPY_AND_MOVE(Graphics);
+
+			ResultCode RecreateSwapChain();
 		public:
 			void Init();
 			void Render();
@@ -26,8 +28,9 @@ namespace CGE
 			RHI::Ptr<RHI::PhysicalDevice> m_physicalDevice;
 			RHI::Ptr<RHI::Device> m_device;
 			RHI::Ptr<RHI::SwapChain> m_swapChain;
+			RHI::Ptr<RHI::FrameGraphExecuter> m_frameGraphExecuter;
 
-			const Window& m_window;
+			Window& m_window;
 		};
 	}
 }

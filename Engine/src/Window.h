@@ -6,7 +6,7 @@
 
 namespace CGE
 {
-	static void FramebufferResizeCallback(GLFWwindow* window, int width, int height);
+	// static void FramebufferResizeCallback(GLFWwindow* window, int width, int height);
 	class Window
 	{
 	public:
@@ -19,7 +19,11 @@ namespace CGE
 		bool CursorEnabled();
 		uint16_t GetWidth() const;
 		uint16_t GetHeight() const;
+		bool GetResizeFlag() const;
+		void ResetResizeFlag();
 
+		// [todo] handle full screen borderless window
+		static void FramebufferResizeCallback(GLFWwindow* window, int width, int height);
 	private:
 		bool m_cursorEnabled = true;
 		float m_lastMouseX;
@@ -30,5 +34,6 @@ namespace CGE
 		RECT m_windowRect;
 		uint16_t m_width;
 		uint16_t m_height;
+		bool m_resizeFlag = false;
 	};
 }

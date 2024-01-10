@@ -70,23 +70,66 @@ namespace CGE
 				DXAssertSuccess(parentFactory->MakeWindowAssociation(descriptor.hWnd, DXGI_MWA_NO_ALT_ENTER));
 			}
 
-			m_swapchainRTVDescriptorPool.Init(dxDevice.GetDevice(), D3D12_DESCRIPTOR_HEAP_TYPE_RTV, D3D12_DESCRIPTOR_HEAP_FLAG_NONE, SwapBufferCount, SwapBufferCount);
-
 			return RHI::ResultCode::Success;
 		}
 
 		RHI::ResultCode DX_SwapChain::ResizeInternal(const RHI::SwapChainDimensions& dimensions, RHI::SwapChainDimensions* nativeDimensions)
 		{
+			GetDevice().WaitForIdle();
+
+			for (size_t i = 0; i < RHI::Limits::Device::FrameCountMax; i++)
+			{
+				m_backBuffers[i].Reset();
+			}
+			DXGI_SWAP_CHAIN_DESC swapChainDesc = {};
+			DXAssertSuccess(m_swapChain->GetDesc(&swapChainDesc));
+			DXAssertSuccess(m_swapChain->ResizeBuffers(dimensions.m_imageCount, dimensions.m_imageWidth, dimensions.m_imageHeight, swapChainDesc.BufferDesc.Format, swapChainDesc.Flags));
+			m_currentImageIndex = m_swapChain->GetCurrentBackBufferIndex();
+
 			return RHI::ResultCode::Success;
 		}
 
 		uint32_t DX_SwapChain::PresentInternal()
 		{
-			return 1;
+			if (m_swapChain)
+			{
+				UINT presentFlags = (m_isTearingSupported) ? DXGI_PRESENT_ALLOW_TEARING : 0;
+				HRESULT hr = m_swapChain->Present(GetDescriptor().m_verticalSyncInterval, presentFlags);
+				GetDevice().DXAssertSuccess(hr);
+				return m_swapChain->GetCurrentBackBufferIndex();
+			}
+			return -1;
 		}
 
 		void DX_SwapChain::SetVerticalSyncIntervalInternal(uint32_t previousVerticalSyncInterval)
 		{
+		}
+
+		RHI::ResultCode DX_SwapChain::InitImagesInternal()
+		{
+			DX_Device& dxDevice = static_cast<DX_Device&>(GetDevice());
+
+			for (size_t i = 0; i < RHI::Limits::Device::FrameCountMax; i++)
+			{
+				wrl::ComPtr<ID3D12Resource> backBuffer;
+				DXAssertSuccess(m_swapChain->GetBuffer(i, IID_PPV_ARGS(&backBuffer)));
+
+				dxDevice.GetDescriptorContext().CreateRenderTargetView(backBuffer.Get(), m_swapChainDescriptorHandles[i]);
+
+				m_backBuffers[i] = backBuffer;
+			}
+
+			return RHI::ResultCode::Success;
+		}
+
+		ID3D12Resource* DX_SwapChain::GetBackBuffer()
+		{
+			return m_backBuffers[GetCurrentImageIndex()].Get();
+		}
+
+		DX_DescriptorHandle& DX_SwapChain::GetBackBufferDescriptorHandle()
+		{
+			return m_swapChainDescriptorHandles[GetCurrentImageIndex()];
 		}
 	}
 }

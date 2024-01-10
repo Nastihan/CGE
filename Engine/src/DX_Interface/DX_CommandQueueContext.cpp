@@ -3,6 +3,9 @@
 #include "DX_CommandQueueContext.h"
 #include "DX_Device.h"
 
+// RHI
+#include "../RHI/SwapChain.h"
+
 namespace CGE
 {
 	namespace DX12
@@ -108,13 +111,18 @@ namespace CGE
             }
 
             // Advance to the next frame and wait for its resources to be available before continuing.
-            m_currentFrameIndex = (m_currentFrameIndex + 1) % static_cast<uint32_t>(m_frameFences.size());
+            m_currentFrameIndex = m_device->GetSwapChain()->GetCurrentImageIndex();
 
             {
                 DX_FenceEvent event("FrameFence");
                 m_frameFences[m_currentFrameIndex].Wait(event);
                 m_frameFences[m_currentFrameIndex].Reset();
             }
+        }
+
+        void DX_CommandQueueContext::ExecuteWork(RHI::HardwareQueueClass hardwareQueueClass, const DX_ExecuteWorkRequest& request)
+        {
+            GetCommandQueue(hardwareQueueClass).ExecuteWork(request);
         }
 	}
 }

@@ -10,6 +10,12 @@ namespace CGE
 		while (!glfwWindowShouldClose(&window.GetWnd()))
 		{
 			glfwPollEvents();
+			if (window.GetResizeFlag())
+			{
+				gfx.RecreateSwapChain();
+			}
+			// Update();
+			gfx.Render();
 		}
 	}
 }

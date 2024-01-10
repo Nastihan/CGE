@@ -16,7 +16,7 @@ namespace CGE
 		}
 		void CommandQueue::Shutdown()
 		{
-			if (IsInitilized())
+			if (IsInitialized())
 			{
 				ShutdownInternal();
 				DeviceObject::Shutdown();
@@ -36,8 +36,7 @@ namespace CGE
 		// [todo]
 		void CommandQueue::QueueCommand(Command command)
 		{
-			std::lock_guard<std::mutex> lock(m_workQueueMutex);
-			m_workQueue.emplace(command);
+			command(GetNativeQueue());
 		}
 
 		// [todo] Implement

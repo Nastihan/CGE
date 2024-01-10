@@ -3,9 +3,16 @@
 #include "DX_Device.h"
 #include "DX_PhysicalDevice.h"
 #include "DX_CommandList.h"
+#include "DX_MemoryView.h"
+#include "DX_Conversions.h"
 
 // RHI
+#include "../RHI/SwapChain.h"
+
+// std
 #include <iostream>
+
+#include "D3dx12.h"
 
 using namespace Microsoft::WRL;
 
@@ -44,7 +51,7 @@ namespace CGE
 
 		void DX_Device::ShutdownInternal()
 		{
-
+			m_releaseQueue.Shutdown();
 		}
 
 		void DX_Device::EnableD3DDebugLayer()
@@ -139,11 +146,19 @@ namespace CGE
 
 		void DX_Device::EndFrameInternal()
 		{
-
+			m_commandQueueContext.End();
+			m_commandListAllocator.Collect();
+			m_releaseQueue.Collect();
 		}
 
 		RHI::ResultCode DX_Device::InitializeLimits()
 		{
+			{
+				DX_ReleaseQueue::Descriptor releaseQueueDescriptor;
+				releaseQueueDescriptor.m_collectLatency = RHI::Limits::Device::FrameCountMax - 1;
+				m_releaseQueue.Init(releaseQueueDescriptor);
+			}
+
 			DX_CommandListAllocator::Descriptor commandListAllocatorDescriptor;
 			commandListAllocatorDescriptor.m_dxDevice = this;
 			commandListAllocatorDescriptor.m_frameCountMax = RHI::Limits::Device::FrameCountMax;
@@ -151,12 +166,57 @@ namespace CGE
 
 			m_commandQueueContext.Init(*this);
 
+			m_descriptorContext = std::make_shared<DX_DescriptorContext>();
+			m_descriptorContext->Init(m_device.Get());
+
 			return RHI::ResultCode::Success;
 		}
 
 		DX_CommandQueueContext& DX_Device::GetCommandQueueContext()
 		{
 			return m_commandQueueContext;
+		}
+
+		DX_DescriptorContext& DX_Device::GetDescriptorContext()
+		{
+			return *m_descriptorContext;
+		}
+
+		DX_CommandList* DX_Device::AcquireCommandList(RHI::HardwareQueueClass hardwareQueueClass)
+		{
+			return m_commandListAllocator.Allocate(hardwareQueueClass);
+		}
+
+		void DX_Device::WaitForIdleInternal()
+		{
+			m_commandQueueContext.WaitForIdle();
+			m_releaseQueue.Collect(true);
+		}
+
+		DX_MemoryView DX_Device::CreateBufferCommitted(const RHI::BufferDescriptor& bufferDescriptor, D3D12_RESOURCE_STATES initialState, D3D12_HEAP_TYPE heapType)
+		{
+			D3D12_RESOURCE_DESC resourceDesc = {};
+			ConvertBufferDescriptor(bufferDescriptor, resourceDesc);
+			CD3DX12_HEAP_PROPERTIES heapProperties(heapType);
+
+			wrl::ComPtr<ID3D12Resource> resource;
+			DXAssertSuccess(m_device->CreateCommittedResource(&heapProperties, D3D12_HEAP_FLAG_NONE, &resourceDesc, initialState, nullptr, IID_PPV_ARGS(resource.GetAddressOf())));
+
+			D3D12_RESOURCE_ALLOCATION_INFO allocationInfo;
+			allocationInfo.Alignment = D3D12_DEFAULT_RESOURCE_PLACEMENT_ALIGNMENT;
+			allocationInfo.SizeInBytes = RHI::AlignUp(resourceDesc.Width, D3D12_DEFAULT_RESOURCE_PLACEMENT_ALIGNMENT);
+
+			return DX_MemoryView(resource.Get(), 0, allocationInfo.SizeInBytes, allocationInfo.Alignment, DX_MemoryViewType::Buffer);
+		}
+
+		void DX_Device::QueueForRelease(RHI::Ptr<ID3D12Object> dxObject)
+		{
+			m_releaseQueue.QueueForCollect(std::move(dxObject));
+		}
+
+		void DX_Device::QueueForRelease(const DX_MemoryView memoryView)
+		{
+			m_releaseQueue.QueueForCollect(memoryView.GetMemory());
 		}
 	}
 }

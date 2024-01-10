@@ -85,5 +85,28 @@ namespace CGE
 			assert(flag < NumHeapFlags, "Trying to get pool with invalid flag: [%d]", flag);
 			return m_pools[type][flag];
 		}
+
+		DX_DescriptorHandle DX_DescriptorContext::AllocateHandle(D3D12_DESCRIPTOR_HEAP_TYPE type, D3D12_DESCRIPTOR_HEAP_FLAGS flags, uint32_t count)
+		{
+			return GetPool(type, flags).AllocateHandle(count);
+		}
+
+		D3D12_CPU_DESCRIPTOR_HANDLE DX_DescriptorContext::GetCpuPlatformHandle(DX_DescriptorHandle handle) const
+		{
+			return GetPool(handle.m_type, handle.m_flags).GetCpuPlatformHandle(handle);
+		}
+
+		void DX_DescriptorContext::CreateRenderTargetView(ID3D12Resource* backBuffer, DX_DescriptorHandle& rtv)
+		{
+			if (rtv.IsNull())
+			{
+				rtv = AllocateHandle(D3D12_DESCRIPTOR_HEAP_TYPE_RTV, D3D12_DESCRIPTOR_HEAP_FLAG_NONE, 1);
+				assert(!rtv.IsNull());
+			}
+			
+			D3D12_CPU_DESCRIPTOR_HANDLE rtvDescriptorHandle = GetCpuPlatformHandle(rtv);
+			m_device->CreateRenderTargetView(backBuffer, nullptr, rtvDescriptorHandle);
+
+		}
 	}
 }
