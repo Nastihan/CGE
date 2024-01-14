@@ -59,6 +59,7 @@
     <ClCompile Include="src\RHI\PhysicalDevice.cpp" />
     <ClCompile Include="src\RHI\PoolAllocator.cpp" />
     <ClCompile Include="src\RHI\Resource.cpp" />
+    <ClCompile Include="src\RHI\ResourcePool.cpp" />
     <ClCompile Include="src\RHI\ResourceView.cpp" />
     <ClCompile Include="src\RHI\SwapChain.cpp" />
     <ClCompile Include="src\RHI\TypeHash.cpp" />
@@ -126,6 +127,8 @@
     <ClInclude Include="src\RHI\PhysicalDeviceDescriptor.h" />
     <ClInclude Include="src\RHI\PoolAllocator.h" />
     <ClInclude Include="src\RHI\Resource.h" />
+    <ClInclude Include="src\RHI\ResourcePool.h" />
+    <ClInclude Include="src\RHI\ResourcePoolDescriptor.h" />
     <ClInclude Include="src\RHI\ResourceView.h" />
     <ClInclude Include="src\RHI\RHI_Common.h" />
     <ClInclude Include="src\RHI\SwapChain.h" />

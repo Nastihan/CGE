@@ -15,7 +15,6 @@ namespace CGE
     {
         class ResourcePool;
         class FrameAttachment;
-        class MemoryStatisticsBuilder;
         class ResourceView;
         class ImageView;
         class BufferView;
@@ -32,9 +31,12 @@ namespace CGE
         public:
             virtual ~Resource();
 
+            bool IsAttachment() const;
             void Shutdown() override final;
             const ResourcePool* GetPool() const;
             ResourcePool* GetPool();
+            const FrameAttachment* GetFrameAttachment() const;
+            void InvalidateViews();
             bool IsInResourceCache(const ImageViewDescriptor& imageViewDescriptor);
             bool IsInResourceCache(const BufferViewDescriptor& bufferViewDescriptor);
             void EraseResourceView(ResourceView* resourceView) const;
@@ -43,13 +45,16 @@ namespace CGE
             Resource() = default;
 
             Ptr<ImageView> GetResourceView(const ImageViewDescriptor& imageViewDescriptor) const;
-            Ptr<BufferView> GetResourceView(const BufferViewDescriptor& bufferViewDescriptor) const; 
+            Ptr<BufferView> GetResourceView(const BufferViewDescriptor& bufferViewDescriptor) const;
 
         private:
             void SetPool(ResourcePool* pool);
+            void SetFrameAttachment(FrameAttachment* frameAttachment);
 
         private:
             ResourcePool* m_pool = nullptr;
+            FrameAttachment* m_frameAttachment = nullptr;
+            bool m_isInvalidationQueued = false;
 
             // Cache the resourceViews in order to avoid re-creation
             mutable std::unordered_map<size_t, ResourceView*> m_resourceViewCache;

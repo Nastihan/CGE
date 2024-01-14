@@ -2,22 +2,27 @@
 // RHI
 #include "Resource.h"
 #include "TypeHash.h"
+#include "ResourcePool.h"
 
 namespace CGE
 {
 	namespace RHI
 	{
-        /*
         Resource::~Resource()
         {
             assert(GetPool() == nullptr);
+        }
+
+        bool Resource::IsAttachment() const
+        {
+            return m_frameAttachment != nullptr;
         }
 
         void Resource::Shutdown()
         {
             if (m_pool)
             {
-                // [todo] check if not referenced by the frame.
+                assert(m_frameAttachment == nullptr);
                 m_pool->ShutdownResource(this);
             }
             DeviceObject::Shutdown();
@@ -33,6 +38,20 @@ namespace CGE
             return m_pool;
         }
 
+        const FrameAttachment* Resource::GetFrameAttachment() const
+        {
+            return m_frameAttachment;
+        }
+
+        void Resource::InvalidateViews()
+        {
+            if (!m_isInvalidationQueued)
+            {
+                m_isInvalidationQueued = true;
+            }
+        }
+
+        /*
         bool Resource::IsInResourceCache(const ImageViewDescriptor& imageViewDescriptor)
         {
             const HashValue64 hash = imageViewDescriptor.GetHash();
@@ -111,11 +130,15 @@ namespace CGE
                 return static_cast<BufferView*>(it->second);
             }
         }
-
+        */
         void Resource::SetPool(ResourcePool* pool)
         {
             m_pool = pool;
         }
-        */
+
+        void Resource::SetFrameAttachment(FrameAttachment* frameAttachment)
+        {
+            m_frameAttachment = frameAttachment;
+        }
 	}
 }
