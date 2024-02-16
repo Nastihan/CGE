@@ -3,11 +3,13 @@
 // RHI
 #include "RHI_Common.h"
 #include "AttachmentEnums.h"
+#include "TypeHash.h"
 
 namespace CGE
 {
 	namespace RHI
 	{
+		// Used for creating descriptor views (check DX_BufferView class)
 		enum class BufferBindFlags : uint32_t
 		{
 			None = 0,
@@ -23,8 +25,16 @@ namespace CGE
 			Indirect = (1u << 8u)
 		};
 
+
+		inline BufferBindFlags operator|(BufferBindFlags a, BufferBindFlags b)
+		{
+			return static_cast<BufferBindFlags>(static_cast<int>(a) | static_cast<int>(b));
+		}
+
 		struct BufferDescriptor
 		{
+			HashValue64 GetHash(HashValue64 seed = HashValue64{ 0 }) const;
+
 			u64 m_byteCount = 0;
 			u64 m_alignment = 0;
 			BufferBindFlags m_bindFlags = BufferBindFlags::None;

@@ -3,6 +3,10 @@
 #include "Resource.h"
 #include "TypeHash.h"
 #include "ResourcePool.h"
+#include "BufferViewDescriptor.h"
+#include "BufferView.h"
+#include "Buffer.h"
+#include "Graphics.h"
 
 namespace CGE
 {
@@ -13,16 +17,10 @@ namespace CGE
             assert(GetPool() == nullptr);
         }
 
-        bool Resource::IsAttachment() const
-        {
-            return m_frameAttachment != nullptr;
-        }
-
         void Resource::Shutdown()
         {
             if (m_pool)
             {
-                assert(m_frameAttachment == nullptr);
                 m_pool->ShutdownResource(this);
             }
             DeviceObject::Shutdown();
@@ -38,37 +36,8 @@ namespace CGE
             return m_pool;
         }
 
-        const FrameAttachment* Resource::GetFrameAttachment() const
-        {
-            return m_frameAttachment;
-        }
-
-        void Resource::InvalidateViews()
-        {
-            if (!m_isInvalidationQueued)
-            {
-                m_isInvalidationQueued = true;
-            }
-        }
-
-        /*
-        bool Resource::IsInResourceCache(const ImageViewDescriptor& imageViewDescriptor)
-        {
-            const HashValue64 hash = imageViewDescriptor.GetHash();
-            auto it = m_resourceViewCache.find(static_cast<uint64_t>(hash));
-            return it != m_resourceViewCache.end();
-        }
-
-        bool Resource::IsInResourceCache(const BufferViewDescriptor& bufferViewDescriptor)
-        {
-            const HashValue64 hash = bufferViewDescriptor.GetHash();
-            auto it = m_resourceViewCache.find(static_cast<uint64_t>(hash));
-            return it != m_resourceViewCache.end();
-        }
-
         void Resource::EraseResourceView(ResourceView* resourceView) const
         {
-            std::lock_guard<std::mutex> registryLock(m_cacheMutex);
             auto itr = m_resourceViewCache.begin();
             while (itr != m_resourceViewCache.end())
             {
@@ -81,6 +50,7 @@ namespace CGE
             }
         }
 
+        /*
         Ptr<ImageView> Resource::GetResourceView(const ImageViewDescriptor& imageViewDescriptor) const
         {
             const HashValue64 hash = imageViewDescriptor.GetHash();
@@ -105,15 +75,15 @@ namespace CGE
                 return static_cast<ImageView*>(it->second);
             }
         }
+        */
 
         Ptr<BufferView> Resource::GetResourceView(const BufferViewDescriptor& bufferViewDescriptor) const
         {
             const HashValue64 hash = bufferViewDescriptor.GetHash();
-            std::lock_guard<std::mutex> registryLock(m_cacheMutex);
             auto it = m_resourceViewCache.find(static_cast<uint64_t>(hash));
             if (it == m_resourceViewCache.end())
             {
-                Ptr<BufferView> bufferViewPtr = RHI::Factory::Get().CreateBufferView();
+                Ptr<BufferView> bufferViewPtr = RHI::Graphics::GetFactory().CreateBufferView();
                 RHI::ResultCode resultCode = bufferViewPtr->Init(static_cast<const Buffer&>(*this), bufferViewDescriptor);
                 if (resultCode == RHI::ResultCode::Success)
                 {
@@ -130,15 +100,10 @@ namespace CGE
                 return static_cast<BufferView*>(it->second);
             }
         }
-        */
+
         void Resource::SetPool(ResourcePool* pool)
         {
             m_pool = pool;
-        }
-
-        void Resource::SetFrameAttachment(FrameAttachment* frameAttachment)
-        {
-            m_frameAttachment = frameAttachment;
         }
 	}
 }

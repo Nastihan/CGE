@@ -26,19 +26,13 @@ namespace CGE
         // You can retrieve a specific view for the resource and this can be used to initilize the platform specific descriptors for bindings.
         class Resource : public DeviceObject
         {
-            friend class FrameAttachment;
             friend class ResourcePool;
         public:
             virtual ~Resource();
 
-            bool IsAttachment() const;
             void Shutdown() override final;
             const ResourcePool* GetPool() const;
             ResourcePool* GetPool();
-            const FrameAttachment* GetFrameAttachment() const;
-            void InvalidateViews();
-            bool IsInResourceCache(const ImageViewDescriptor& imageViewDescriptor);
-            bool IsInResourceCache(const BufferViewDescriptor& bufferViewDescriptor);
             void EraseResourceView(ResourceView* resourceView) const;
 
         protected:
@@ -49,16 +43,10 @@ namespace CGE
 
         private:
             void SetPool(ResourcePool* pool);
-            void SetFrameAttachment(FrameAttachment* frameAttachment);
 
         private:
             ResourcePool* m_pool = nullptr;
-            FrameAttachment* m_frameAttachment = nullptr;
-            bool m_isInvalidationQueued = false;
-
-            // Cache the resourceViews in order to avoid re-creation
             mutable std::unordered_map<size_t, ResourceView*> m_resourceViewCache;
-            mutable std::mutex m_cacheMutex;
         };
     }
 }

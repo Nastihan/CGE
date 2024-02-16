@@ -284,5 +284,72 @@ namespace CGE
             }
             return resourceFlags;
         }
+
+        void ConvertBufferView(const DX_Buffer& buffer, const RHI::BufferViewDescriptor& bufferViewDescriptor, D3D12_SHADER_RESOURCE_VIEW_DESC& shaderResourceView)
+        {
+            const uint32_t elementOffsetBase = static_cast<uint32_t>(buffer.GetMemoryView().GetOffset()) / bufferViewDescriptor.m_elementSize;
+            const uint32_t elementOffset = elementOffsetBase + bufferViewDescriptor.m_elementOffset;
+            if (elementOffsetBase * bufferViewDescriptor.m_elementSize != buffer.GetMemoryView().GetOffset())
+            {
+                assert(false, "SRV: Buffer wasn't aligned with element size. Buffer should be created with proper alignment");
+            }
+
+            shaderResourceView = {};
+            shaderResourceView.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
+            shaderResourceView.ViewDimension = D3D12_SRV_DIMENSION_BUFFER;
+            shaderResourceView.Format = ConvertFormat(bufferViewDescriptor.m_elementFormat);
+            shaderResourceView.Buffer.FirstElement = elementOffset;
+            shaderResourceView.Buffer.NumElements = bufferViewDescriptor.m_elementCount;
+            if (bufferViewDescriptor.m_elementFormat == RHI::Format::R32_UINT)
+            {
+                shaderResourceView.Format = DXGI_FORMAT_R32_TYPELESS;
+                shaderResourceView.Buffer.Flags = D3D12_BUFFER_SRV_FLAG_RAW;
+            }
+            else if (shaderResourceView.Format == DXGI_FORMAT_UNKNOWN)
+            {
+                shaderResourceView.Buffer.StructureByteStride = bufferViewDescriptor.m_elementSize;
+            }
+        }
+
+        void ConvertBufferView(const DX_Buffer& buffer, const RHI::BufferViewDescriptor& bufferViewDescriptor, D3D12_UNORDERED_ACCESS_VIEW_DESC& unorderedAccessView)
+        {
+            const uint32_t elementOffsetBase = static_cast<uint32_t>(buffer.GetMemoryView().GetOffset()) / bufferViewDescriptor.m_elementSize;
+            const uint32_t elementOffset = elementOffsetBase + bufferViewDescriptor.m_elementOffset;
+            if (elementOffsetBase * bufferViewDescriptor.m_elementSize != buffer.GetMemoryView().GetOffset())
+            {
+                assert(false, "UAV: Buffer wasn't aligned with element size. Buffer should be created with proper alignment");
+            }
+
+            unorderedAccessView = {};
+            unorderedAccessView.ViewDimension = D3D12_UAV_DIMENSION_BUFFER;
+            unorderedAccessView.Format = ConvertFormat(bufferViewDescriptor.m_elementFormat);
+            unorderedAccessView.Buffer.FirstElement = elementOffset;
+            unorderedAccessView.Buffer.NumElements = bufferViewDescriptor.m_elementCount;
+            if (bufferViewDescriptor.m_elementFormat == RHI::Format::R32_UINT)
+            {
+                unorderedAccessView.Format = DXGI_FORMAT_R32_TYPELESS;
+                unorderedAccessView.Buffer.Flags = D3D12_BUFFER_UAV_FLAG_RAW;
+            }
+            else if (unorderedAccessView.Format == DXGI_FORMAT_UNKNOWN)
+            {
+                unorderedAccessView.Buffer.StructureByteStride = bufferViewDescriptor.m_elementSize;
+            }
+        }
+
+        void ConvertBufferView(const DX_Buffer& buffer, const RHI::BufferViewDescriptor& bufferViewDescriptor, D3D12_CONSTANT_BUFFER_VIEW_DESC& constantBufferView)
+        {
+            assert(RHI::IsAligned(buffer.GetMemoryView().GetGpuAddress(), DX_Alignment::Constant), "Constant Buffer memory is not aligned to %d bytes.", DX_Alignment::Constant);
+
+            const uint32_t bufferOffset = bufferViewDescriptor.m_elementOffset * bufferViewDescriptor.m_elementSize;
+            assert(RHI::IsAligned(bufferOffset, DX_Alignment::Constant), "Buffer View offset is not aligned to %d bytes, the view won't have the appropiate alignment for Constant Buffer reads.", Alignment::Constant);
+
+            // In DX12 Constant data reads must be a multiple of 256 bytes.
+            // It's not a problem if the actual buffer size is smaller since the heap (where the buffer resides) must be multiples of 64KB.
+            // This means the buffer view will never go out of heap memory, it might read pass the Constant Buffer size, but it will never be used.
+            const uint32_t bufferSize = RHI::AlignUp(bufferViewDescriptor.m_elementCount * bufferViewDescriptor.m_elementSize, DX_Alignment::Constant);
+
+            constantBufferView.BufferLocation = buffer.GetMemoryView().GetGpuAddress() + bufferOffset;
+            constantBufferView.SizeInBytes = bufferSize;
+        }
     }
 }

@@ -11,6 +11,9 @@ namespace CGE
 	namespace RHI
 	{
 		class Device;
+		class Buffer;
+		class BufferPool;
+		class BufferView;
 
 		class Factory : public Object
 		{
@@ -26,6 +29,10 @@ namespace CGE
 			virtual Ptr<Device> CreateDevice() = 0;
 			virtual Ptr<SwapChain> CreateSwapChain() = 0;
 			virtual Ptr<FrameGraphExecuter> CreateFrameGraphExecuter() = 0;
+
+			virtual Ptr<BufferView> CreateBufferView() = 0;
+			virtual Ptr<Buffer> CreateBuffer() = 0;
+			virtual Ptr<BufferPool> CreateBufferPool() = 0;
 		};
 	}
 }

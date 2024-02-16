@@ -20,10 +20,11 @@ namespace CGE
 		public:
 			void Init();
 			void Render();
+			static Factory& GetFactory();
 
 		private:
 			std::string m_backendAPI;
-			RHI::Ptr<Factory> m_factory;
+			static RHI::Ptr<Factory> m_factory;
 		private:
 			RHI::Ptr<RHI::PhysicalDevice> m_physicalDevice;
 			RHI::Ptr<RHI::Device> m_device;

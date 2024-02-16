@@ -109,5 +109,11 @@ namespace CGE
         {
             return v & (~bits);
         }
+
+        //! Returns whether the value is aligned to the given alignment.
+        template <typename T> inline bool IsAligned(T value, size_t alignment)
+        {
+            return 0 == ((size_t)value & (alignment - 1));
+        }
     }
 }

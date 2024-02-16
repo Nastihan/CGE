@@ -5,9 +5,11 @@
 #include "DX_CommandList.h"
 #include "DX_MemoryView.h"
 #include "DX_Conversions.h"
+#include "DX_PlatformLimitsDescriptor.h"
 
 // RHI
 #include "../RHI/SwapChain.h"
+#include "../RHI/PlatformLimitsDescriptor.h"
 
 // std
 #include <iostream>
@@ -146,28 +148,44 @@ namespace CGE
 
 		void DX_Device::EndFrameInternal()
 		{
+			// cpu wait will happen here
 			m_commandQueueContext.End();
+
 			m_commandListAllocator.Collect();
 			m_releaseQueue.Collect();
 		}
 
 		RHI::ResultCode DX_Device::InitializeLimits()
 		{
+			RHI::ConstPtr<RHI::PlatformLimitsDescriptor> rhiDescriptor = m_platformLimitsDescriptor;
+			RHI::ConstPtr<DX_PlatformLimitsDescriptor> dxPlatLimitsDesc = dynamic_cast<const DX_PlatformLimitsDescriptor*>(rhiDescriptor.get());
+
 			{
 				DX_ReleaseQueue::Descriptor releaseQueueDescriptor;
 				releaseQueueDescriptor.m_collectLatency = RHI::Limits::Device::FrameCountMax - 1;
 				m_releaseQueue.Init(releaseQueueDescriptor);
 			}
 
-			DX_CommandListAllocator::Descriptor commandListAllocatorDescriptor;
-			commandListAllocatorDescriptor.m_dxDevice = this;
-			commandListAllocatorDescriptor.m_frameCountMax = RHI::Limits::Device::FrameCountMax;
-			m_commandListAllocator.Init(commandListAllocatorDescriptor);
+			{
+				DX_StagingMemoryAllocator::Descriptor allocatorDesc;
+				allocatorDesc.m_device = this;
 
+				allocatorDesc.m_mediumPageSizeInBytes = static_cast<uint32_t>(m_platformLimitsDescriptor->m_platformDefaultValues.m_mediumStagingBufferPageSizeInBytes);
+				allocatorDesc.m_largePageSizeInBytes = static_cast<uint32_t>(m_platformLimitsDescriptor->m_platformDefaultValues.m_largestStagingBufferPageSizeInBytes);
+				allocatorDesc.m_collectLatency = RHI::Limits::Device::FrameCountMax;
+				m_stagingMemoryAllocator.Init(allocatorDesc);
+			}
+
+			{
+				DX_CommandListAllocator::Descriptor commandListAllocatorDescriptor;
+				commandListAllocatorDescriptor.m_dxDevice = this;
+				commandListAllocatorDescriptor.m_frameCountMax = RHI::Limits::Device::FrameCountMax;
+				m_commandListAllocator.Init(commandListAllocatorDescriptor);
+			}
 			m_commandQueueContext.Init(*this);
 
 			m_descriptorContext = std::make_shared<DX_DescriptorContext>();
-			m_descriptorContext->Init(m_device.Get());
+			m_descriptorContext->Init(m_device.Get(), dxPlatLimitsDesc);
 
 			return RHI::ResultCode::Success;
 		}
@@ -191,6 +209,11 @@ namespace CGE
 		{
 			m_commandQueueContext.WaitForIdle();
 			m_releaseQueue.Collect(true);
+		}
+
+		DX_MemoryView DX_Device::AcquireStagingMemory(size_t size, size_t alignment)
+		{
+			return m_stagingMemoryAllocator.Allocate(size, alignment);
 		}
 
 		DX_MemoryView DX_Device::CreateBufferCommitted(const RHI::BufferDescriptor& bufferDescriptor, D3D12_RESOURCE_STATES initialState, D3D12_HEAP_TYPE heapType)
@@ -217,6 +240,13 @@ namespace CGE
 		void DX_Device::QueueForRelease(const DX_MemoryView memoryView)
 		{
 			m_releaseQueue.QueueForCollect(memoryView.GetMemory());
+		}
+
+		DX_Device::DX_Device()
+		{
+			RHI::Ptr<DX_PlatformLimitsDescriptor> platformLimitsDescriptor = new DX_PlatformLimitsDescriptor();
+			platformLimitsDescriptor->LoadPlatformLimitsDescriptor("DX12");
+			m_platformLimitsDescriptor = RHI::Ptr<RHI::PlatformLimitsDescriptor>(platformLimitsDescriptor);
 		}
 	}
 }

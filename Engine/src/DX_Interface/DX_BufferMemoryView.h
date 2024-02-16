@@ -9,7 +9,9 @@ namespace CGE
 	{
         enum class DX_BufferMemoryType : uint32_t
         {
+            // New commited buffer
             Unique,
+            // SubAllocated in a existing page in the pool
             SubAllocated
         };
 

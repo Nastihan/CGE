@@ -1,0 +1,74 @@
+/*
+ * Copyright (c) Contributors to the Open 3D Engine Project.
+ * For complete copyright and license terms please see the LICENSE at the root of this distribution.
+ *
+ * SPDX-License-Identifier: Apache-2.0 OR MIT
+ *
+ */
+#pragma once
+
+#include "RHI_Common.h"
+
+namespace CGE
+{
+    namespace RHI
+    {
+        struct intrusive_default_delete
+        {
+            template <typename U>
+            void operator () (U* p) const
+            {
+                delete p;
+            }
+        };
+
+        /**
+         * An intrusive reference counting base class that is compliant with AZStd::intrusive_ptr. Explicit
+         * friending of intrusive_ptr is used; the user must use intrusive_ptr to take a reference on the object.
+         */
+        template <typename refcount_t, typename Deleter = intrusive_default_delete>
+        class intrusive_refcount
+        {
+        public:
+            inline uint32_t use_count() const
+            {
+                return static_cast<uint32_t>(m_refCount);
+            }
+
+        protected:
+            intrusive_refcount() = default;
+            intrusive_refcount(Deleter deleter) : m_deleter{ deleter } {}
+            intrusive_refcount(const intrusive_refcount&) = delete;
+            intrusive_refcount(intrusive_refcount&&) = delete;
+
+            virtual ~intrusive_refcount()
+            {
+                assert(m_refCount == 0, "The destructor was called on an object with active references.");
+            }
+
+            void add_ref() const
+            {
+                ++m_refCount;
+            }
+
+            void release() const
+            {
+                const int32_t refCount = static_cast<int32_t>(--m_refCount);
+                assert(refCount != -1, "Releasing an already released object");
+                if (refCount == 0)
+                {
+                    m_deleter(this);
+                }
+            }
+
+            template <typename T>
+            friend struct IntrusivePtrCountPolicy;
+
+            friend struct intrusive_default_delete;
+
+        private:
+            mutable refcount_t m_refCount = { 0 };
+            Deleter m_deleter;
+        };
+    }
+}

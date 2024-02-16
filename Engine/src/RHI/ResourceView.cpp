@@ -27,7 +27,6 @@ namespace CGE
 			return ResultCode::Success;
 		}
 
-		/*
 		void ResourceView::Shutdown()
 		{
 			if (IsInitialized())
@@ -39,6 +38,5 @@ namespace CGE
 				DeviceObject::Shutdown();
 			}
 		}
-		*/
 	}
 }

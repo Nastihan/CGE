@@ -17,6 +17,19 @@ namespace CGE
 				// DX12 only supports flip model
 				constexpr uint32_t MinSwapChainImages = 2;
 			}
+
+			namespace DefaultValues
+			{
+				namespace Memory
+				{
+					// 16MB page size
+					constexpr uint64_t BufferPoolPageSizeInBytes = 16ul * 1024 * 1024;
+					// 2MB page size
+					constexpr uint64_t MediumStagingBufferPageSizeInBytes = 2ul * 1024 * 1024;
+					// 134MB page size
+					constexpr uint64_t LargestStagingBufferPageSizeInBytes = 128ul * 1024 * 1024;
+				}
+			} // namespace DefaultValues
 		}
 	}
 }

@@ -14,6 +14,8 @@ namespace CGE
 {
 	namespace RHI
 	{
+		RHI::Ptr<Factory> Graphics::m_factory = nullptr;
+
 		Graphics::Graphics(std::string backendAPI, Window& window) : m_backendAPI(std::move(backendAPI)), m_window{ window }
 		{
 			if (m_backendAPI == "DX12")
@@ -53,6 +55,11 @@ namespace CGE
 
 			m_frameGraphExecuter = m_factory->CreateFrameGraphExecuter();
 			m_frameGraphExecuter->Init(*m_device);
+		}
+
+		Factory& Graphics::GetFactory()
+		{
+			return *m_factory;
 		}
 
 		// [todo] 30.2 : 14:20

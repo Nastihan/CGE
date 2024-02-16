@@ -31,8 +31,8 @@ namespace CGE
 
             assert(descriptor.m_elementSize, "Element size cannot be zero");
             m_descriptor = descriptor;
-            m_elementCount = descriptor.m_capacityInBytes / descriptor.m_elementSize;
-            assert(m_elementCount, "Block size is larger than pool size.");
+            m_elementCount = static_cast<uint32_t>(descriptor.m_capacityInBytes / descriptor.m_elementSize);
+            assert(m_elementCount >= 1, "Block size is larger than pool size.");
 
             m_freeList.resize(m_elementCount);
             for (uint32_t i = 0; i < m_elementCount; ++i)

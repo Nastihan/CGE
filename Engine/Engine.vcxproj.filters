@@ -192,6 +192,54 @@
     <ClCompile Include="src\RHI\ResourceView.cpp">
       <Filter>Source Files\RHI\Memory</Filter>
     </ClCompile>
+    <ClCompile Include="src\RHI\BufferView.cpp">
+      <Filter>Source Files\RHI\Memory</Filter>
+    </ClCompile>
+    <ClCompile Include="src\RHI\BufferViewDescriptor.cpp">
+      <Filter>Source Files\RHI\Memory</Filter>
+    </ClCompile>
+    <ClCompile Include="src\RHI\Format.cpp">
+      <Filter>Source Files\RHI</Filter>
+    </ClCompile>
+    <ClCompile Include="src\RHI\Buffer.cpp">
+      <Filter>Source Files\RHI\Memory</Filter>
+    </ClCompile>
+    <ClCompile Include="src\RHI\BufferDescriptor.cpp">
+      <Filter>Source Files\RHI\Memory</Filter>
+    </ClCompile>
+    <ClCompile Include="src\RHI\BufferPool.cpp">
+      <Filter>Source Files\RHI\Memory</Filter>
+    </ClCompile>
+    <ClCompile Include="src\DX_Interface\DX_BufferView.cpp">
+      <Filter>Source Files\DX\Memory</Filter>
+    </ClCompile>
+    <ClCompile Include="src\DX_Interface\DX_Buffer.cpp">
+      <Filter>Source Files\DX\Memory</Filter>
+    </ClCompile>
+    <ClCompile Include="src\DX_Interface\DX_BufferPool.cpp">
+      <Filter>Source Files\DX\Memory</Filter>
+    </ClCompile>
+    <ClCompile Include="src\RHI\PlatformLimitsDescriptor.cpp">
+      <Filter>Source Files\RHI</Filter>
+    </ClCompile>
+    <ClCompile Include="src\DX_Interface\DX_PlatformLimitsDescriptor.cpp">
+      <Filter>Source Files\DX</Filter>
+    </ClCompile>
+    <ClCompile Include="src\DX_Interface\DX_BufferPoolDescriptor.cpp">
+      <Filter>Source Files\DX\Memory</Filter>
+    </ClCompile>
+    <ClCompile Include="src\DX_Interface\DX_BufferPoolResolver.cpp">
+      <Filter>Source Files\DX\Memory</Filter>
+    </ClCompile>
+    <ClCompile Include="src\DX_Interface\DX_StagingMemoryAllocator.cpp">
+      <Filter>Source Files\DX\Memory</Filter>
+    </ClCompile>
+    <ClCompile Include="src\RHI\LinearAllocator.cpp">
+      <Filter>Source Files\RHI\Allocator</Filter>
+    </ClCompile>
+    <ClCompile Include="src\RHI\BufferSystem.cpp">
+      <Filter>Source Files\RHI\Memory</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\DX_Interface\DX_Device.h">
@@ -399,6 +447,63 @@
       <Filter>Header Files\RHI\Allocator</Filter>
     </ClInclude>
     <ClInclude Include="src\RHI\ResourcePoolDescriptor.h">
+      <Filter>Header Files\RHI\Memory</Filter>
+    </ClInclude>
+    <ClInclude Include="src\RHI\BufferView.h">
+      <Filter>Header Files\RHI\Memory</Filter>
+    </ClInclude>
+    <ClInclude Include="src\RHI\BufferViewDescriptor.h">
+      <Filter>Header Files\RHI\Memory</Filter>
+    </ClInclude>
+    <ClInclude Include="src\RHI\Buffer.h">
+      <Filter>Header Files\RHI\Memory</Filter>
+    </ClInclude>
+    <ClInclude Include="src\RHI\BufferPool.h">
+      <Filter>Header Files\RHI\Memory</Filter>
+    </ClInclude>
+    <ClInclude Include="src\RHI\BufferPoolDescriptor.h">
+      <Filter>Header Files\RHI\Memory</Filter>
+    </ClInclude>
+    <ClInclude Include="src\DX_Interface\DX_BufferView.h">
+      <Filter>Header Files\DX\Memory</Filter>
+    </ClInclude>
+    <ClInclude Include="src\DX_Interface\DX_Buffer.h">
+      <Filter>Header Files\DX\Memory</Filter>
+    </ClInclude>
+    <ClInclude Include="src\DX_Interface\DX_BufferPool.h">
+      <Filter>Header Files\DX\Memory</Filter>
+    </ClInclude>
+    <ClInclude Include="src\RHI\PlatformLimitsDescriptor.h">
+      <Filter>Header Files\RHI</Filter>
+    </ClInclude>
+    <ClInclude Include="src\DX_Interface\DX_PlatformLimitsDescriptor.h">
+      <Filter>Header Files\DX</Filter>
+    </ClInclude>
+    <ClInclude Include="src\DX_Interface\DX_BufferPoolDescriptor.h">
+      <Filter>Header Files\DX\Memory</Filter>
+    </ClInclude>
+    <ClInclude Include="src\DX_Interface\DX_ResourcePoolResolver.h">
+      <Filter>Header Files\DX\Memory</Filter>
+    </ClInclude>
+    <ClInclude Include="src\DX_Interface\DX_BufferPoolResolver.h">
+      <Filter>Header Files\DX\Memory</Filter>
+    </ClInclude>
+    <ClInclude Include="src\DX_Interface\DX_StagingMemoryAllocator.h">
+      <Filter>Header Files\DX\Memory</Filter>
+    </ClInclude>
+    <ClInclude Include="src\RHI\LinearAllocator.h">
+      <Filter>Header Files\RHI\Allocator</Filter>
+    </ClInclude>
+    <ClInclude Include="src\RHI\MemoryLinearSubAllocator.h">
+      <Filter>Header Files\RHI\Memory</Filter>
+    </ClInclude>
+    <ClInclude Include="src\RHI\intrusive_refcount.h">
+      <Filter>Header Files\RHI</Filter>
+    </ClInclude>
+    <ClInclude Include="src\RHI\intrusive_base.h">
+      <Filter>Header Files\RHI</Filter>
+    </ClInclude>
+    <ClInclude Include="src\RHI\BufferSystem.h">
       <Filter>Header Files\RHI\Memory</Filter>
     </ClInclude>
   </ItemGroup>
