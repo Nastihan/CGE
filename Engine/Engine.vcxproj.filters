@@ -240,6 +240,33 @@
     <ClCompile Include="src\RHI\BufferSystem.cpp">
       <Filter>Source Files\RHI\Memory</Filter>
     </ClCompile>
+    <ClCompile Include="src\RHI\StreamBufferView.cpp">
+      <Filter>Source Files\RHI</Filter>
+    </ClCompile>
+    <ClCompile Include="src\RHI\IndexBufferView.cpp">
+      <Filter>Source Files\RHI</Filter>
+    </ClCompile>
+    <ClCompile Include="src\RHI\PipelineState.cpp">
+      <Filter>Source Files\RHI</Filter>
+    </ClCompile>
+    <ClCompile Include="src\RHI\PipelineStateDescriptor.cpp">
+      <Filter>Source Files\RHI</Filter>
+    </ClCompile>
+    <ClCompile Include="src\RHI\ShaderStageFunction.cpp">
+      <Filter>Source Files\RHI</Filter>
+    </ClCompile>
+    <ClCompile Include="src\DX_Interface\DX_ShaderStageFunction.cpp">
+      <Filter>Source Files\DX</Filter>
+    </ClCompile>
+    <ClCompile Include="src\DX_Interface\DX_PipelineState.cpp">
+      <Filter>Source Files\DX</Filter>
+    </ClCompile>
+    <ClCompile Include="src\RHI\PipelineLayout.cpp">
+      <Filter>Source Files\RHI</Filter>
+    </ClCompile>
+    <ClCompile Include="src\DX_Interface\DX_PipelineLayout.cpp">
+      <Filter>Source Files\DX</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\DX_Interface\DX_Device.h">
@@ -505,6 +532,36 @@
     </ClInclude>
     <ClInclude Include="src\RHI\BufferSystem.h">
       <Filter>Header Files\RHI\Memory</Filter>
+    </ClInclude>
+    <ClInclude Include="src\RHI\DrawItem.h">
+      <Filter>Header Files\RHI</Filter>
+    </ClInclude>
+    <ClInclude Include="src\RHI\StreamBufferView.h">
+      <Filter>Header Files\RHI</Filter>
+    </ClInclude>
+    <ClInclude Include="src\RHI\IndexBufferView.h">
+      <Filter>Header Files\RHI</Filter>
+    </ClInclude>
+    <ClInclude Include="src\RHI\PipelineState.h">
+      <Filter>Header Files\RHI</Filter>
+    </ClInclude>
+    <ClInclude Include="src\RHI\PipelineStateDescriptor.h">
+      <Filter>Header Files\RHI</Filter>
+    </ClInclude>
+    <ClInclude Include="src\RHI\ShaderStageFunction.h">
+      <Filter>Header Files\RHI</Filter>
+    </ClInclude>
+    <ClInclude Include="src\DX_Interface\DX_ShaderStageFunction.h">
+      <Filter>Header Files\DX</Filter>
+    </ClInclude>
+    <ClInclude Include="src\DX_Interface\DX_PipelineState.h">
+      <Filter>Header Files\DX</Filter>
+    </ClInclude>
+    <ClInclude Include="src\RHI\PipelineLayout.h">
+      <Filter>Header Files\RHI</Filter>
+    </ClInclude>
+    <ClInclude Include="src\DX_Interface\DX_PipelineLayout.h">
+      <Filter>Header Files\DX</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
