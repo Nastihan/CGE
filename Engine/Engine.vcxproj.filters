@@ -267,6 +267,9 @@
     <ClCompile Include="src\DX_Interface\DX_PipelineLayout.cpp">
       <Filter>Source Files\DX</Filter>
     </ClCompile>
+    <ClCompile Include="src\RHI\MeshBuilder.cpp">
+      <Filter>Source Files\RHI</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\DX_Interface\DX_Device.h">
@@ -562,6 +565,9 @@
     </ClInclude>
     <ClInclude Include="src\DX_Interface\DX_PipelineLayout.h">
       <Filter>Header Files\DX</Filter>
+    </ClInclude>
+    <ClInclude Include="src\RHI\MeshBuilder.h">
+      <Filter>Header Files\RHI</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

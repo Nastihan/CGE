@@ -74,6 +74,7 @@
     <ClCompile Include="src\RHI\IndexBufferView.cpp" />
     <ClCompile Include="src\RHI\LinearAllocator.cpp" />
     <ClCompile Include="src\RHI\MemoryUsage.cpp" />
+    <ClCompile Include="src\RHI\MeshBuilder.cpp" />
     <ClCompile Include="src\RHI\Object.cpp" />
     <ClCompile Include="src\RHI\PhysicalDevice.cpp" />
     <ClCompile Include="src\RHI\PipelineLayout.cpp" />
@@ -168,6 +169,7 @@
     <ClInclude Include="src\RHI\MemoryLinearSubAllocator.h" />
     <ClInclude Include="src\RHI\MemorySubAllocator.h" />
     <ClInclude Include="src\RHI\MemoryUsage.h" />
+    <ClInclude Include="src\RHI\MeshBuilder.h" />
     <ClInclude Include="src\RHI\Object.h" />
     <ClInclude Include="src\RHI\ObjectCollector.h" />
     <ClInclude Include="src\RHI\ObjectPool.h" />
@@ -294,7 +296,7 @@
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions);COMPILE_CITY_CC</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpplatest</LanguageStandard>
-      <AdditionalIncludeDirectories>$(ProjectDir)Dependencies\GLFW\include;$(ProjectDir)Dependencies\d3dx12;$(ProjectDir)Dependencies\CityHash;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)Dependencies\assimp\include;$(ProjectDir)Dependencies\GLFW\include;$(ProjectDir)Dependencies\d3dx12;$(ProjectDir)Dependencies\CityHash;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
       <FloatingPointModel>Fast</FloatingPointModel>
@@ -302,9 +304,13 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>d3d12.lib;dxgi.lib;d3dcompiler.lib;glfw3.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(ProjectDir)Dependencies\GLFW\lib-vc2019;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>d3d12.lib;dxgi.lib;d3dcompiler.lib;glfw3.lib;assimp-vc142-mtd.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(ProjectDir)Dependencies\GLFW\lib-vc2019;$(ProjectDir)Dependencies\assimp\lib\Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
+    <PostBuildEvent>
+      <Command>xcopy /y "$(ProjectDir)Dependencies\assimp\bin\Debug\assimp-vc142-mtd.dll" "$(OutDir)"
+xcopy /y "$(ProjectDir)Dependencies\assimp\bin\Debug\assimp-vc142-mtd.pdb" "$(OutDir)"</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
@@ -315,7 +321,7 @@
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions);COMPILE_CITY_CC</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpplatest</LanguageStandard>
-      <AdditionalIncludeDirectories>$(ProjectDir)Dependencies\GLFW\include;$(ProjectDir)Dependencies\d3dx12;$(ProjectDir)Dependencies\CityHash;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)Dependencies\assimp\include;$(ProjectDir)Dependencies\GLFW\include;$(ProjectDir)Dependencies\d3dx12;$(ProjectDir)Dependencies\CityHash;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
       <FloatingPointModel>Fast</FloatingPointModel>
@@ -325,9 +331,13 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>d3d12.lib;dxgi.lib;d3dcompiler.lib;glfw3.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(ProjectDir)Dependencies\GLFW\lib-vc2019;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>d3d12.lib;dxgi.lib;d3dcompiler.lib;glfw3.lib;assimp-vc142-mt.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(ProjectDir)Dependencies\assimp\lib\Release;$(ProjectDir)Dependencies\GLFW\lib-vc2019;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
+    <PostBuildEvent>
+      <Command>xcopy /y "$(ProjectDir)Dependencies\assimp\bin\Release\assimp-vc142-mt.dll" "$(OutDir)"
+xcopy /y "$(ProjectDir)Dependencies\assimp\bin\Release\assimp-vc142-mt.pdb" "$(OutDir)"</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
