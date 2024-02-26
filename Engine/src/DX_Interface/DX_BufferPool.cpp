@@ -23,7 +23,7 @@ namespace CGE
         {
             DX_Device& dxDevice = static_cast<DX_Device&>(device);
             RHI::HeapMemoryUsage& heapMemoryUsage = m_memoryUsage.GetHeapMemoryUsage(descriptor.m_heapMemoryLevel);
-            uint32_t bufferPageSize = static_cast<uint32_t>(GetDevice().GetPlatformLimitsDescriptor().m_platformDefaultValues.m_bufferPoolPageSizeInBytes);
+            uint32_t bufferPageSize = static_cast<uint32_t>(device.GetPlatformLimitsDescriptor().m_platformDefaultValues.m_bufferPoolPageSizeInBytes);
 
             // The DX12 descriptor provides an explicit buffer page size override.
             if (const DX_BufferPoolDescriptor* dxDescriptor = dynamic_cast<const DX_BufferPoolDescriptor*>(&descriptor))

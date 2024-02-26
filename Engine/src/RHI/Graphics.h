@@ -1,7 +1,10 @@
 #pragma once
 
-#include "../CommonMacros.h"
+// RHI
 #include "Factory.h"
+#include "BufferSystem.h"
+
+#include "../CommonMacros.h"
 
 #include <string>
 
@@ -20,6 +23,7 @@ namespace CGE
 		public:
 			void Init();
 			void Render();
+			BufferSystem& GetBufferSystem();
 			static Factory& GetFactory();
 
 		private:
@@ -30,6 +34,8 @@ namespace CGE
 			RHI::Ptr<RHI::Device> m_device;
 			RHI::Ptr<RHI::SwapChain> m_swapChain;
 			RHI::Ptr<RHI::FrameGraphExecuter> m_frameGraphExecuter;
+
+			RHI::BufferSystem m_bufferSystem;
 
 			Window& m_window;
 		};

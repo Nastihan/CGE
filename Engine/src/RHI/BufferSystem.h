@@ -3,6 +3,7 @@
 #include "RHI_Common.h"
 #include "DeviceObject.h"
 #include "Format.h"
+#include "BufferPool.h"
 
 namespace CGE
 {
@@ -36,7 +37,6 @@ namespace CGE
         };
 
         class Buffer;
-        class BufferPool;
 
         class BufferSystem final : public DeviceObject
         {

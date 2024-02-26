@@ -14,7 +14,7 @@ namespace CGE
 
 		void ResourcePool::Shutdown()
 		{
-			assert(ValidateNotProcessingFrame());
+			assert(!ValidateNotProcessingFrame());
 
 			if (IsInitialized())
 			{

@@ -30,6 +30,14 @@ namespace CGE
 					constexpr uint64_t LargestStagingBufferPageSizeInBytes = 128ul * 1024 * 1024;
 				}
 			} // namespace DefaultValues
+
+			namespace Pipeline
+			{
+				// Max vertex buffers
+				constexpr uint32_t StreamCountMax = 12;
+				// Max channels in each vertex buffer
+				constexpr uint32_t StreamChannelCountMax = 16;
+			}
 		}
 	}
 }

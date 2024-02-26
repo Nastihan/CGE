@@ -55,6 +55,8 @@ namespace CGE
 
 			m_frameGraphExecuter = m_factory->CreateFrameGraphExecuter();
 			m_frameGraphExecuter->Init(*m_device);
+
+			m_bufferSystem.Init(*m_device);
 		}
 
 		Factory& Graphics::GetFactory()
@@ -76,6 +78,11 @@ namespace CGE
 			dimensions.m_imageWidth = m_window.GetWidth();
 			dimensions.m_imageHeight = m_window.GetHeight();
 			return m_swapChain->Resize(dimensions);
+		}
+
+		BufferSystem& Graphics::GetBufferSystem()
+		{
+			return m_bufferSystem;
 		}
 	}
 }

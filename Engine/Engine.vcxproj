@@ -72,9 +72,10 @@
     <ClCompile Include="src\Main.cpp" />
     <ClCompile Include="src\RHI\Device.cpp" />
     <ClCompile Include="src\RHI\IndexBufferView.cpp" />
+    <ClCompile Include="src\RHI\InputStreamLayout.cpp" />
     <ClCompile Include="src\RHI\LinearAllocator.cpp" />
     <ClCompile Include="src\RHI\MemoryUsage.cpp" />
-    <ClCompile Include="src\RHI\MeshBuilder.cpp" />
+    <ClCompile Include="src\MeshBuilder.cpp" />
     <ClCompile Include="src\RHI\Object.cpp" />
     <ClCompile Include="src\RHI\PhysicalDevice.cpp" />
     <ClCompile Include="src\RHI\PipelineLayout.cpp" />
@@ -89,6 +90,7 @@
     <ClCompile Include="src\RHI\StreamBufferView.cpp" />
     <ClCompile Include="src\RHI\SwapChain.cpp" />
     <ClCompile Include="src\RHI\TypeHash.cpp" />
+    <ClCompile Include="src\Scene.cpp" />
     <ClCompile Include="src\VK_Interface\VK_Device.cpp" />
     <ClCompile Include="src\Window.cpp" />
   </ItemGroup>
@@ -159,6 +161,7 @@
     <ClInclude Include="src\RHI\DeviceLimits.h" />
     <ClInclude Include="src\RHI\Handle.h" />
     <ClInclude Include="src\RHI\IndexBufferView.h" />
+    <ClInclude Include="src\RHI\InputStreamLayout.h" />
     <ClInclude Include="src\RHI\intrusive_base.h" />
     <ClInclude Include="src\RHI\intrusive_ptr.h" />
     <ClInclude Include="src\RHI\intrusive_refcount.h" />
@@ -169,7 +172,7 @@
     <ClInclude Include="src\RHI\MemoryLinearSubAllocator.h" />
     <ClInclude Include="src\RHI\MemorySubAllocator.h" />
     <ClInclude Include="src\RHI\MemoryUsage.h" />
-    <ClInclude Include="src\RHI\MeshBuilder.h" />
+    <ClInclude Include="src\MeshBuilder.h" />
     <ClInclude Include="src\RHI\Object.h" />
     <ClInclude Include="src\RHI\ObjectCollector.h" />
     <ClInclude Include="src\RHI\ObjectPool.h" />
@@ -190,6 +193,7 @@
     <ClInclude Include="src\RHI\SwapChain.h" />
     <ClInclude Include="src\RHI\SwapChainDescriptor.h" />
     <ClInclude Include="src\RHI\TypeHash.h" />
+    <ClInclude Include="src\Scene.h" />
     <ClInclude Include="src\VK_Interface\VK_Device.h" />
     <ClInclude Include="src\Window.h" />
   </ItemGroup>

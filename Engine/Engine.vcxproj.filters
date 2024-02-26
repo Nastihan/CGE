@@ -267,7 +267,13 @@
     <ClCompile Include="src\DX_Interface\DX_PipelineLayout.cpp">
       <Filter>Source Files\DX</Filter>
     </ClCompile>
-    <ClCompile Include="src\RHI\MeshBuilder.cpp">
+    <ClCompile Include="src\Scene.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\MeshBuilder.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\RHI\InputStreamLayout.cpp">
       <Filter>Source Files\RHI</Filter>
     </ClCompile>
   </ItemGroup>
@@ -566,7 +572,13 @@
     <ClInclude Include="src\DX_Interface\DX_PipelineLayout.h">
       <Filter>Header Files\DX</Filter>
     </ClInclude>
-    <ClInclude Include="src\RHI\MeshBuilder.h">
+    <ClInclude Include="src\Scene.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\MeshBuilder.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\RHI\InputStreamLayout.h">
       <Filter>Header Files\RHI</Filter>
     </ClInclude>
   </ItemGroup>
