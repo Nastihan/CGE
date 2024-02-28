@@ -37,6 +37,7 @@ namespace CGE
 				constexpr uint32_t StreamCountMax = 12;
 				// Max channels in each vertex buffer
 				constexpr uint32_t StreamChannelCountMax = 16;
+				constexpr uint32_t AttachmentColorCountMax = 8;
 			}
 		}
 	}

@@ -3,6 +3,10 @@
 // RHI
 #include "RHI_Common.h"
 #include "ShaderStageFunction.h"
+#include "TypeHash.h"
+#include "InputStreamLayout.h"
+#include "PipelineLayout.h"
+#include "RenderStates.h"
 
 namespace CGE
 {
@@ -22,6 +26,7 @@ namespace CGE
             virtual ~PipelineStateDescriptor() = default;
             PipelineStateType GetType() const;
             bool operator==(const PipelineStateDescriptor& rhs) const;
+            virtual HashValue64 GetHash() const = 0;
 
             ConstPtr<PipelineLayout> m_pipelineLayoutDescriptor = nullptr;
 
@@ -37,12 +42,13 @@ namespace CGE
         public:
             PipelineStateDescriptorForDraw();
             bool operator==(const PipelineStateDescriptorForDraw& rhs) const;
+            HashValue64 GetHash() const override;
 
             ConstPtr<ShaderStageFunction> m_vertexFunction;
             ConstPtr<ShaderStageFunction> m_fragmentFunction;
-            // InputStreamLayout m_inputStreamLayout;
+            InputStreamLayout m_inputStreamLayout;
+            RenderStates m_renderStates;
             // RenderAttachmentConfiguration m_renderAttachmentConfiguration;
-            // RenderStates m_renderStates;
         };
 	}
 }

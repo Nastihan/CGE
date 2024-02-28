@@ -89,6 +89,8 @@ namespace CGE
         {
         public:
             InputStreamLayout();
+            bool operator==(const InputStreamLayout& rhs) const;
+
             void Clear();
             bool Finalize();
             bool IsFinalized() const;
@@ -101,8 +103,6 @@ namespace CGE
             std::span<const StreamChannelDescriptor> GetStreamChannels() const;
             std::span<const StreamBufferDescriptor> GetStreamBuffers() const;
             HashValue64 GetHash() const;
-
-            bool operator==(const InputStreamLayout& rhs) const;
 
         private:
             PrimitiveTopology m_topology = PrimitiveTopology::Undefined;

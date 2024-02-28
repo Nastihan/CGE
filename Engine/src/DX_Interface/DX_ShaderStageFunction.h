@@ -21,6 +21,7 @@ namespace CGE
         private:
             DX_ShaderStageFunction() = default;
             DX_ShaderStageFunction(RHI::ShaderStage shaderStage);
+            RHI::ResultCode FinalizeInternal() override;
 
             wrl::ComPtr<ID3DBlob> m_shaderBlob;
         };

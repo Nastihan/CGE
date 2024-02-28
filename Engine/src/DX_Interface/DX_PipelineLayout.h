@@ -9,7 +9,10 @@ namespace CGE
 	{
 		class DX_PipelineLayout : public RHI::PipelineLayout
 		{
-
+		public:
+			static RHI::Ptr<DX_PipelineLayout> Create();
+		private:
+			DX_PipelineLayout() = default;
 		};
 	}
 }

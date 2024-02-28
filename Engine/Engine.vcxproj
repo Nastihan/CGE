@@ -83,6 +83,7 @@
     <ClCompile Include="src\RHI\PipelineStateDescriptor.cpp" />
     <ClCompile Include="src\RHI\PlatformLimitsDescriptor.cpp" />
     <ClCompile Include="src\RHI\PoolAllocator.cpp" />
+    <ClCompile Include="src\RHI\RenderStates.cpp" />
     <ClCompile Include="src\RHI\Resource.cpp" />
     <ClCompile Include="src\RHI\ResourcePool.cpp" />
     <ClCompile Include="src\RHI\ResourceView.cpp" />
@@ -183,6 +184,7 @@
     <ClInclude Include="src\RHI\PipelineStateDescriptor.h" />
     <ClInclude Include="src\RHI\PlatformLimitsDescriptor.h" />
     <ClInclude Include="src\RHI\PoolAllocator.h" />
+    <ClInclude Include="src\RHI\RenderStates.h" />
     <ClInclude Include="src\RHI\Resource.h" />
     <ClInclude Include="src\RHI\ResourcePool.h" />
     <ClInclude Include="src\RHI\ResourcePoolDescriptor.h" />

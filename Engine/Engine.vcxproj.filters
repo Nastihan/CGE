@@ -276,6 +276,9 @@
     <ClCompile Include="src\RHI\InputStreamLayout.cpp">
       <Filter>Source Files\RHI</Filter>
     </ClCompile>
+    <ClCompile Include="src\RHI\RenderStates.cpp">
+      <Filter>Source Files\RHI</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\DX_Interface\DX_Device.h">
@@ -579,6 +582,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\RHI\InputStreamLayout.h">
+      <Filter>Header Files\RHI</Filter>
+    </ClInclude>
+    <ClInclude Include="src\RHI\RenderStates.h">
       <Filter>Header Files\RHI</Filter>
     </ClInclude>
   </ItemGroup>
