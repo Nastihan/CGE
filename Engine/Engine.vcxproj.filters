@@ -34,6 +34,24 @@
     <Filter Include="Shaders">
       <UniqueIdentifier>{949d0208-04a6-4fae-a068-0abecb249cbe}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\DX\Memory">
+      <UniqueIdentifier>{d55102a0-20d9-4835-a2cd-6b487daf815d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\RHI\Memory">
+      <UniqueIdentifier>{dbae9433-08c6-4834-ba17-0fdb3b8227a6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\DX\Memory">
+      <UniqueIdentifier>{142a180b-35a8-4463-b79a-b88852d8d80a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\RHI\Memory">
+      <UniqueIdentifier>{141876c1-b138-40d4-8f3b-a03b7a2a2055}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\RHI\Allocator">
+      <UniqueIdentifier>{4e0872fe-de8e-40a1-9668-b02bfbb4690b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\RHI\Allocator">
+      <UniqueIdentifier>{2aff9e2b-1e0c-49fb-99a2-ada7d2245999}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Main.cpp">
@@ -117,15 +135,6 @@
     <ClCompile Include="src\DX_Interface\DX_DescriptorPool.cpp">
       <Filter>Source Files\DX</Filter>
     </ClCompile>
-    <ClCompile Include="src\RHI\Allocator.cpp">
-      <Filter>Source Files\RHI</Filter>
-    </ClCompile>
-    <ClCompile Include="src\RHI\FreeListAllocator.cpp">
-      <Filter>Source Files\RHI</Filter>
-    </ClCompile>
-    <ClCompile Include="src\RHI\PoolAllocator.cpp">
-      <Filter>Source Files\RHI</Filter>
-    </ClCompile>
     <ClCompile Include="src\DX_Interface\DX_CommandQueueContext.cpp">
       <Filter>Source Files\DX</Filter>
     </ClCompile>
@@ -147,28 +156,127 @@
     <ClCompile Include="src\RHI\ClearValue.cpp">
       <Filter>Source Files\RHI</Filter>
     </ClCompile>
-    <ClCompile Include="src\DX_Interface\DX_MemoryView.cpp">
-      <Filter>Source Files\DX</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DX_Interface\DX_BufferMemoryView.cpp">
-      <Filter>Source Files\DX</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DX_Interface\DX_MemoryPageAllocator.cpp">
-      <Filter>Source Files\DX</Filter>
-    </ClCompile>
-    <ClCompile Include="src\RHI\MemoryUsage.cpp">
-      <Filter>Source Files\RHI</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DX_Interface\DX_BufferMemoryAllocator.cpp">
-      <Filter>Source Files\DX</Filter>
-    </ClCompile>
-    <ClCompile Include="src\RHI\Resource.cpp">
-      <Filter>Source Files\RHI</Filter>
-    </ClCompile>
     <ClCompile Include="src\RHI\TypeHash.cpp">
       <Filter>Source Files\RHI</Filter>
     </ClCompile>
+    <ClCompile Include="src\DX_Interface\DX_BufferMemoryAllocator.cpp">
+      <Filter>Source Files\DX\Memory</Filter>
+    </ClCompile>
+    <ClCompile Include="src\DX_Interface\DX_BufferMemoryView.cpp">
+      <Filter>Source Files\DX\Memory</Filter>
+    </ClCompile>
+    <ClCompile Include="src\DX_Interface\DX_MemoryPageAllocator.cpp">
+      <Filter>Source Files\DX\Memory</Filter>
+    </ClCompile>
+    <ClCompile Include="src\DX_Interface\DX_MemoryView.cpp">
+      <Filter>Source Files\DX\Memory</Filter>
+    </ClCompile>
+    <ClCompile Include="src\RHI\Allocator.cpp">
+      <Filter>Source Files\RHI\Allocator</Filter>
+    </ClCompile>
+    <ClCompile Include="src\RHI\FreeListAllocator.cpp">
+      <Filter>Source Files\RHI\Allocator</Filter>
+    </ClCompile>
+    <ClCompile Include="src\RHI\MemoryUsage.cpp">
+      <Filter>Source Files\RHI\Memory</Filter>
+    </ClCompile>
+    <ClCompile Include="src\RHI\PoolAllocator.cpp">
+      <Filter>Source Files\RHI\Allocator</Filter>
+    </ClCompile>
+    <ClCompile Include="src\RHI\Resource.cpp">
+      <Filter>Source Files\RHI\Memory</Filter>
+    </ClCompile>
+    <ClCompile Include="src\RHI\ResourcePool.cpp">
+      <Filter>Source Files\RHI\Memory</Filter>
+    </ClCompile>
     <ClCompile Include="src\RHI\ResourceView.cpp">
+      <Filter>Source Files\RHI\Memory</Filter>
+    </ClCompile>
+    <ClCompile Include="src\RHI\BufferView.cpp">
+      <Filter>Source Files\RHI\Memory</Filter>
+    </ClCompile>
+    <ClCompile Include="src\RHI\BufferViewDescriptor.cpp">
+      <Filter>Source Files\RHI\Memory</Filter>
+    </ClCompile>
+    <ClCompile Include="src\RHI\Format.cpp">
+      <Filter>Source Files\RHI</Filter>
+    </ClCompile>
+    <ClCompile Include="src\RHI\Buffer.cpp">
+      <Filter>Source Files\RHI\Memory</Filter>
+    </ClCompile>
+    <ClCompile Include="src\RHI\BufferDescriptor.cpp">
+      <Filter>Source Files\RHI\Memory</Filter>
+    </ClCompile>
+    <ClCompile Include="src\RHI\BufferPool.cpp">
+      <Filter>Source Files\RHI\Memory</Filter>
+    </ClCompile>
+    <ClCompile Include="src\DX_Interface\DX_BufferView.cpp">
+      <Filter>Source Files\DX\Memory</Filter>
+    </ClCompile>
+    <ClCompile Include="src\DX_Interface\DX_Buffer.cpp">
+      <Filter>Source Files\DX\Memory</Filter>
+    </ClCompile>
+    <ClCompile Include="src\DX_Interface\DX_BufferPool.cpp">
+      <Filter>Source Files\DX\Memory</Filter>
+    </ClCompile>
+    <ClCompile Include="src\RHI\PlatformLimitsDescriptor.cpp">
+      <Filter>Source Files\RHI</Filter>
+    </ClCompile>
+    <ClCompile Include="src\DX_Interface\DX_PlatformLimitsDescriptor.cpp">
+      <Filter>Source Files\DX</Filter>
+    </ClCompile>
+    <ClCompile Include="src\DX_Interface\DX_BufferPoolDescriptor.cpp">
+      <Filter>Source Files\DX\Memory</Filter>
+    </ClCompile>
+    <ClCompile Include="src\DX_Interface\DX_BufferPoolResolver.cpp">
+      <Filter>Source Files\DX\Memory</Filter>
+    </ClCompile>
+    <ClCompile Include="src\DX_Interface\DX_StagingMemoryAllocator.cpp">
+      <Filter>Source Files\DX\Memory</Filter>
+    </ClCompile>
+    <ClCompile Include="src\RHI\LinearAllocator.cpp">
+      <Filter>Source Files\RHI\Allocator</Filter>
+    </ClCompile>
+    <ClCompile Include="src\RHI\BufferSystem.cpp">
+      <Filter>Source Files\RHI\Memory</Filter>
+    </ClCompile>
+    <ClCompile Include="src\RHI\StreamBufferView.cpp">
+      <Filter>Source Files\RHI</Filter>
+    </ClCompile>
+    <ClCompile Include="src\RHI\IndexBufferView.cpp">
+      <Filter>Source Files\RHI</Filter>
+    </ClCompile>
+    <ClCompile Include="src\RHI\PipelineState.cpp">
+      <Filter>Source Files\RHI</Filter>
+    </ClCompile>
+    <ClCompile Include="src\RHI\PipelineStateDescriptor.cpp">
+      <Filter>Source Files\RHI</Filter>
+    </ClCompile>
+    <ClCompile Include="src\RHI\ShaderStageFunction.cpp">
+      <Filter>Source Files\RHI</Filter>
+    </ClCompile>
+    <ClCompile Include="src\DX_Interface\DX_ShaderStageFunction.cpp">
+      <Filter>Source Files\DX</Filter>
+    </ClCompile>
+    <ClCompile Include="src\DX_Interface\DX_PipelineState.cpp">
+      <Filter>Source Files\DX</Filter>
+    </ClCompile>
+    <ClCompile Include="src\RHI\PipelineLayout.cpp">
+      <Filter>Source Files\RHI</Filter>
+    </ClCompile>
+    <ClCompile Include="src\DX_Interface\DX_PipelineLayout.cpp">
+      <Filter>Source Files\DX</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Scene.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\MeshBuilder.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\RHI\InputStreamLayout.cpp">
+      <Filter>Source Files\RHI</Filter>
+    </ClCompile>
+    <ClCompile Include="src\RHI\RenderStates.cpp">
       <Filter>Source Files\RHI</Filter>
     </ClCompile>
   </ItemGroup>
@@ -290,18 +398,6 @@
     <ClInclude Include="src\DX_Interface\DX_DescriptorPool.h">
       <Filter>Header Files\DX</Filter>
     </ClInclude>
-    <ClInclude Include="src\RHI\Allocator.h">
-      <Filter>Header Files\RHI</Filter>
-    </ClInclude>
-    <ClInclude Include="src\RHI\FreeListAllocator.h">
-      <Filter>Header Files\RHI</Filter>
-    </ClInclude>
-    <ClInclude Include="src\RHI\Handle.h">
-      <Filter>Header Files\RHI</Filter>
-    </ClInclude>
-    <ClInclude Include="src\RHI\PoolAllocator.h">
-      <Filter>Header Files\RHI</Filter>
-    </ClInclude>
     <ClInclude Include="src\DX_Interface\DX_CommandQueueContext.h">
       <Filter>Header Files\DX</Filter>
     </ClInclude>
@@ -329,49 +425,166 @@
     <ClInclude Include="src\RHI\ClearValue.h">
       <Filter>Header Files\RHI</Filter>
     </ClInclude>
-    <ClInclude Include="src\DX_Interface\DX_MemoryView.h">
-      <Filter>Header Files\DX</Filter>
-    </ClInclude>
-    <ClInclude Include="src\RHI\MemoryAllocation.h">
-      <Filter>Header Files\RHI</Filter>
-    </ClInclude>
-    <ClInclude Include="src\RHI\MemoryEnums.h">
-      <Filter>Header Files\RHI</Filter>
-    </ClInclude>
-    <ClInclude Include="src\RHI\BufferDescriptor.h">
-      <Filter>Header Files\RHI</Filter>
-    </ClInclude>
     <ClInclude Include="src\RHI\AttachmentEnums.h">
       <Filter>Header Files\RHI</Filter>
-    </ClInclude>
-    <ClInclude Include="src\DX_Interface\DX_BufferMemoryView.h">
-      <Filter>Header Files\DX</Filter>
-    </ClInclude>
-    <ClInclude Include="src\DX_Interface\DX_MemoryPageAllocator.h">
-      <Filter>Header Files\DX</Filter>
-    </ClInclude>
-    <ClInclude Include="src\RHI\MemoryUsage.h">
-      <Filter>Header Files\RHI</Filter>
-    </ClInclude>
-    <ClInclude Include="src\RHI\MemorySubAllocator.h">
-      <Filter>Header Files\RHI</Filter>
-    </ClInclude>
-    <ClInclude Include="src\DX_Interface\DX_BufferMemoryAllocator.h">
-      <Filter>Header Files\DX</Filter>
-    </ClInclude>
-    <ClInclude Include="src\DX_Interface\DX_MemorySubAllocator.h">
-      <Filter>Header Files\DX</Filter>
     </ClInclude>
     <ClInclude Include="src\DX_Interface\DX_ReleaseQueue.h">
       <Filter>Header Files\DX</Filter>
     </ClInclude>
-    <ClInclude Include="src\RHI\Resource.h">
-      <Filter>Header Files\RHI</Filter>
-    </ClInclude>
     <ClInclude Include="src\RHI\TypeHash.h">
       <Filter>Header Files\RHI</Filter>
     </ClInclude>
+    <ClInclude Include="src\DX_Interface\DX_BufferMemoryAllocator.h">
+      <Filter>Header Files\DX\Memory</Filter>
+    </ClInclude>
+    <ClInclude Include="src\DX_Interface\DX_BufferMemoryView.h">
+      <Filter>Header Files\DX\Memory</Filter>
+    </ClInclude>
+    <ClInclude Include="src\DX_Interface\DX_MemoryView.h">
+      <Filter>Header Files\DX\Memory</Filter>
+    </ClInclude>
+    <ClInclude Include="src\RHI\BufferDescriptor.h">
+      <Filter>Header Files\RHI\Memory</Filter>
+    </ClInclude>
+    <ClInclude Include="src\RHI\MemoryAllocation.h">
+      <Filter>Header Files\RHI\Memory</Filter>
+    </ClInclude>
+    <ClInclude Include="src\RHI\MemoryEnums.h">
+      <Filter>Header Files\RHI\Memory</Filter>
+    </ClInclude>
+    <ClInclude Include="src\RHI\MemorySubAllocator.h">
+      <Filter>Header Files\RHI\Memory</Filter>
+    </ClInclude>
+    <ClInclude Include="src\RHI\MemoryUsage.h">
+      <Filter>Header Files\RHI\Memory</Filter>
+    </ClInclude>
+    <ClInclude Include="src\RHI\Resource.h">
+      <Filter>Header Files\RHI\Memory</Filter>
+    </ClInclude>
+    <ClInclude Include="src\RHI\ResourcePool.h">
+      <Filter>Header Files\RHI\Memory</Filter>
+    </ClInclude>
     <ClInclude Include="src\RHI\ResourceView.h">
+      <Filter>Header Files\RHI\Memory</Filter>
+    </ClInclude>
+    <ClInclude Include="src\DX_Interface\DX_MemoryPageAllocator.h">
+      <Filter>Header Files\DX\Memory</Filter>
+    </ClInclude>
+    <ClInclude Include="src\DX_Interface\DX_MemorySubAllocator.h">
+      <Filter>Header Files\DX\Memory</Filter>
+    </ClInclude>
+    <ClInclude Include="src\RHI\Allocator.h">
+      <Filter>Header Files\RHI\Allocator</Filter>
+    </ClInclude>
+    <ClInclude Include="src\RHI\FreeListAllocator.h">
+      <Filter>Header Files\RHI\Allocator</Filter>
+    </ClInclude>
+    <ClInclude Include="src\RHI\PoolAllocator.h">
+      <Filter>Header Files\RHI\Allocator</Filter>
+    </ClInclude>
+    <ClInclude Include="src\RHI\Handle.h">
+      <Filter>Header Files\RHI\Allocator</Filter>
+    </ClInclude>
+    <ClInclude Include="src\RHI\ResourcePoolDescriptor.h">
+      <Filter>Header Files\RHI\Memory</Filter>
+    </ClInclude>
+    <ClInclude Include="src\RHI\BufferView.h">
+      <Filter>Header Files\RHI\Memory</Filter>
+    </ClInclude>
+    <ClInclude Include="src\RHI\BufferViewDescriptor.h">
+      <Filter>Header Files\RHI\Memory</Filter>
+    </ClInclude>
+    <ClInclude Include="src\RHI\Buffer.h">
+      <Filter>Header Files\RHI\Memory</Filter>
+    </ClInclude>
+    <ClInclude Include="src\RHI\BufferPool.h">
+      <Filter>Header Files\RHI\Memory</Filter>
+    </ClInclude>
+    <ClInclude Include="src\RHI\BufferPoolDescriptor.h">
+      <Filter>Header Files\RHI\Memory</Filter>
+    </ClInclude>
+    <ClInclude Include="src\DX_Interface\DX_BufferView.h">
+      <Filter>Header Files\DX\Memory</Filter>
+    </ClInclude>
+    <ClInclude Include="src\DX_Interface\DX_Buffer.h">
+      <Filter>Header Files\DX\Memory</Filter>
+    </ClInclude>
+    <ClInclude Include="src\DX_Interface\DX_BufferPool.h">
+      <Filter>Header Files\DX\Memory</Filter>
+    </ClInclude>
+    <ClInclude Include="src\RHI\PlatformLimitsDescriptor.h">
+      <Filter>Header Files\RHI</Filter>
+    </ClInclude>
+    <ClInclude Include="src\DX_Interface\DX_PlatformLimitsDescriptor.h">
+      <Filter>Header Files\DX</Filter>
+    </ClInclude>
+    <ClInclude Include="src\DX_Interface\DX_BufferPoolDescriptor.h">
+      <Filter>Header Files\DX\Memory</Filter>
+    </ClInclude>
+    <ClInclude Include="src\DX_Interface\DX_ResourcePoolResolver.h">
+      <Filter>Header Files\DX\Memory</Filter>
+    </ClInclude>
+    <ClInclude Include="src\DX_Interface\DX_BufferPoolResolver.h">
+      <Filter>Header Files\DX\Memory</Filter>
+    </ClInclude>
+    <ClInclude Include="src\DX_Interface\DX_StagingMemoryAllocator.h">
+      <Filter>Header Files\DX\Memory</Filter>
+    </ClInclude>
+    <ClInclude Include="src\RHI\LinearAllocator.h">
+      <Filter>Header Files\RHI\Allocator</Filter>
+    </ClInclude>
+    <ClInclude Include="src\RHI\MemoryLinearSubAllocator.h">
+      <Filter>Header Files\RHI\Memory</Filter>
+    </ClInclude>
+    <ClInclude Include="src\RHI\intrusive_refcount.h">
+      <Filter>Header Files\RHI</Filter>
+    </ClInclude>
+    <ClInclude Include="src\RHI\intrusive_base.h">
+      <Filter>Header Files\RHI</Filter>
+    </ClInclude>
+    <ClInclude Include="src\RHI\BufferSystem.h">
+      <Filter>Header Files\RHI\Memory</Filter>
+    </ClInclude>
+    <ClInclude Include="src\RHI\DrawItem.h">
+      <Filter>Header Files\RHI</Filter>
+    </ClInclude>
+    <ClInclude Include="src\RHI\StreamBufferView.h">
+      <Filter>Header Files\RHI</Filter>
+    </ClInclude>
+    <ClInclude Include="src\RHI\IndexBufferView.h">
+      <Filter>Header Files\RHI</Filter>
+    </ClInclude>
+    <ClInclude Include="src\RHI\PipelineState.h">
+      <Filter>Header Files\RHI</Filter>
+    </ClInclude>
+    <ClInclude Include="src\RHI\PipelineStateDescriptor.h">
+      <Filter>Header Files\RHI</Filter>
+    </ClInclude>
+    <ClInclude Include="src\RHI\ShaderStageFunction.h">
+      <Filter>Header Files\RHI</Filter>
+    </ClInclude>
+    <ClInclude Include="src\DX_Interface\DX_ShaderStageFunction.h">
+      <Filter>Header Files\DX</Filter>
+    </ClInclude>
+    <ClInclude Include="src\DX_Interface\DX_PipelineState.h">
+      <Filter>Header Files\DX</Filter>
+    </ClInclude>
+    <ClInclude Include="src\RHI\PipelineLayout.h">
+      <Filter>Header Files\RHI</Filter>
+    </ClInclude>
+    <ClInclude Include="src\DX_Interface\DX_PipelineLayout.h">
+      <Filter>Header Files\DX</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Scene.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\MeshBuilder.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\RHI\InputStreamLayout.h">
+      <Filter>Header Files\RHI</Filter>
+    </ClInclude>
+    <ClInclude Include="src\RHI\RenderStates.h">
       <Filter>Header Files\RHI</Filter>
     </ClInclude>
   </ItemGroup>

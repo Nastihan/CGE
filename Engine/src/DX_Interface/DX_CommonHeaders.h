@@ -20,6 +20,8 @@
 
 namespace wrl = Microsoft::WRL;
 
+// This will call addref and release on the underlying dx interface object
+// This will allow us the tranfer from ComPtr to intrusive_ptr
 #define DX12_REFCOUNTED(DXTypeName) \
     namespace CGE \
     { \

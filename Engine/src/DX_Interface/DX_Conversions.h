@@ -2,6 +2,7 @@
 
 // DX12
 #include "DX_CommonHeaders.h"
+#include "DX_Buffer.h"
 
 // RHI
 #include "../RHI/CommandQueue.h"
@@ -9,6 +10,7 @@
 #include "../RHI/SwapChainDescriptor.h"
 #include "../RHI/MemoryEnums.h"
 #include "../RHI/BufferDescriptor.h"
+#include "../RHI/BufferViewDescriptor.h"
 
 namespace CGE
 {
@@ -29,5 +31,9 @@ namespace CGE
 		void ConvertBufferDescriptor(const RHI::BufferDescriptor& descriptor, D3D12_RESOURCE_DESC& resourceDesc);
 
 		D3D12_RESOURCE_FLAGS ConvertBufferBindFlags(RHI::BufferBindFlags bufferFlags);
+
+		void ConvertBufferView(const DX_Buffer& buffer, const RHI::BufferViewDescriptor& bufferViewDescriptor, D3D12_SHADER_RESOURCE_VIEW_DESC& shaderResourceView);
+		void ConvertBufferView(const DX_Buffer& buffer, const RHI::BufferViewDescriptor& bufferViewDescriptor, D3D12_UNORDERED_ACCESS_VIEW_DESC& unorderedAccessView);
+		void ConvertBufferView(const DX_Buffer& buffer, const RHI::BufferViewDescriptor& bufferViewDescriptor, D3D12_CONSTANT_BUFFER_VIEW_DESC& constantBufferView);
 	}
 }

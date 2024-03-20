@@ -16,6 +16,10 @@ namespace CGE
 			RHI::Ptr<RHI::Device> CreateDevice() override;
 			RHI::Ptr<RHI::SwapChain> CreateSwapChain() override;
 			RHI::Ptr<RHI::FrameGraphExecuter> CreateFrameGraphExecuter() override;
+
+			RHI::Ptr<RHI::BufferView> CreateBufferView() override;
+			RHI::Ptr<RHI::Buffer> CreateBuffer() override;
+			RHI::Ptr<RHI::BufferPool> CreateBufferPool() override;
 		};
 	}
 }

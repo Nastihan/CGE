@@ -5,6 +5,7 @@
 #include "DeviceFeatures.h"
 #include "DeviceLimits.h"
 #include "Object.h"
+#include "PlatformLimitsDescriptor.h"
 
 // std
 #include <memory>
@@ -24,6 +25,7 @@ namespace CGE
 			SwapChain* GetSwapChain();
 			void EndFrame();
 			ResultCode WaitForIdle();
+			const PlatformLimitsDescriptor& GetPlatformLimitsDescriptor() const;
 
 		protected:
 		private:
@@ -36,7 +38,7 @@ namespace CGE
 		protected:
 			DeviceFeatures m_features;
 			DeviceLimits m_deviceLimits;
-			//[todo] add device descriptor which houses frames in flight
+			RHI::Ptr<PlatformLimitsDescriptor> m_platformLimitsDescriptor = nullptr;
 		private:
 			RHI::Ptr<PhysicalDevice> m_physicalDevice;
 			RHI::Ptr<SwapChain> m_swapChain;

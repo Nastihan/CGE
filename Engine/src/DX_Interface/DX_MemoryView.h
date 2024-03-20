@@ -32,9 +32,9 @@ namespace CGE
 			DX_MemoryView(const DX_MemoryAllocation& memoryAllocation, DX_MemoryViewType viewType);
 
 			DX_MemoryView(const DX_MemoryView& rhs) = default;
-			DX_MemoryView(DX_MemoryView && rhs) = default;
-			DX_MemoryView& operator=(const DX_MemoryView & rhs) = default;
-			DX_MemoryView& operator=(DX_MemoryView && rhs) = default;
+			DX_MemoryView(DX_MemoryView&& rhs) = default;
+			DX_MemoryView& operator=(const DX_MemoryView& rhs) = default;
+			DX_MemoryView& operator=(DX_MemoryView&& rhs) = default;
 
 			bool IsValid() const;
 

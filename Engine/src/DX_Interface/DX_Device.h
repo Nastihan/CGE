@@ -6,6 +6,7 @@
 #include "DX_CommandQueueContext.h"
 #include "DX_DescriptorContext.h"
 #include "DX_ReleaseQueue.h"
+#include "DX_StagingMemoryAllocator.h"
 
 // RHI
 #include "../RHI/RHI_Common.h"
@@ -43,12 +44,14 @@ namespace CGE
 			// The CommandList and allocator will get collected every frame in DX_Device::EndFrameInternal (deferred release)
 			DX_CommandList* AcquireCommandList(RHI::HardwareQueueClass hardwareQueueClass);
 
+			// Memory
+			DX_MemoryView AcquireStagingMemory(size_t size, size_t alignment);
 			DX_MemoryView CreateBufferCommitted(const RHI::BufferDescriptor& bufferDescriptor, D3D12_RESOURCE_STATES initialState, D3D12_HEAP_TYPE heapType);
 
 			void QueueForRelease(RHI::Ptr<ID3D12Object> dxObject);
 			void QueueForRelease(const DX_MemoryView memoryView);
 		private:
-			DX_Device() = default;
+			DX_Device();
 			REMOVE_COPY_AND_MOVE(DX_Device);
 
 			// RHI
@@ -76,6 +79,8 @@ namespace CGE
 			DX_CommandQueueContext m_commandQueueContext;
 
 			DX_ReleaseQueue m_releaseQueue;
+
+			DX_StagingMemoryAllocator m_stagingMemoryAllocator;
 		};
 	}
 }

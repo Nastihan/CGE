@@ -184,5 +184,8 @@ namespace CGE
 
             Count
         };
+
+        // Size in bytes.
+        uint32_t GetFormatSize(Format format);
 	}
 }

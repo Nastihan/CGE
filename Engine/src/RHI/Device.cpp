@@ -35,5 +35,10 @@ namespace CGE
 			WaitForIdleInternal();
 			return ResultCode::Success;
 		}
+
+		const PlatformLimitsDescriptor& Device::GetPlatformLimitsDescriptor() const
+		{
+			return *m_platformLimitsDescriptor;
+		}
 	}
 }
