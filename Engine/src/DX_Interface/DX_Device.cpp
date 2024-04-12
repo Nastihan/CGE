@@ -232,6 +232,45 @@ namespace CGE
 			return DX_MemoryView(resource.Get(), 0, allocationInfo.SizeInBytes, allocationInfo.Alignment, DX_MemoryViewType::Buffer);
 		}
 
+		DX_MemoryView DX_Device::CreateImageCommitted(const RHI::ImageDescriptor& imageDescriptor, const RHI::ClearValue* optimizedClearValue, D3D12_RESOURCE_STATES initialState, D3D12_HEAP_TYPE heapType)
+		{
+			D3D12_RESOURCE_DESC resourceDesc;
+			ConvertImageDescriptor(imageDescriptor, resourceDesc);
+			CD3DX12_HEAP_PROPERTIES heapProperties(heapType);
+
+			// Clear values only apply when the image is a render target or depth stencil.
+			const bool isOutputMergerAttachment = RHI::CheckBitsAny(static_cast<uint32_t>(imageDescriptor.m_bindFlags), static_cast<uint32_t>(RHI::ImageBindFlags::Color | RHI::ImageBindFlags::DepthStencil));
+
+			D3D12_CLEAR_VALUE clearValue;
+			if (isOutputMergerAttachment && optimizedClearValue)
+			{
+				clearValue = ConvertClearValue(imageDescriptor.m_format, *optimizedClearValue);
+			}
+
+			Microsoft::WRL::ComPtr<ID3D12Resource> resource;
+			HRESULT result = m_device->CreateCommittedResource(
+				&heapProperties,
+				D3D12_HEAP_FLAG_NONE,
+				&resourceDesc,
+				initialState,
+				(isOutputMergerAttachment && optimizedClearValue) ? &clearValue : nullptr,
+				IID_PPV_ARGS(resource.GetAddressOf()));
+			DXAssertSuccess(result);
+
+			D3D12_RESOURCE_ALLOCATION_INFO allocationInfo;
+			GetImageAllocationInfo(imageDescriptor, allocationInfo);
+
+			return DX_MemoryView(resource.Get(), 0, allocationInfo.SizeInBytes, allocationInfo.Alignment, DX_MemoryViewType::Image);
+		}
+
+		void DX_Device::GetImageAllocationInfo(const RHI::ImageDescriptor& descriptor, D3D12_RESOURCE_ALLOCATION_INFO& info)
+		{
+			D3D12_RESOURCE_DESC resourceDesc;
+			ConvertImageDescriptor(descriptor, resourceDesc);
+			info = m_device->GetResourceAllocationInfo(0, 1, &resourceDesc);
+			assert(info.SizeInBytes != uint64_t(-1));
+		}
+
 		void DX_Device::QueueForRelease(RHI::Ptr<ID3D12Object> dxObject)
 		{
 			m_releaseQueue.QueueForCollect(std::move(dxObject));

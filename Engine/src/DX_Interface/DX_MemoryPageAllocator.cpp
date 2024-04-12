@@ -30,12 +30,8 @@ namespace CGE
 
 			if (memoryView.IsValid())
 			{
-				heapMemoryUsage.m_residentInBytes -= m_descriptor.m_pageSizeInBytes;
+				heapMemoryUsage.m_totalResidentInBytes += m_descriptor.m_pageSizeInBytes;
 				memoryView.SetName(L"BufferPage");
-			}
-			else
-			{
-				heapMemoryUsage.m_reservedInBytes -= m_descriptor.m_pageSizeInBytes;
 			}
 			
 			return memoryView.GetMemory();
@@ -44,12 +40,11 @@ namespace CGE
 		void DX_MemoryPageFactory::ShutdownObject(DX_Memory& memory, bool isPoolShutdown)
 		{
 			RHI::HeapMemoryUsage& heapMemoryUsage = *m_descriptor.m_getHeapMemoryUsageFunction();
-			heapMemoryUsage.m_residentInBytes -= m_descriptor.m_pageSizeInBytes;
-			heapMemoryUsage.m_residentInBytes -= m_descriptor.m_pageSizeInBytes;
+			heapMemoryUsage.m_totalResidentInBytes -= m_descriptor.m_pageSizeInBytes;
 
 			if (isPoolShutdown)
 			{
-				// [todo] shutdown with object collector
+				m_descriptor.m_device->QueueForRelease(&memory);
 			}
 		}
 

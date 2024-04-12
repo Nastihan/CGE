@@ -279,6 +279,42 @@
     <ClCompile Include="src\RHI\RenderStates.cpp">
       <Filter>Source Files\RHI</Filter>
     </ClCompile>
+    <ClCompile Include="src\RHI\ImageView.cpp">
+      <Filter>Source Files\RHI\Memory</Filter>
+    </ClCompile>
+    <ClCompile Include="src\RHI\ImageViewDescriptor.cpp">
+      <Filter>Source Files\RHI\Memory</Filter>
+    </ClCompile>
+    <ClCompile Include="src\RHI\ImageDescriptor.cpp">
+      <Filter>Source Files\RHI\Memory</Filter>
+    </ClCompile>
+    <ClCompile Include="src\RHI\MultisampleState.cpp">
+      <Filter>Source Files\RHI</Filter>
+    </ClCompile>
+    <ClCompile Include="src\RHI\Image.cpp">
+      <Filter>Source Files\RHI\Memory</Filter>
+    </ClCompile>
+    <ClCompile Include="src\RHI\ImagePool.cpp">
+      <Filter>Source Files\RHI\Memory</Filter>
+    </ClCompile>
+    <ClCompile Include="src\RHI\ImageSubresource.cpp">
+      <Filter>Source Files\RHI\Memory</Filter>
+    </ClCompile>
+    <ClCompile Include="src\DX_Interface\DX_ImageView.cpp">
+      <Filter>Source Files\DX\Memory</Filter>
+    </ClCompile>
+    <ClCompile Include="src\DX_Interface\DX_Image.cpp">
+      <Filter>Source Files\DX\Memory</Filter>
+    </ClCompile>
+    <ClCompile Include="src\DX_Interface\DX_UploadQueue.cpp">
+      <Filter>Source Files\DX\Memory</Filter>
+    </ClCompile>
+    <ClCompile Include="src\DX_Interface\DX_ImagePool.cpp">
+      <Filter>Source Files\DX\Memory</Filter>
+    </ClCompile>
+    <ClCompile Include="src\DX_Interface\DX_ImagePoolResolver.cpp">
+      <Filter>Source Files\DX\Memory</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\DX_Interface\DX_Device.h">
@@ -586,6 +622,54 @@
     </ClInclude>
     <ClInclude Include="src\RHI\RenderStates.h">
       <Filter>Header Files\RHI</Filter>
+    </ClInclude>
+    <ClInclude Include="src\RHI\ImageView.h">
+      <Filter>Header Files\RHI\Memory</Filter>
+    </ClInclude>
+    <ClInclude Include="src\RHI\ImageViewDescriptor.h">
+      <Filter>Header Files\RHI\Memory</Filter>
+    </ClInclude>
+    <ClInclude Include="src\RHI\ImageDescriptor.h">
+      <Filter>Header Files\RHI\Memory</Filter>
+    </ClInclude>
+    <ClInclude Include="src\RHI\MultisampleState.h">
+      <Filter>Header Files\RHI</Filter>
+    </ClInclude>
+    <ClInclude Include="src\RHI\Image.h">
+      <Filter>Header Files\RHI\Memory</Filter>
+    </ClInclude>
+    <ClInclude Include="src\RHI\ImagePool.h">
+      <Filter>Header Files\RHI\Memory</Filter>
+    </ClInclude>
+    <ClInclude Include="src\RHI\ImagePoolDescriptor.h">
+      <Filter>Header Files\RHI\Memory</Filter>
+    </ClInclude>
+    <ClInclude Include="src\RHI\ImageEnums.h">
+      <Filter>Header Files\RHI\Memory</Filter>
+    </ClInclude>
+    <ClInclude Include="src\RHI\ImageSubresource.h">
+      <Filter>Header Files\RHI\Memory</Filter>
+    </ClInclude>
+    <ClInclude Include="src\DX_Interface\DX_ImageView.h">
+      <Filter>Header Files\DX\Memory</Filter>
+    </ClInclude>
+    <ClInclude Include="src\DX_Interface\DX_Image.h">
+      <Filter>Header Files\DX\Memory</Filter>
+    </ClInclude>
+    <ClInclude Include="src\DX_Interface\DX_UploadQueue.h">
+      <Filter>Header Files\DX\Memory</Filter>
+    </ClInclude>
+    <ClInclude Include="src\RHI\ImageProperty.h">
+      <Filter>Header Files\RHI\Memory</Filter>
+    </ClInclude>
+    <ClInclude Include="src\RHI\interval_map.h">
+      <Filter>Header Files\RHI</Filter>
+    </ClInclude>
+    <ClInclude Include="src\DX_Interface\DX_ImagePool.h">
+      <Filter>Header Files\DX\Memory</Filter>
+    </ClInclude>
+    <ClInclude Include="src\DX_Interface\DX_ImagePoolResolver.h">
+      <Filter>Header Files\DX\Memory</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

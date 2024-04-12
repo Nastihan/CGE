@@ -23,5 +23,13 @@ namespace CGE
 			Copy = (1u << static_cast<uint32_t>(HardwareQueueClass::Copy)),
 			All = (Graphics | Compute | Copy)
 		};
+
+		enum class ScopeAttachmentAccess : uint32_t
+		{
+			Unknown = 0,
+			Read = (1u << 0),
+			Write = (1u << 1),
+			ReadWrite = Read | Write
+		};
 	}
 }

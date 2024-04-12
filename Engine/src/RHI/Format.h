@@ -2,6 +2,7 @@
 
 // RHI
 #include "RHI_Common.h"
+#include "ImageEnums.h"
 
 namespace CGE
 {
@@ -187,5 +188,8 @@ namespace CGE
 
         // Size in bytes.
         uint32_t GetFormatSize(Format format);
+
+        // Image aspect flags supported by the format.
+        ImageAspectFlags GetImageAspectFlags(Format format);
 	}
 }

@@ -1,6 +1,7 @@
 
 // RHI
 #include "Format.h"
+#include "ImageViewDescriptor.h"
 
 namespace CGE
 {
@@ -164,6 +165,22 @@ namespace CGE
             default:
                 assert(false, "Unimplemented format");
                 return 0;
+            }
+        }
+
+        ImageAspectFlags GetImageAspectFlags(Format format)
+        {
+            switch (format)
+            {
+            case Format::D32_FLOAT_S8X24_UINT:
+            case Format::D16_UNORM_S8_UINT:
+            case Format::D24_UNORM_S8_UINT:
+                return ImageAspectFlags::DepthStencil;
+            case Format::D32_FLOAT:
+            case Format::D16_UNORM:
+                return ImageAspectFlags::Depth;
+            default:
+                return ImageAspectFlags::Color;
             }
         }
 	}

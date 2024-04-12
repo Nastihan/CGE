@@ -15,8 +15,8 @@ namespace CGE
 	{
         class DX_Device;
 
-        // This allocator will try to sub-allocate from existing buffer pages (not existing ID3D12Resources)
-        // This will help to not over commit GPU physical memory space (ID3D12Device::CreateCommitedResource)
+        // This allocator will try to sub-allocate from existing buffer pages (existing ID3D12Resources)
+        // Sub allocating will save us in alignment memory.
         // When sub-allocations is done you can use the Map/Unmap methods to copy data to the heap (DX_MemoryView).
         class DX_BufferMemoryAllocator
         {

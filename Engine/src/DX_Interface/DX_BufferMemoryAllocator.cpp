@@ -122,7 +122,7 @@ namespace CGE
         {
             const size_t alignedSize = RHI::AlignUp(bufferDescriptor.m_byteCount, DX_Alignment::CommittedBuffer);
             RHI::HeapMemoryUsage& heapMemoryUsage = *m_descriptor.m_getHeapMemoryUsageFunction();
-            if (!heapMemoryUsage.TryReserveMemory(alignedSize))
+            if (!heapMemoryUsage.CanAllocate(alignedSize))
             {
                 return DX_BufferMemoryView();
             }
@@ -132,11 +132,10 @@ namespace CGE
             DX_MemoryView memoryView = m_descriptor.m_device->CreateBufferCommitted(bufferDescriptor, initialResourceState, heapType);
             if (memoryView.IsValid())
             {
-                heapMemoryUsage.m_residentInBytes += alignedSize;
-            }
-            else
-            {
-                heapMemoryUsage.m_reservedInBytes -= alignedSize;
+                const size_t sizeInBytes = memoryView.GetSize();
+                heapMemoryUsage.m_totalResidentInBytes += sizeInBytes;
+                heapMemoryUsage.m_usedResidentInBytes += sizeInBytes;
+                heapMemoryUsage.m_uniqueAllocationBytes += sizeInBytes;
             }
 
             return DX_BufferMemoryView(std::move(memoryView), DX_BufferMemoryType::Unique);
@@ -145,11 +144,12 @@ namespace CGE
         void DX_BufferMemoryAllocator::DeAllocateUnique(const DX_BufferMemoryView& memoryView)
         {
             assert(memoryView.GetType() == DX_BufferMemoryType::Unique, "This call only supports unique BufferMemoryView allocations.");
+            
             const size_t sizeInBytes = memoryView.GetSize();
-
             RHI::HeapMemoryUsage& heapMemoryUsage = *m_descriptor.m_getHeapMemoryUsageFunction();
-            heapMemoryUsage.m_residentInBytes -= sizeInBytes;
-            heapMemoryUsage.m_reservedInBytes -= sizeInBytes;
+            heapMemoryUsage.m_totalResidentInBytes -= sizeInBytes;
+            heapMemoryUsage.m_usedResidentInBytes -= sizeInBytes;
+            heapMemoryUsage.m_uniqueAllocationBytes -= sizeInBytes;
 
             m_descriptor.m_device->QueueForRelease(memoryView);
         }

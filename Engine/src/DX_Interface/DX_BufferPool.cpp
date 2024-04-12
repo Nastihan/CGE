@@ -100,7 +100,21 @@ namespace CGE
 
         RHI::ResultCode DX_BufferPool::OrphanBufferInternal(RHI::Buffer& buffer)
         {
-            return RHI::ResultCode::Success;
+            DX_Buffer& dxBuffer = static_cast<DX_Buffer&>(buffer);
+
+            DX_BufferMemoryView newMemoryView = m_allocator.Allocate(buffer.GetDescriptor().m_byteCount);
+            if (newMemoryView.IsValid())
+            {
+                if (newMemoryView.GetType() == DX_BufferMemoryType::Unique && !buffer.GetName().empty())
+                {
+                    newMemoryView.SetName(buffer.GetName());
+                }
+                m_allocator.DeAllocate(dxBuffer.m_memoryView);
+                dxBuffer.m_memoryView = std::move(newMemoryView);
+                dxBuffer.InvalidateViews();
+                return RHI::ResultCode::Success;
+            }
+            return RHI::ResultCode::OutOfMemory;
         }
 
         RHI::ResultCode DX_BufferPool::MapBufferInternal(const RHI::BufferMapRequest& mapRequest, RHI::BufferMapResponse& response)

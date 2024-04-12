@@ -11,6 +11,8 @@
 // RHI
 #include "../RHI/RHI_Common.h"
 #include "../RHI/Device.h"
+#include "../RHI/ClearValue.h"
+#include "../RHI/ImageDescriptor.h"
 
 // std
 #include <vector>
@@ -47,6 +49,9 @@ namespace CGE
 			// Memory
 			DX_MemoryView AcquireStagingMemory(size_t size, size_t alignment);
 			DX_MemoryView CreateBufferCommitted(const RHI::BufferDescriptor& bufferDescriptor, D3D12_RESOURCE_STATES initialState, D3D12_HEAP_TYPE heapType);
+			DX_MemoryView CreateImageCommitted(const RHI::ImageDescriptor& imageDescriptor, const RHI::ClearValue* optimizedClearValue, D3D12_RESOURCE_STATES initialState, D3D12_HEAP_TYPE heapType);
+
+			void GetImageAllocationInfo(const RHI::ImageDescriptor& descriptor, D3D12_RESOURCE_ALLOCATION_INFO& info);
 
 			void QueueForRelease(RHI::Ptr<ID3D12Object> dxObject);
 			void QueueForRelease(const DX_MemoryView memoryView);

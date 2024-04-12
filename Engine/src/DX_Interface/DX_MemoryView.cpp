@@ -60,6 +60,7 @@ namespace CGE
 
 		void DX_MemoryView::Unmap(RHI::HostMemoryAccess hostAccess) const
 		{
+			// This parameter is only used by tooling, and not for correctness of the actual unmap operation.
 			D3D12_RANGE writeRange = {};
 			if (hostAccess == RHI::HostMemoryAccess::Write)
 			{

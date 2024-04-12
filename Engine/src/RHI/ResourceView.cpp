@@ -38,5 +38,23 @@ namespace CGE
 				DeviceObject::Shutdown();
 			}
 		}
+
+		ResultCode ResourceView::InvalidateResourceView()
+		{
+			ResultCode resultCode = InvalidateInternal();
+			if (resultCode == ResultCode::Success)
+			{
+				// Set the new version to the new resources version.
+				// This version will get increment evey time the underlying resource gets reinitialized.
+				m_version = m_resource->GetVersion();
+			}
+			return resultCode;
+		}
+
+		bool ResourceView::IsStale() const
+		{
+			// The resource is not valid if the underying resource has been reinitialized.
+			return m_resource && m_resource->GetVersion() != m_version;
+		}
 	}
 }

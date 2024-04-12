@@ -28,6 +28,8 @@ namespace CGE
 					constexpr uint64_t MediumStagingBufferPageSizeInBytes = 2ul * 1024 * 1024;
 					// 134MB page size
 					constexpr uint64_t LargestStagingBufferPageSizeInBytes = 128ul * 1024 * 1024;
+					// 4MB
+					constexpr uint64_t UploadQueueStagingBufferSizeInBytes = 4ul * 1024 * 1024;
 				}
 			} // namespace DefaultValues
 
@@ -38,6 +40,13 @@ namespace CGE
 				// Max channels in each vertex buffer
 				constexpr uint32_t StreamChannelCountMax = 16;
 				constexpr uint32_t AttachmentColorCountMax = 8;
+				constexpr uint32_t MultiSampleCustomLocationsCountMax = 16;
+				constexpr uint32_t MultiSampleCustomLocationGridSize = 16;
+			}
+
+			namespace Image
+			{
+				constexpr uint32_t MipCountMax = 15;
 			}
 		}
 	}

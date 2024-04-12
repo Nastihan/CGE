@@ -13,6 +13,7 @@ namespace CGE
             {
                 return ResultCode::InvalidOperation;
             }
+            // The view should not extend to outside the buffers memory.
             if (buffer.GetDescriptor().m_byteCount < (viewDescriptor.m_elementOffset + viewDescriptor.m_elementCount) * viewDescriptor.m_elementSize)
             {
                 return ResultCode::OutOfMemory;
@@ -38,6 +39,7 @@ namespace CGE
         {
             const BufferDescriptor& bufferDescriptor = GetBuffer().GetDescriptor();
             const uint32_t bufferViewSize = m_descriptor.m_elementCount * m_descriptor.m_elementSize;
+            // [todo] Why is it >= ?
             return m_descriptor.m_elementOffset == 0 && bufferViewSize >= bufferDescriptor.m_byteCount;
         }
 
@@ -48,6 +50,8 @@ namespace CGE
 
         bool BufferView::ValidateForInit(const Buffer& buffer, const BufferViewDescriptor& viewDescriptor) const
         {
+            // The view should not be initilized and the underlying buffer should be.
+            // The buffers bind flags should also match.
             return !IsInitialized() && buffer.IsInitialized() && 
                 CheckBitsAll(static_cast<uint32_t>(buffer.GetDescriptor().m_bindFlags), static_cast<uint32_t>(viewDescriptor.m_overrideBindFlags));
         }

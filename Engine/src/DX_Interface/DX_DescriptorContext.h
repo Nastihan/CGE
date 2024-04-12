@@ -7,6 +7,7 @@
 
 // RHI
 #include "../RHI/BufferViewDescriptor.h"
+#include "../RHI/ImageViewDescriptor.h"
 
 // std
 #include <unordered_map>
@@ -21,6 +22,8 @@ namespace CGE
 		class DX_Device;
 		class DX_Buffer;
 		class DX_BufferView;
+		class DX_Image;
+		class DX_ImageView;
 
 		class DX_DescriptorContext
 		{
@@ -37,6 +40,12 @@ namespace CGE
 			void CreateShaderResourceView(const DX_Buffer& buffer, const RHI::BufferViewDescriptor& bufferViewDescriptor, DX_DescriptorHandle& shaderResourceView, DX_DescriptorHandle& staticView);
 			void CreateUnorderedAccessView(const DX_Buffer& buffer, const RHI::BufferViewDescriptor& bufferViewDescriptor, DX_DescriptorHandle& unorderedAccessView, DX_DescriptorHandle& unorderedAccessViewClear, DX_DescriptorHandle& staticView);
 			void CreateConstantBufferView(const DX_Buffer& buffer, const RHI::BufferViewDescriptor& bufferViewDescriptor, DX_DescriptorHandle& constantBufferView, DX_DescriptorHandle& staticView);
+
+			// Image Views
+			void CreateShaderResourceView(const DX_Image& image, const RHI::ImageViewDescriptor& imageViewDescriptor, DX_DescriptorHandle& shaderResourceView, DX_DescriptorHandle& staticView);
+			void CreateUnorderedAccessView(const DX_Image& image, const RHI::ImageViewDescriptor& imageViewDescriptor, DX_DescriptorHandle& unorderedAccessView, DX_DescriptorHandle& unorderedAccessViewClear, DX_DescriptorHandle& staticView);
+			void CreateRenderTargetView(const DX_Image& image, const RHI::ImageViewDescriptor& imageViewDescriptor, DX_DescriptorHandle& renderTargetView);
+			void CreateDepthStencilView(const DX_Image& image, const RHI::ImageViewDescriptor& imageViewDescriptor, DX_DescriptorHandle& depthStencilView, DX_DescriptorHandle& depthStencilReadView);
 
 			void ReleaseDescriptor(DX_DescriptorHandle descriptorHandle);
 			void ReleaseStaticDescriptor(DX_DescriptorHandle handle);
@@ -60,7 +69,7 @@ namespace CGE
 			RHI::Ptr<ID3D12DeviceX> m_device;
 			DX_DescriptorPool m_pools[D3D12_DESCRIPTOR_HEAP_TYPE_NUM_TYPES][NumHeapFlags];
 
-			// Descriptors that persist for the lifetime of the resource view they reference
+			// Descriptors that persist for the lifetime of the resource view they reference this is the bindless pool
 			DX_DescriptorPool m_staticPool;
 			// This table binds the entire range of CBV_SRV_UAV descriptor handles in the shader visible heap (used for bindless)
 			DX_DescriptorTable m_staticTable;

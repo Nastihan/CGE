@@ -22,7 +22,8 @@ namespace CGE
 
 			/*
 			* shifting considering each element is 4-bytes
-			* example: offset = 8, byteCount = 16
+			* if we shift two bits to the left is like dividing by 4.
+			* example: byteOffset = 8, byteCount = 16
 			* m_elementOffset = 8 / 4 = 2, m_elementCount = 16 / 4 = 4
 			*/
 			descriptor.m_elementOffset = byteOffset >> 2;
@@ -45,6 +46,15 @@ namespace CGE
 		HashValue64 BufferViewDescriptor::GetHash(HashValue64 seed) const
 		{
 			return TypeHash64(*this, seed);
+		}
+
+		bool BufferViewDescriptor::operator==(const BufferViewDescriptor& other) const
+		{
+			return m_elementOffset == other.m_elementOffset &&
+				m_elementCount == other.m_elementCount &&
+				m_elementSize == other.m_elementSize &&
+				m_elementFormat == other.m_elementFormat &&
+				m_overrideBindFlags == other.m_overrideBindFlags;
 		}
 	}
 }

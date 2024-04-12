@@ -115,5 +115,54 @@ namespace CGE
         {
             return 0 == ((size_t)value & (alignment - 1));
         }
+
+        //! Reset any zero bits in bits in v to 0.
+        template <typename T>
+        inline T FilterBits(T v, T bits)
+        {
+            return v & bits;
+        }
+
+        //! Returns the number of bits set in v.
+        inline uint8_t CountBitsSet(uint8_t v)
+        {
+            uint8_t c = v;
+            c = ((c >> 1) & 0x55) + (c & 0x55);
+            c = ((c >> 2) & 0x33) + (c & 0x33);
+            c = ((c >> 4) & 0x0f) + (c & 0x0f);
+            return c;
+        }
+
+        //! Returns the number of bits set in v.
+        inline uint8_t CountBitsSet(uint16_t v)
+        {
+            return
+                CountBitsSet((uint8_t)((v) & 0xff)) +
+                CountBitsSet((uint8_t)((v >> 8) & 0xff));
+        }
+
+        //! Returns the number of bits set in v.
+        inline uint8_t CountBitsSet(uint32_t v)
+        {
+            return
+                CountBitsSet((uint8_t)((v) & 0xff)) +
+                CountBitsSet((uint8_t)((v >> 8) & 0xff)) +
+                CountBitsSet((uint8_t)((v >> 16) & 0xff)) +
+                CountBitsSet((uint8_t)((v >> 24) & 0xff));
+        }
+
+        //! Returns the number of bits set in v.
+        inline uint8_t CountBitsSet(uint64_t v)
+        {
+            return
+                CountBitsSet((uint8_t)((v) & 0xff)) +
+                CountBitsSet((uint8_t)((v >> 8) & 0xff)) +
+                CountBitsSet((uint8_t)((v >> 16) & 0xff)) +
+                CountBitsSet((uint8_t)((v >> 24) & 0xff)) +
+                CountBitsSet((uint8_t)((v >> 32) & 0xff)) +
+                CountBitsSet((uint8_t)((v >> 40) & 0xff)) +
+                CountBitsSet((uint8_t)((v >> 48) & 0xff)) +
+                CountBitsSet((uint8_t)((v >> 56) & 0xff));
+        }
     }
 }
