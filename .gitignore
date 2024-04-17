@@ -363,3 +363,4 @@ MigrationBackup/
 FodyWeavers.xsd
 
 !Engine/Dependencies/**/*
+!Engine/Models/**/*
