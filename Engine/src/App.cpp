@@ -3,7 +3,7 @@
 
 namespace CGE
 {
-	App::App() : window(RHI::Limits::Device::ClientWidth, RHI::Limits::Device::ClientHeight, "CGE"), gfx("DX12", window), m_meshBuilder(gfx.GetBufferSystem()) {}
+	App::App() : window(RHI::Limits::Device::ClientWidth, RHI::Limits::Device::ClientHeight, "CGE"), gfx("DX12", window) {}
 	App::~App() {}
 	void App::Run()
 	{

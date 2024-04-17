@@ -2,7 +2,7 @@
 #include "MeshBuilder.h"
 
 // RHI
-#include "RHI/BufferSystem.h"
+#include "../RHI/BufferSystem.h"
 
 #include "assimp/Importer.hpp"
 #include "assimp/scene.h"

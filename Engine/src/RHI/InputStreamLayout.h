@@ -30,6 +30,7 @@ namespace CGE
             PatchList
         };
 
+        // Describes the rate at which an input assembly channel increments to the next element in the buffer stream.
         enum class StreamStepFunction : uint32_t
         {
             Constant = 0,
@@ -58,7 +59,7 @@ namespace CGE
             ShaderSemantic m_semantic;
             Format m_format = Format::Unknown;
 
-            // The parent stream buffer index. (used for D3D12_INPUT_ELEMENT_DESC::InputSlot)
+            // The parent stream buffer index. This will correspond to InputStreamLayout::m_streamBuffers index number.
             uint32_t m_bufferIndex = 0;
 
             // Byte offset from the base of the StreamBufferView to the first element in this channel. 
@@ -68,8 +69,7 @@ namespace CGE
 
         // Describes an instance of a StreamBufferView within the stream layout. Each stream
         // buffer provides new data to the shader at a specified step rate. The byte stride
-        // is the total width of a single element in the buffer stream.
-        // One for each vertex buffer
+        // is the total width of a single element in the buffer stream. Set one for each vertex buffer.
         class StreamBufferDescriptor
         {
         public:
@@ -77,14 +77,14 @@ namespace CGE
             StreamBufferDescriptor(StreamStepFunction stepFunction, uint32_t stepRate, uint32_t byteStride);
             HashValue64 GetHash(HashValue64 seed = HashValue64{ 0 }) const;
 
-            // D3D12_INPUT_ELEMENT_DESC::InputSlotClass
             StreamStepFunction m_stepFunction = StreamStepFunction::PerVertex;
-            // D3D12_INPUT_ELEMENT_DESC::InstanceDataStepRate
             uint32_t m_stepRate = 1;
             // The distance in bytes between consecutive vertex entries in the buffer. (should match stride value in StreamBufferView)
             uint32_t m_byteStride = 0;
         };
 
+        // Describes the input assembly stream buffer layout for the pipeline state.
+        // Use InputStreamLayoutBuilder to create this object.
         class InputStreamLayout
         {
         public:
@@ -106,8 +106,12 @@ namespace CGE
 
         private:
             PrimitiveTopology m_topology = PrimitiveTopology::Undefined;
-            std::vector<StreamChannelDescriptor> m_streamChannels;
+
+            // Multiple buffers can be bound to the input assembly stage.
             std::vector<StreamBufferDescriptor> m_streamBuffers;
+
+            // Each buffer can have multiple attributes these have to be set for the 
+            std::vector<StreamChannelDescriptor> m_streamChannels;
             HashValue64 m_hash = HashValue64{ 0 };
         };
 	}

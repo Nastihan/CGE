@@ -23,19 +23,19 @@ namespace CGE
 		public:
 			void Init();
 			void Render();
-			BufferSystem& GetBufferSystem();
 			static Factory& GetFactory();
+			static BufferSystem& GetBufferSystem();
 
 		private:
 			std::string m_backendAPI;
 			static RHI::Ptr<Factory> m_factory;
+			static RHI::Ptr<BufferSystem> m_bufferSystem;
 		private:
 			RHI::Ptr<RHI::PhysicalDevice> m_physicalDevice;
 			RHI::Ptr<RHI::Device> m_device;
 			RHI::Ptr<RHI::SwapChain> m_swapChain;
 			RHI::Ptr<RHI::FrameGraphExecuter> m_frameGraphExecuter;
 
-			RHI::BufferSystem m_bufferSystem;
 
 			Window& m_window;
 		};

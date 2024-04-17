@@ -86,7 +86,6 @@
     <ClCompile Include="src\RHI\InputStreamLayout.cpp" />
     <ClCompile Include="src\RHI\LinearAllocator.cpp" />
     <ClCompile Include="src\RHI\MemoryUsage.cpp" />
-    <ClCompile Include="src\MeshBuilder.cpp" />
     <ClCompile Include="src\RHI\MultisampleState.cpp" />
     <ClCompile Include="src\RHI\Object.cpp" />
     <ClCompile Include="src\RHI\PhysicalDevice.cpp" />
@@ -103,7 +102,12 @@
     <ClCompile Include="src\RHI\StreamBufferView.cpp" />
     <ClCompile Include="src\RHI\SwapChain.cpp" />
     <ClCompile Include="src\RHI\TypeHash.cpp" />
-    <ClCompile Include="src\Scene.cpp" />
+    <ClCompile Include="src\Scene\Material.cpp" />
+    <ClCompile Include="src\Scene\Mesh.cpp" />
+    <ClCompile Include="src\Scene\MeshBuilder.cpp" />
+    <ClCompile Include="src\Scene\Model.cpp" />
+    <ClCompile Include="src\Scene\ModelNode.cpp" />
+    <ClCompile Include="src\Scene\Scene.cpp" />
     <ClCompile Include="src\VK_Interface\VK_Device.cpp" />
     <ClCompile Include="src\Window.cpp" />
   </ItemGroup>
@@ -195,12 +199,12 @@
     <ClInclude Include="src\RHI\intrusive_refcount.h" />
     <ClInclude Include="src\RHI\Limits.h" />
     <ClInclude Include="src\RHI\LinearAllocator.h" />
+    <ClInclude Include="src\RHI\MathTypedefs.h" />
     <ClInclude Include="src\RHI\MemoryAllocation.h" />
     <ClInclude Include="src\RHI\MemoryEnums.h" />
     <ClInclude Include="src\RHI\MemoryLinearSubAllocator.h" />
     <ClInclude Include="src\RHI\MemorySubAllocator.h" />
     <ClInclude Include="src\RHI\MemoryUsage.h" />
-    <ClInclude Include="src\MeshBuilder.h" />
     <ClInclude Include="src\RHI\MultisampleState.h" />
     <ClInclude Include="src\RHI\Object.h" />
     <ClInclude Include="src\RHI\ObjectCollector.h" />
@@ -223,7 +227,12 @@
     <ClInclude Include="src\RHI\SwapChain.h" />
     <ClInclude Include="src\RHI\SwapChainDescriptor.h" />
     <ClInclude Include="src\RHI\TypeHash.h" />
-    <ClInclude Include="src\Scene.h" />
+    <ClInclude Include="src\Scene\Material.h" />
+    <ClInclude Include="src\Scene\Mesh.h" />
+    <ClInclude Include="src\Scene\MeshBuilder.h" />
+    <ClInclude Include="src\Scene\Model.h" />
+    <ClInclude Include="src\Scene\ModelNode.h" />
+    <ClInclude Include="src\Scene\Scene.h" />
     <ClInclude Include="src\VK_Interface\VK_Device.h" />
     <ClInclude Include="src\Window.h" />
   </ItemGroup>
@@ -327,7 +336,7 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions);COMPILE_CITY_CC</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions);COMPILE_CITY_CC;USE_DX12</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpplatest</LanguageStandard>
       <AdditionalIncludeDirectories>$(ProjectDir)Dependencies\assimp\include;$(ProjectDir)Dependencies\GLFW\include;$(ProjectDir)Dependencies\d3dx12;$(ProjectDir)Dependencies\CityHash;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
@@ -352,7 +361,7 @@ xcopy /y "$(ProjectDir)Dependencies\assimp\bin\Debug\assimp-vc142-mtd.pdb" "$(Ou
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions);COMPILE_CITY_CC</PreprocessorDefinitions>
+      <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions);COMPILE_CITY_CC;USE_DX12</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpplatest</LanguageStandard>
       <AdditionalIncludeDirectories>$(ProjectDir)Dependencies\assimp\include;$(ProjectDir)Dependencies\GLFW\include;$(ProjectDir)Dependencies\d3dx12;$(ProjectDir)Dependencies\CityHash;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>

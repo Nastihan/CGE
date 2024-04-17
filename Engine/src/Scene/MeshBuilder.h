@@ -1,10 +1,10 @@
 #pragma once
 
 // RHI
-#include "RHI/RHI_Common.h"
-#include "RHI/BufferSystem.h"
-#include "RHI/BufferPool.h"
-#include "RHI/DrawItem.h"
+#include "../RHI/RHI_Common.h"
+#include "../RHI/BufferSystem.h"
+#include "../RHI/BufferPool.h"
+#include "../RHI/DrawItem.h"
 
 namespace CGE
 {

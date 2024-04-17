@@ -52,6 +52,12 @@
     <Filter Include="Source Files\RHI\Allocator">
       <UniqueIdentifier>{2aff9e2b-1e0c-49fb-99a2-ada7d2245999}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Scene">
+      <UniqueIdentifier>{0b1ae6b1-56de-4726-8c10-85fa14c73525}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Scene">
+      <UniqueIdentifier>{76b534dc-a82b-438c-acfb-1d02e253a041}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Main.cpp">
@@ -267,12 +273,6 @@
     <ClCompile Include="src\DX_Interface\DX_PipelineLayout.cpp">
       <Filter>Source Files\DX</Filter>
     </ClCompile>
-    <ClCompile Include="src\Scene.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\MeshBuilder.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\RHI\InputStreamLayout.cpp">
       <Filter>Source Files\RHI</Filter>
     </ClCompile>
@@ -314,6 +314,24 @@
     </ClCompile>
     <ClCompile Include="src\DX_Interface\DX_ImagePoolResolver.cpp">
       <Filter>Source Files\DX\Memory</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Scene\MeshBuilder.cpp">
+      <Filter>Source Files\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Scene\Scene.cpp">
+      <Filter>Source Files\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Scene\Mesh.cpp">
+      <Filter>Source Files\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Scene\ModelNode.cpp">
+      <Filter>Source Files\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Scene\Model.cpp">
+      <Filter>Source Files\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Scene\Material.cpp">
+      <Filter>Source Files\Scene</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -611,12 +629,6 @@
     <ClInclude Include="src\DX_Interface\DX_PipelineLayout.h">
       <Filter>Header Files\DX</Filter>
     </ClInclude>
-    <ClInclude Include="src\Scene.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\MeshBuilder.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="src\RHI\InputStreamLayout.h">
       <Filter>Header Files\RHI</Filter>
     </ClInclude>
@@ -670,6 +682,27 @@
     </ClInclude>
     <ClInclude Include="src\DX_Interface\DX_ImagePoolResolver.h">
       <Filter>Header Files\DX\Memory</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Scene\MeshBuilder.h">
+      <Filter>Header Files\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Scene\Scene.h">
+      <Filter>Header Files\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Scene\Mesh.h">
+      <Filter>Header Files\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Scene\ModelNode.h">
+      <Filter>Header Files\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Scene\Model.h">
+      <Filter>Header Files\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Scene\Material.h">
+      <Filter>Header Files\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="src\RHI\MathTypedefs.h">
+      <Filter>Header Files\RHI</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

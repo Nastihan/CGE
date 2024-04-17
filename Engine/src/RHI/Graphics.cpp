@@ -15,21 +15,20 @@ namespace CGE
 	namespace RHI
 	{
 		RHI::Ptr<Factory> Graphics::m_factory = nullptr;
+		RHI::Ptr<BufferSystem> Graphics::m_bufferSystem = nullptr;
 
 		Graphics::Graphics(std::string backendAPI, Window& window) : m_backendAPI(std::move(backendAPI)), m_window{ window }
 		{
-			if (m_backendAPI == "DX12")
-			{
-				m_factory = new DX12::DX_Factory();
-			}
-			else if (m_backendAPI == "VK")
-			{
-				// m_factory = new VK::VK_Factory();
-			}
-			else
-			{
-				std::cout << "Error, Please set correct name for backend API." << std::endl;
-			}
+#ifdef USE_DX12
+			m_factory = new DX12::DX_Factory();
+#endif // !USE_DX12
+
+#ifdef USE_VULKAN
+			m_factory = new VK::VK_Factory();
+#endif // !USE_VULKAN
+
+			m_bufferSystem = new RHI::BufferSystem();
+			
 			Init();
 			std::cout << m_physicalDevice->GetDescriptor().m_cardName << std::endl;
 		}
@@ -56,7 +55,7 @@ namespace CGE
 			m_frameGraphExecuter = m_factory->CreateFrameGraphExecuter();
 			m_frameGraphExecuter->Init(*m_device);
 
-			m_bufferSystem.Init(*m_device);
+			m_bufferSystem->Init(*m_device);
 		}
 
 		Factory& Graphics::GetFactory()
@@ -82,7 +81,7 @@ namespace CGE
 
 		BufferSystem& Graphics::GetBufferSystem()
 		{
-			return m_bufferSystem;
+			return *m_bufferSystem;
 		}
 	}
 }
