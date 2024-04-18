@@ -339,7 +339,7 @@
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions);COMPILE_CITY_CC;USE_DX12</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpplatest</LanguageStandard>
-      <AdditionalIncludeDirectories>$(ProjectDir)Dependencies\assimp\include;$(ProjectDir)Dependencies\GLFW\include;$(ProjectDir)Dependencies\d3dx12;$(ProjectDir)Dependencies\CityHash;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)Dependencies\DirectXTex\include;$(ProjectDir)Dependencies\assimp\include;$(ProjectDir)Dependencies\GLFW\include;$(ProjectDir)Dependencies\d3dx12;$(ProjectDir)Dependencies\CityHash;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
       <FloatingPointModel>Fast</FloatingPointModel>
@@ -347,8 +347,8 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>d3d12.lib;dxgi.lib;d3dcompiler.lib;glfw3.lib;assimp-vc142-mtd.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(ProjectDir)Dependencies\GLFW\lib-vc2019;$(ProjectDir)Dependencies\assimp\lib\Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>d3d12.lib;dxgi.lib;d3dcompiler.lib;glfw3.lib;assimp-vc142-mtd.lib;DirectXTex.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(ProjectDir)Dependencies\GLFW\lib-vc2019;$(ProjectDir)Dependencies\DirectXTex\bin\Debug;$(ProjectDir)Dependencies\assimp\lib\Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
       <Command>xcopy /y "$(ProjectDir)Dependencies\assimp\bin\Debug\assimp-vc142-mtd.dll" "$(OutDir)"
@@ -364,7 +364,7 @@ xcopy /y "$(ProjectDir)Dependencies\assimp\bin\Debug\assimp-vc142-mtd.pdb" "$(Ou
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions);COMPILE_CITY_CC;USE_DX12</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpplatest</LanguageStandard>
-      <AdditionalIncludeDirectories>$(ProjectDir)Dependencies\assimp\include;$(ProjectDir)Dependencies\GLFW\include;$(ProjectDir)Dependencies\d3dx12;$(ProjectDir)Dependencies\CityHash;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)Dependencies\DirectXTex\include;$(ProjectDir)Dependencies\assimp\include;$(ProjectDir)Dependencies\GLFW\include;$(ProjectDir)Dependencies\d3dx12;$(ProjectDir)Dependencies\CityHash;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
       <FloatingPointModel>Fast</FloatingPointModel>
@@ -374,8 +374,8 @@ xcopy /y "$(ProjectDir)Dependencies\assimp\bin\Debug\assimp-vc142-mtd.pdb" "$(Ou
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>d3d12.lib;dxgi.lib;d3dcompiler.lib;glfw3.lib;assimp-vc142-mt.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(ProjectDir)Dependencies\assimp\lib\Release;$(ProjectDir)Dependencies\GLFW\lib-vc2019;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>d3d12.lib;dxgi.lib;d3dcompiler.lib;glfw3.lib;assimp-vc142-mt.lib;DirectXTex.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(ProjectDir)Dependencies\DirectXTex\bin\Release;$(ProjectDir)Dependencies\assimp\lib\Release;$(ProjectDir)Dependencies\GLFW\lib-vc2019;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
       <Command>xcopy /y "$(ProjectDir)Dependencies\assimp\bin\Release\assimp-vc142-mt.dll" "$(OutDir)"

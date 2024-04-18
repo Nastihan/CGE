@@ -14,7 +14,7 @@ namespace CGE
 {
 	namespace Scene
 	{
-		Mesh::Mesh(const aiMesh& mesh)
+		Mesh::Mesh(const aiMesh& mesh, const std::optional<aiMaterial> material, const std::string& pathString)
 		{
 			// Load the vertex data
 			for (unsigned int i = 0; i < mesh.mNumVertices; i++)
@@ -120,6 +120,12 @@ namespace CGE
 				0, 
 				static_cast<uint32_t>(indices.size() * sizeof(uint16_t)),
 				RHI::IndexFormat::Uint16 };
+
+			// Init material textures
+			if (material.has_value())
+			{
+				m_material = std::make_unique<Material>(material.value(), pathString);				
+			}
 		}
 	}
 }

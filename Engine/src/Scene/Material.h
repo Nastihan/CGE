@@ -5,7 +5,7 @@
 #include "../RHI/Image.h"
 
 // std
-#include <fstream>
+#include <filesystem>
 
 struct aiMaterial;
 
@@ -13,41 +13,49 @@ namespace CGE
 {
 	namespace Scene
 	{
+		// For now default pbr workflows. Need to set workflow in material (or object) cbuff.
+		enum class MaterialType : uint8_t
+		{
+			METALLIC_ROUGHNESS = 0,
+			SPECULAR_GLOSSINESS,
+			INVALID
+		};
+
+		// [todo] channel mappings
+		enum class TexureType : uint8_t
+		{
+			None = 0,
+
+			// Base color or Diffuse (Albedo)
+			BASE_COLOR = (1u << 0u),
+
+			// Normal map
+			NORMAL = (1u << 1u),
+
+			// Metallic-Roughness or Specular-Glossiness
+			MATERIAL = (1u << 2u),
+
+			AMBIENT_OCCLUSION = (1u << 3u)
+		};
+		inline TexureType operator|(TexureType a, TexureType b)
+		{
+			return static_cast<TexureType>(static_cast<int>(a) | static_cast<int>(b));
+		}
+
 		class Material
 		{
 		public:
-			// For now default pbr workflows. Need to set workflow in material cbuff.
-			enum class MaterialType : uint8_t
-			{
-				METALLIC_ROUGHNESS = 0,
-				SPECULAR_GLOSSINESS
-			};
-
-			// [todo] channel mappings
-			enum class TexureIndex : uint8_t
-			{
-				// Base color or Diffuse (Albedo)
-				BASE_COLOR = 0,
-				
-				// Normal map
-				NORMAL,
-
-				// Metallic-Roughness or Specular-Glossiness
-				MATERIAL,
-
-				AMBIENT_OCCLUSION,
-
-				TEXTURE_COUNT
-			};
 		public:
 			Material() = default;
 			Material(const aiMaterial& material, const std::filesystem::path& path);
 		private:
-			static constexpr size_t TextureCount = static_cast<size_t>(TexureIndex::TEXTURE_COUNT);
+			static constexpr size_t DEFAULT_MATERIAL_MODEL_TEXTURE_COUNT = 4;
 			RHI::Ptr<RHI::ShaderStageFunction> m_vertexShader;
 			RHI::Ptr<RHI::ShaderStageFunction> m_pixelShader;
-			std::array<RHI::Ptr<RHI::Image>, TextureCount> m_textures;
-			std::array<RHI::Ptr<RHI::ImageView>, TextureCount> m_textureViews;
+			std::array<RHI::Ptr<RHI::Image>, DEFAULT_MATERIAL_MODEL_TEXTURE_COUNT> m_textures;
+			std::array<RHI::Ptr<RHI::ImageView>, DEFAULT_MATERIAL_MODEL_TEXTURE_COUNT> m_textureViews;
+			TexureType m_textureTypes = TexureType::None;
+			MaterialType m_materialType = MaterialType::INVALID;
 		};
 	}
 }

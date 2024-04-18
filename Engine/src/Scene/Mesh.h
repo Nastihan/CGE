@@ -11,6 +11,8 @@
 #include "../RHI/InputStreamLayout.h"
 #include "../RHI/BufferView.h"
 
+#include <optional>
+
 #include <DirectXMath.h>
 
 struct aiMesh;
@@ -24,7 +26,7 @@ namespace CGE
 		class Mesh
 		{
 		public:
-			Mesh(const aiMesh& mesh);
+			Mesh(const aiMesh& mesh, const std::optional<aiMaterial> material, const std::string& pathString);
 
 			void BuildDrawItem();
 		private:
@@ -67,7 +69,7 @@ namespace CGE
 			RHI::Ptr<RHI::BufferView> m_transformCbuffView;
 
 			MeshBuffers m_meshBuffers;
-			Material m_material;
+			std::unique_ptr<Material> m_material;
 
 			RHI::DrawItem m_drawItem;
 		};

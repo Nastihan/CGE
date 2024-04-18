@@ -30,7 +30,12 @@ namespace CGE
 			for (size_t i = 0; i < pScene->mNumMeshes; i++)
 			{
 				const auto& mesh = *pScene->mMeshes[i];
-				m_meshPtrs.push_back(std::make_unique<Mesh>(mesh));
+				std::optional<aiMaterial> material;
+				if (mesh.mMaterialIndex >= 0)
+				{
+					material = *pScene->mMaterials[mesh.mMaterialIndex];
+				}
+				m_meshPtrs.push_back(std::make_unique<Mesh>(mesh, material, pathString));
 			}
 		}
 	}
