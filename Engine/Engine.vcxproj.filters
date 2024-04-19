@@ -333,6 +333,9 @@
     <ClCompile Include="src\Scene\Material.cpp">
       <Filter>Source Files\Scene</Filter>
     </ClCompile>
+    <ClCompile Include="src\RHI\ImageSystem.cpp">
+      <Filter>Source Files\RHI\Memory</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\DX_Interface\DX_Device.h">
@@ -703,6 +706,9 @@
     </ClInclude>
     <ClInclude Include="src\RHI\MathTypedefs.h">
       <Filter>Header Files\RHI</Filter>
+    </ClInclude>
+    <ClInclude Include="src\RHI\ImageSystem.h">
+      <Filter>Header Files\RHI\Memory</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

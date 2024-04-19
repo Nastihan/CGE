@@ -3,6 +3,7 @@
 // RHI
 #include "Factory.h"
 #include "BufferSystem.h"
+#include "ImageSystem.h"
 
 #include "../CommonMacros.h"
 
@@ -25,11 +26,13 @@ namespace CGE
 			void Render();
 			static Factory& GetFactory();
 			static BufferSystem& GetBufferSystem();
+			static ImageSystem& GetImageSystem();
 
 		private:
 			std::string m_backendAPI;
 			static RHI::Ptr<Factory> m_factory;
 			static RHI::Ptr<BufferSystem> m_bufferSystem;
+			static RHI::Ptr<ImageSystem> m_imageSystem;
 		private:
 			RHI::Ptr<RHI::PhysicalDevice> m_physicalDevice;
 			RHI::Ptr<RHI::Device> m_device;

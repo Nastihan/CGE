@@ -13,6 +13,7 @@ namespace CGE
             ShaderRead = (1u << 0u),
             ShaderWrite = (1u << 1u),
             ShaderReadWrite = (ShaderRead | ShaderWrite),
+            // Render targets.
             Color = (1u << 2u),
             Depth = (1u << 3u),
             Stencil = (1u << 4u),

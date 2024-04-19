@@ -16,6 +16,7 @@ namespace CGE
 	{
 		RHI::Ptr<Factory> Graphics::m_factory = nullptr;
 		RHI::Ptr<BufferSystem> Graphics::m_bufferSystem = nullptr;
+		RHI::Ptr<ImageSystem> Graphics::m_imageSystem = nullptr;
 
 		Graphics::Graphics(std::string backendAPI, Window& window) : m_backendAPI(std::move(backendAPI)), m_window{ window }
 		{
@@ -28,6 +29,7 @@ namespace CGE
 #endif // !USE_VULKAN
 
 			m_bufferSystem = new RHI::BufferSystem();
+			m_imageSystem = new RHI::ImageSystem();
 			
 			Init();
 			std::cout << m_physicalDevice->GetDescriptor().m_cardName << std::endl;
@@ -56,6 +58,7 @@ namespace CGE
 			m_frameGraphExecuter->Init(*m_device);
 
 			m_bufferSystem->Init(*m_device);
+			m_imageSystem->Init(*m_device);
 		}
 
 		Factory& Graphics::GetFactory()
@@ -82,6 +85,11 @@ namespace CGE
 		BufferSystem& Graphics::GetBufferSystem()
 		{
 			return *m_bufferSystem;
+		}
+
+		ImageSystem& Graphics::GetImageSystem()
+		{
+			return *m_imageSystem;
 		}
 	}
 }

@@ -14,11 +14,11 @@ namespace CGE
 		void BufferSystem::Init(RHI::Device& device)
 		{
 			DeviceObject::Init(device);
-            m_initialized = true;
 			for (size_t i = 0; i < static_cast<uint8_t>(CommonBufferPoolType::Count); i++)
 			{
 				CreateCommonBufferPool(static_cast<CommonBufferPoolType>(i));
 			}
+            m_initialized = true;
 		}
 
 		void BufferSystem::Shutdown()

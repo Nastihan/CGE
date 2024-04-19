@@ -80,6 +80,7 @@
     <ClCompile Include="src\RHI\ImageDescriptor.cpp" />
     <ClCompile Include="src\RHI\ImagePool.cpp" />
     <ClCompile Include="src\RHI\ImageSubresource.cpp" />
+    <ClCompile Include="src\RHI\ImageSystem.cpp" />
     <ClCompile Include="src\RHI\ImageView.cpp" />
     <ClCompile Include="src\RHI\ImageViewDescriptor.cpp" />
     <ClCompile Include="src\RHI\IndexBufferView.cpp" />
@@ -189,6 +190,7 @@
     <ClInclude Include="src\RHI\ImagePoolDescriptor.h" />
     <ClInclude Include="src\RHI\ImageProperty.h" />
     <ClInclude Include="src\RHI\ImageSubresource.h" />
+    <ClInclude Include="src\RHI\ImageSystem.h" />
     <ClInclude Include="src\RHI\ImageView.h" />
     <ClInclude Include="src\RHI\ImageViewDescriptor.h" />
     <ClInclude Include="src\RHI\IndexBufferView.h" />
