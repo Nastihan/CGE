@@ -9,6 +9,12 @@
 
 struct aiMaterial;
 
+namespace DirectX
+{
+	struct TexMetadata;
+	class ScratchImage;
+}
+
 namespace CGE
 {
 	namespace Scene
@@ -45,9 +51,10 @@ namespace CGE
 		class Material
 		{
 		public:
-		public:
 			Material() = default;
 			Material(const aiMaterial& material, const std::filesystem::path& path);
+		private:
+			RHI::ResultCode ConstructImageAndView(RHI::Ptr<RHI::Image> image, RHI::Ptr<RHI::ImageView> imageView, const DirectX::TexMetadata& metaData, const DirectX::ScratchImage& scratchImage);
 		private:
 			static constexpr size_t DEFAULT_MATERIAL_MODEL_TEXTURE_COUNT = 4;
 			RHI::Ptr<RHI::ShaderStageFunction> m_vertexShader;

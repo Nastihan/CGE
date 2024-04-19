@@ -86,6 +86,8 @@ namespace CGE
 
             uint32_t m_streamedMipLevel = 0;
             uint64_t m_uploadFenceValue = 0;
+
+            // This will get incremented when you request an image update operation on the DX_ImagePoolResolver.
             std::atomic<uint32_t> m_pendingResolves = 0;
         };
 	}

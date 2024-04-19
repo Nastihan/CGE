@@ -24,7 +24,6 @@ namespace CGE
             DX_CpuVirtualAddress MapBuffer(const RHI::BufferMapRequest& request);
 
             // DX_ResourcePoolResolver
-
             // This functions at the begining of the frame
             void Compile(DX_Scope& scope) override;
             void Resolve(DX_CommandList&) const override;

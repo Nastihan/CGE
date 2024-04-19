@@ -18,6 +18,13 @@ namespace CGE
         public:
             DX_ImagePoolResolver(DX_Device& device, DX_ImagePool* imagePool);
             RHI::ResultCode UpdateImage(const RHI::ImageUpdateRequest& request, size_t& bytesTransferred);
+            
+            // DX_ResourcePoolResolver
+            void Compile(DX_Scope& scope) override;
+            void QueuePrologueTransitionBarriers(DX_CommandList& commandList) override;
+            void Resolve(DX_CommandList& commandList) const override;
+            void QueueEpilogueTransitionBarriers(DX_CommandList& commandList) const override;
+            void Deactivate() override;
             void OnResourceShutdown(const RHI::Resource& resource) override;
         
         public:
@@ -30,6 +37,7 @@ namespace CGE
                 DX_Memory* m_imageMemory;
             };
 
+            // This structure will be used to describe the location of a texture resource copy operation.
             struct ImageSubresourcePacket
             {
                 RHI::Origin m_imageSubresourcePixelOffset;

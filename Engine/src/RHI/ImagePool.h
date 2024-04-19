@@ -22,16 +22,20 @@ namespace CGE
             const ClearValue* m_optimizedClearValue = nullptr;
         };
 
-        // Used to update the textures data.
+        // Used to update the textures data. (check DX_ImagePoolResolver::UpdateImage function.)
+        // A staging buffer will be used and the m_sourceData will get copied there first.
+        // Will fill D3D12_PLACED_SUBRESOURCE_FOOTPRINT from m_sourceSubresourceLayout that is needed for image / buffer copies.
+        // m_imageSubresourcePixelOffset used in ID3D12CommandList::CopyTextureRegion finction in DX_ImagePoolResolver::Resolve fucntion.
         struct ImageUpdateRequest
         {
             ImageUpdateRequest() = default;
 
             Image* m_image = nullptr;
             ImageSubresource m_imageSubresource;
-            Origin m_imageSubresourcePixelOffset;
-            const void* m_sourceData = nullptr;
             ImageSubresourceLayout m_sourceSubresourceLayout;
+            Origin m_imageSubresourcePixelOffset;
+
+            const void* m_sourceData = nullptr;
         };
 
         // Image pool for textures that will persist during the lifetime of the application.

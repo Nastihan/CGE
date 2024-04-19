@@ -21,7 +21,7 @@ namespace CGE
             // Queues transition barriers at the beginning of a scope.
             virtual void QueuePrologueTransitionBarriers(DX_CommandList&) {}
 
-            // Performs resolve-specific copy / streaming operations.
+            // Performs resolve-specific copy / streaming operations. (Call at the begining of the frame(root scope))
             virtual void Resolve(DX_CommandList&) const {}
 
             // Queues transition barriers at the end of a scope.
