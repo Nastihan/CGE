@@ -336,6 +336,21 @@
     <ClCompile Include="src\RHI\ImageSystem.cpp">
       <Filter>Source Files\RHI\Memory</Filter>
     </ClCompile>
+    <ClCompile Include="src\RHI\ShaderResourceGroupLayoutDescriptor.cpp">
+      <Filter>Source Files\RHI</Filter>
+    </ClCompile>
+    <ClCompile Include="src\RHI\ShaderResourceGroupLayout.cpp">
+      <Filter>Source Files\RHI</Filter>
+    </ClCompile>
+    <ClCompile Include="src\RHI\SamplerState.cpp">
+      <Filter>Source Files\RHI</Filter>
+    </ClCompile>
+    <ClCompile Include="src\RHI\Viewport.cpp">
+      <Filter>Source Files\RHI</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Scene\Camera.cpp">
+      <Filter>Source Files\Scene</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\DX_Interface\DX_Device.h">
@@ -704,11 +719,23 @@
     <ClInclude Include="src\Scene\Material.h">
       <Filter>Header Files\Scene</Filter>
     </ClInclude>
-    <ClInclude Include="src\RHI\MathTypedefs.h">
-      <Filter>Header Files\RHI</Filter>
-    </ClInclude>
     <ClInclude Include="src\RHI\ImageSystem.h">
       <Filter>Header Files\RHI\Memory</Filter>
+    </ClInclude>
+    <ClInclude Include="src\RHI\ShaderResourceGroupLayoutDescriptor.h">
+      <Filter>Header Files\RHI</Filter>
+    </ClInclude>
+    <ClInclude Include="src\RHI\ShaderResourceGroupLayout.h">
+      <Filter>Header Files\RHI</Filter>
+    </ClInclude>
+    <ClInclude Include="src\RHI\SamplerState.h">
+      <Filter>Header Files\RHI</Filter>
+    </ClInclude>
+    <ClInclude Include="src\RHI\Viewport.h">
+      <Filter>Header Files\RHI</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Scene\Camera.h">
+      <Filter>Header Files\Scene</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

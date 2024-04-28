@@ -99,10 +99,15 @@
     <ClCompile Include="src\RHI\Resource.cpp" />
     <ClCompile Include="src\RHI\ResourcePool.cpp" />
     <ClCompile Include="src\RHI\ResourceView.cpp" />
+    <ClCompile Include="src\RHI\SamplerState.cpp" />
+    <ClCompile Include="src\RHI\ShaderResourceGroupLayout.cpp" />
+    <ClCompile Include="src\RHI\ShaderResourceGroupLayoutDescriptor.cpp" />
     <ClCompile Include="src\RHI\ShaderStageFunction.cpp" />
     <ClCompile Include="src\RHI\StreamBufferView.cpp" />
     <ClCompile Include="src\RHI\SwapChain.cpp" />
     <ClCompile Include="src\RHI\TypeHash.cpp" />
+    <ClCompile Include="src\RHI\Viewport.cpp" />
+    <ClCompile Include="src\Scene\Camera.cpp" />
     <ClCompile Include="src\Scene\Material.cpp" />
     <ClCompile Include="src\Scene\Mesh.cpp" />
     <ClCompile Include="src\Scene\MeshBuilder.cpp" />
@@ -201,7 +206,6 @@
     <ClInclude Include="src\RHI\intrusive_refcount.h" />
     <ClInclude Include="src\RHI\Limits.h" />
     <ClInclude Include="src\RHI\LinearAllocator.h" />
-    <ClInclude Include="src\RHI\MathTypedefs.h" />
     <ClInclude Include="src\RHI\MemoryAllocation.h" />
     <ClInclude Include="src\RHI\MemoryEnums.h" />
     <ClInclude Include="src\RHI\MemoryLinearSubAllocator.h" />
@@ -224,11 +228,16 @@
     <ClInclude Include="src\RHI\ResourcePoolDescriptor.h" />
     <ClInclude Include="src\RHI\ResourceView.h" />
     <ClInclude Include="src\RHI\RHI_Common.h" />
+    <ClInclude Include="src\RHI\SamplerState.h" />
+    <ClInclude Include="src\RHI\ShaderResourceGroupLayout.h" />
+    <ClInclude Include="src\RHI\ShaderResourceGroupLayoutDescriptor.h" />
     <ClInclude Include="src\RHI\ShaderStageFunction.h" />
     <ClInclude Include="src\RHI\StreamBufferView.h" />
     <ClInclude Include="src\RHI\SwapChain.h" />
     <ClInclude Include="src\RHI\SwapChainDescriptor.h" />
     <ClInclude Include="src\RHI\TypeHash.h" />
+    <ClInclude Include="src\RHI\Viewport.h" />
+    <ClInclude Include="src\Scene\Camera.h" />
     <ClInclude Include="src\Scene\Material.h" />
     <ClInclude Include="src\Scene\Mesh.h" />
     <ClInclude Include="src\Scene\MeshBuilder.h" />
@@ -341,7 +350,7 @@
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions);COMPILE_CITY_CC;USE_DX12</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpplatest</LanguageStandard>
-      <AdditionalIncludeDirectories>$(ProjectDir)Dependencies\DirectXTex\include;$(ProjectDir)Dependencies\assimp\include;$(ProjectDir)Dependencies\GLFW\include;$(ProjectDir)Dependencies\d3dx12;$(ProjectDir)Dependencies\CityHash;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)Dependencies\glm;$(ProjectDir)Dependencies\DirectXTex\include;$(ProjectDir)Dependencies\assimp\include;$(ProjectDir)Dependencies\GLFW\include;$(ProjectDir)Dependencies\d3dx12;$(ProjectDir)Dependencies\CityHash;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
       <FloatingPointModel>Fast</FloatingPointModel>
@@ -366,7 +375,7 @@ xcopy /y "$(ProjectDir)Dependencies\assimp\bin\Debug\assimp-vc142-mtd.pdb" "$(Ou
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions);COMPILE_CITY_CC;USE_DX12</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpplatest</LanguageStandard>
-      <AdditionalIncludeDirectories>$(ProjectDir)Dependencies\DirectXTex\include;$(ProjectDir)Dependencies\assimp\include;$(ProjectDir)Dependencies\GLFW\include;$(ProjectDir)Dependencies\d3dx12;$(ProjectDir)Dependencies\CityHash;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)Dependencies\glm;$(ProjectDir)Dependencies\DirectXTex\include;$(ProjectDir)Dependencies\assimp\include;$(ProjectDir)Dependencies\GLFW\include;$(ProjectDir)Dependencies\d3dx12;$(ProjectDir)Dependencies\CityHash;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
       <FloatingPointModel>Fast</FloatingPointModel>
