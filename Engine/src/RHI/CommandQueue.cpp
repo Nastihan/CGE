@@ -33,7 +33,6 @@ namespace CGE
 			return m_descriptor;
 		}
 
-		// [todo]
 		void CommandQueue::QueueCommand(Command command)
 		{
 			command(GetNativeQueue());

@@ -76,6 +76,8 @@ DX12_REFCOUNTED(ID3D12Fence);
 DX12_REFCOUNTED(ID3D12Object);
 DX12_REFCOUNTED(ID3D12Resource);
 
+DX12_REFCOUNTED(ID3D12RootSignature);
+
 
 #ifndef LOCAL_HR
 #define LOCAL_HR HRESULT hr;
@@ -90,6 +92,11 @@ namespace CGE
     namespace DX12
     {
         bool DXAssertSuccess(HRESULT hr);
+        DXGI_FORMAT GetBaseFormat(DXGI_FORMAT defaultFormat);
+        DXGI_FORMAT GetSRVFormat(DXGI_FORMAT defaultFormat);
+        DXGI_FORMAT GetUAVFormat(DXGI_FORMAT defaultFormat);
+        DXGI_FORMAT GetDSVFormat(DXGI_FORMAT defaultFormat);
+        DXGI_FORMAT GetStencilFormat(DXGI_FORMAT defaultFormat);
     }
 }
 

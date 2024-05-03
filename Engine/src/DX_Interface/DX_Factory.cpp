@@ -7,6 +7,9 @@
 #include "DX_BufferView.h"
 #include "DX_Buffer.h"
 #include "DX_BufferPool.h"
+#include "DX_ImageView.h"
+#include "DX_Image.h"
+#include "DX_ImagePool.h"
 
 namespace CGE
 {
@@ -45,6 +48,21 @@ namespace CGE
 		RHI::Ptr<RHI::BufferPool> DX_Factory::CreateBufferPool()
 		{
 			return DX_BufferPool::Create();
+		}
+
+		RHI::Ptr<RHI::ImageView> DX_Factory::CreateImageView()
+		{
+			return DX_ImageView::Create();
+		}
+
+		RHI::Ptr<RHI::Image> DX_Factory::CreateImage()
+		{
+			return DX_Image::Create();
+		}
+
+		RHI::Ptr<RHI::ImagePool> DX_Factory::CreateImagePool()
+		{
+			return DX_ImagePool::Create();
 		}
 	}
 }

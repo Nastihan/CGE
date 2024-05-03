@@ -64,6 +64,11 @@ namespace CGE
 
 		ResultCode ResourcePool::Init(Device& device, const ResourcePoolDescriptor& descriptor, const PlatformMethod& initMethod)
 		{
+			if (IsInitialized())
+			{
+				assert(false);
+				return ResultCode::InvalidOperation;
+			}
 			for (size_t heapMemoryLevel = 0; heapMemoryLevel < 2; ++heapMemoryLevel)
 			{
 				m_memoryUsage.m_memoryUsagePerLevel[heapMemoryLevel].m_budgetInBytes = descriptor.m_budgetInBytes;
@@ -140,5 +145,21 @@ namespace CGE
 			std::unique_lock<std::shared_mutex> lock(m_registryMutex);
 			m_registry.erase(&resource);
 		}
+
+		void ResourcePool::OnFrameBegin() {}
+
+		void ResourcePool::OnFrameCompile()
+		{
+			m_isProcessingFrame = true;
+		}
+
+		void ResourcePool::OnFrameEnd()
+		{
+			m_isProcessingFrame = false;
+		}
+
+		void ResourcePool::ShutdownInternal() {}
+
+		void ResourcePool::ShutdownResourceInternal(Resource&) {}
 	}
 }

@@ -20,6 +20,10 @@ namespace CGE
 			RHI::Ptr<RHI::BufferView> CreateBufferView() override;
 			RHI::Ptr<RHI::Buffer> CreateBuffer() override;
 			RHI::Ptr<RHI::BufferPool> CreateBufferPool() override;
+
+			RHI::Ptr<RHI::ImageView> CreateImageView() override;
+			RHI::Ptr<RHI::Image> CreateImage() override;
+			RHI::Ptr<RHI::ImagePool> CreateImagePool() override;
 		};
 	}
 }

@@ -6,6 +6,7 @@ namespace CGE
 {
 	namespace RHI
 	{
+		// Check DX_Device::CreateImageCommitted and DX_Device::CreateBufferCommitted
 		template<typename MemoryType>
 		struct MemoryAllocation
 		{

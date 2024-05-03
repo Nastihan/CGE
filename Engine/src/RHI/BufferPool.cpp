@@ -173,13 +173,22 @@ namespace CGE
         void BufferPool::ValidateBufferMap(Buffer& buffer, bool isDataValid)
         {
             assert(isDataValid);
+            buffer.m_mapRefCount++;
             m_mapRefCount++;
         }
 
         bool BufferPool::ValidateBufferUnmap(Buffer& buffer)
         {
+            buffer.m_mapRefCount--;
+            assert(buffer.m_mapRefCount >= 0);
             m_mapRefCount--;
             return true;
+        }
+
+        void BufferPool::OnFrameBegin()
+        {
+            assert(m_mapRefCount == 0 || GetDescriptor().m_heapMemoryLevel != HeapMemoryLevel::Device);
+            ResourcePool::OnFrameBegin();
         }
 	}
 }

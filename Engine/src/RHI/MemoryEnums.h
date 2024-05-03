@@ -21,7 +21,7 @@ namespace CGE
 
 		enum class HeapMemoryLevel : uint32_t
 		{
-			// Host memory local to CPU
+			// Host memory visible to CPU
 			Host = 0,
 			// Device memory local to discrete GPU (require a staging transfer to GPU fast memory)
 			Device

@@ -17,6 +17,7 @@ namespace CGE
 			using ObjectType = ID3D12Object;
 		};
 
+		// Collect Latency is zero pay mind to GPU timeline.
 		using DX_ReleaseQueue = RHI::ObjectCollector<DX_ReleaseQueueTraits>;
 	}
 }

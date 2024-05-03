@@ -7,6 +7,9 @@
 #include "BufferView.h"
 #include "Buffer.h"
 #include "Graphics.h"
+#include "ImageViewDescriptor.h"
+#include "ImageView.h"
+#include "Image.h"
 
 namespace CGE
 {
@@ -19,6 +22,7 @@ namespace CGE
 
         void Resource::Shutdown()
         {
+            // [todo] before shutdown have to check if its not an attachment on the framegraph.
             if (m_pool)
             {
                 m_pool->ShutdownResource(this);
@@ -50,15 +54,13 @@ namespace CGE
             }
         }
 
-        /*
         Ptr<ImageView> Resource::GetResourceView(const ImageViewDescriptor& imageViewDescriptor) const
         {
             const HashValue64 hash = imageViewDescriptor.GetHash();
-            std::lock_guard<std::mutex> registryLock(m_cacheMutex);
             auto it = m_resourceViewCache.find(static_cast<uint64_t>(hash));
             if (it == m_resourceViewCache.end())
             {
-                Ptr<ImageView> imageViewPtr = RHI::Factory::Get().CreateImageView();
+                Ptr<ImageView> imageViewPtr = RHI::Graphics::GetFactory().CreateImageView();
                 RHI::ResultCode resultCode = imageViewPtr->Init(static_cast<const Image&>(*this), imageViewDescriptor);
                 if (resultCode == RHI::ResultCode::Success)
                 {
@@ -75,7 +77,6 @@ namespace CGE
                 return static_cast<ImageView*>(it->second);
             }
         }
-        */
 
         Ptr<BufferView> Resource::GetResourceView(const BufferViewDescriptor& bufferViewDescriptor) const
         {
@@ -104,6 +105,25 @@ namespace CGE
         void Resource::SetPool(ResourcePool* pool)
         {
             m_pool = pool;
+        }
+
+        uint32_t Resource::GetVersion() const
+        {
+            return m_version;
+        }
+
+        void Resource::InvalidateViews()
+        {
+            for (auto& view : m_resourceViewCache)
+            {
+                view.second->InvalidateResourceView();
+            }
+            m_version++;
+        }
+
+        bool Resource::IsFirstVersion() const
+        {
+            return m_version == 0;
         }
 	}
 }

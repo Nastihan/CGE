@@ -17,12 +17,20 @@ namespace CGE
         class CommandList;
         class Resource;
 
+        // Resource Pool Resolvers will perform resolve operations on the pool.
+        // This class will queue resolve operations so we dont do any operations on the resources while the gpu is using them.
         class ResourcePoolResolver
         {
         public:
             virtual ~ResourcePoolResolver() = default;
         };
 
+        // Resource pools will manage the backing memory and allocations for Buffers and Images.
+        // For buffers a page allocator and suballocator will be used.
+        // Images are simpler and we will just create commited resources.
+        // For transient attachments we will use a dedicated heap which the size will be calculated after we compile the frame graph.
+        // This pool will use the Placed Resource api. (Check TransientAttachmentPool)
+        // Also for big texures check StreamingImagePool this will use the update tile mappings api.
         class ResourcePool : public DeviceObject
         {
             friend class Resource;
@@ -46,8 +54,8 @@ namespace CGE
         protected:
             ResourcePool() = default;
             void SetResolver(std::unique_ptr<ResourcePoolResolver>&& resolvePolicy);
-            virtual void ShutdownInternal() = 0;
-            virtual void ShutdownResourceInternal(Resource& resource) = 0;
+            virtual void ShutdownInternal();
+            virtual void ShutdownResourceInternal(Resource& resource);
 
             using PlatformMethod = std::function<RHI::ResultCode()>;
             ResultCode Init(Device& device, const ResourcePoolDescriptor& descriptor, const PlatformMethod& initMethod);
@@ -59,15 +67,21 @@ namespace CGE
 
         protected:
             PoolMemoryUsage m_memoryUsage;
+            virtual void OnFrameBegin();
 
         private:
             void ShutdownResource(Resource* resource);
             void Register(Resource& resource);
             void Unregister(Resource& resource);
 
+            void OnFrameCompile();
+            void OnFrameEnd();
+
         private:
             mutable std::shared_mutex m_registryMutex;
             std::unordered_set<Resource*> m_registry;
+
+            // Drived class will assign this.
             std::unique_ptr<ResourcePoolResolver> m_resolver;
             std::atomic_bool m_isProcessingFrame = { false };
         };

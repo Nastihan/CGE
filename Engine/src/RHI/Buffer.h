@@ -30,6 +30,9 @@ namespace CGE
 
         private:
             BufferDescriptor m_descriptor;
+
+            // Incremented after each Map call on the buffer.
+            std::atomic_uint m_mapRefCount = { 0 };
         };
 	}
 }

@@ -1,6 +1,7 @@
 
 // DX12
 #include "DX_BufferPoolResolver.h"
+#include "DX_CommandList.h"
 
 // RHI
 #include "../RHI/BufferViewDescriptor.h"
@@ -53,9 +54,24 @@ namespace CGE
             return address;
 		}
 
-		void DX_BufferPoolResolver::OnResourceShutdown(const RHI::Resource& resource)
-		{
+        // [todo - FrameGraph]
+        void DX_BufferPoolResolver::Compile(DX_Scope& scope) {}
+        void DX_BufferPoolResolver::OnResourceShutdown(const RHI::Resource& resource) {}
 
-		}
+        void DX_BufferPoolResolver::Resolve(DX_CommandList& commandList) const
+        {
+            for (const DX_BufferUploadPacket& packet : m_uploadPackets)
+            {
+                commandList.GetCommandList()->CopyBufferRegion(
+                    packet.m_memory,
+                    packet.m_memoryByteOffset,
+                    packet.m_sourceMemory.GetMemory(),
+                    packet.m_sourceMemory.GetOffset(),
+                    packet.m_sourceMemory.GetSize());
+            }
+        }
+
+        void DX_BufferPoolResolver::QueueEpilogueTransitionBarriers(DX_CommandList& commandList) const {}
+        void DX_BufferPoolResolver::Deactivate() {}
 	}
 }

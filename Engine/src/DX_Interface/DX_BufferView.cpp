@@ -105,5 +105,15 @@ namespace CGE
 			m_memory = nullptr;
 			m_gpuAddress = 0;
 		}
+
+		uint32_t DX_BufferView::GetBindlessReadIndex() const
+		{
+			return m_staticReadDescriptor.m_index;
+		}
+
+		uint32_t DX_BufferView::GetBindlessReadWriteIndex() const
+		{
+			return m_staticReadWriteDescriptor.m_index;
+		}
 	}
 }

@@ -22,6 +22,9 @@ namespace CGE
 		using DX_MemoryAllocation = RHI::MemoryAllocation<DX_Memory>;
 		using DX_CpuVirtualAddress = uint8_t*;
 
+		// A view into gpu memory. For buffers the offsets, size, and alignment are relative to the base resource.
+		// The DX_Buffer will have a DX_MemoryView and the pool will call Map and Unmap on this memory view (ID3D12Resource) and it will consider the range of the buffer.
+		// Images are restricted and the view maps to the full resource. You cannot call Map on the resource (image layouts are opaque)
 		class DX_MemoryView
 		{
 			friend class DX_BufferMemoryAllocator;

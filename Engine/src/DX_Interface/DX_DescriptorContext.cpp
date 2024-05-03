@@ -3,6 +3,7 @@
 #include "DX_DescriptorContext.h"
 #include "DX_Buffer.h"
 #include "DX_Conversions.h"
+#include "DX_Image.h"
 
 namespace CGE
 {
@@ -192,6 +193,128 @@ namespace CGE
 			ConvertBufferView(buffer, bufferViewDescriptor, viewDesc);
 			m_device->CreateConstantBufferView(&viewDesc, descriptorHandle);
 			staticView = AllocateStaticDescriptor(descriptorHandle);
+		}
+
+		void DX_DescriptorContext::CreateShaderResourceView(const DX_Image& image, const RHI::ImageViewDescriptor& imageViewDescriptor, DX_DescriptorHandle& shaderResourceView, DX_DescriptorHandle& staticView)
+		{
+			if (shaderResourceView.IsNull())
+			{
+				shaderResourceView = AllocateHandle(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV, D3D12_DESCRIPTOR_HEAP_FLAG_NONE, 1);
+				if (shaderResourceView.IsNull())
+				{
+					assert(false);
+					return;
+				}
+			}
+			D3D12_CPU_DESCRIPTOR_HANDLE descriptorHandle = GetCpuPlatformHandle(shaderResourceView);
+
+			D3D12_SHADER_RESOURCE_VIEW_DESC viewDesc;
+			ConvertImageView(image, imageViewDescriptor, viewDesc);
+			m_device->CreateShaderResourceView(image.GetMemoryView().GetMemory(), &viewDesc, descriptorHandle);
+
+			// Only allocate if the index is already null, otherwise just copy the descriptor onto the old index.
+			if (staticView.m_index == DX_DescriptorHandle::NullIndex)
+			{
+				staticView = AllocateStaticDescriptor(descriptorHandle);
+			}
+			else
+			{
+				m_device->CopyDescriptorsSimple(1, m_staticPool.GetCpuPlatformHandle(staticView), descriptorHandle, D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
+			}
+		}
+
+		void DX_DescriptorContext::CreateUnorderedAccessView(const DX_Image& image, const RHI::ImageViewDescriptor& imageViewDescriptor, DX_DescriptorHandle& unorderedAccessView, DX_DescriptorHandle& unorderedAccessViewClear, DX_DescriptorHandle& staticView)
+		{
+			if (unorderedAccessView.IsNull())
+			{
+				unorderedAccessView = AllocateHandle(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV, D3D12_DESCRIPTOR_HEAP_FLAG_NONE, 1);
+				if (unorderedAccessView.IsNull())
+				{
+					assert(false);
+					return;
+				}
+			}
+			D3D12_CPU_DESCRIPTOR_HANDLE unorderedAccessDescriptor = GetCpuPlatformHandle(unorderedAccessView);
+
+			D3D12_UNORDERED_ACCESS_VIEW_DESC viewDesc;
+			ConvertImageView(image, imageViewDescriptor, viewDesc);
+			m_device->CreateUnorderedAccessView(image.GetMemoryView().GetMemory(), nullptr, &viewDesc, unorderedAccessDescriptor);
+
+			// Copy the UAV descriptor into the GPU-visible version for clearing.
+			if (unorderedAccessViewClear.IsNull())
+			{
+				unorderedAccessViewClear = AllocateHandle(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV, D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE, 1);
+				if (unorderedAccessViewClear.IsNull())
+				{
+					assert(false);
+					return;
+				}
+			}
+			CopyDescriptor(unorderedAccessViewClear, unorderedAccessView);
+
+			if (staticView.m_index == DX_DescriptorHandle::NullIndex)
+			{
+				staticView = AllocateStaticDescriptor(unorderedAccessDescriptor);
+			}
+			else
+			{
+				m_device->CopyDescriptorsSimple(1, m_staticPool.GetCpuPlatformHandle(staticView), unorderedAccessDescriptor, D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
+			}
+		}
+
+		void DX_DescriptorContext::CreateRenderTargetView(const DX_Image& image, const RHI::ImageViewDescriptor& imageViewDescriptor, DX_DescriptorHandle& renderTargetView)
+		{
+			if (renderTargetView.IsNull())
+			{
+				renderTargetView = AllocateHandle(D3D12_DESCRIPTOR_HEAP_TYPE_RTV, D3D12_DESCRIPTOR_HEAP_FLAG_NONE, 1);
+				if (renderTargetView.IsNull())
+				{
+					assert(false);
+					return;
+				}
+			}
+			D3D12_CPU_DESCRIPTOR_HANDLE renderTargetDescriptor = GetCpuPlatformHandle(renderTargetView);
+
+			D3D12_RENDER_TARGET_VIEW_DESC viewDesc;
+			ConvertImageView(image, imageViewDescriptor, viewDesc);
+			m_device->CreateRenderTargetView(image.GetMemoryView().GetMemory(), &viewDesc, renderTargetDescriptor);
+		}
+
+		void DX_DescriptorContext::CreateDepthStencilView(const DX_Image& image, const RHI::ImageViewDescriptor& imageViewDescriptor, DX_DescriptorHandle& depthStencilView, DX_DescriptorHandle& depthStencilReadView)
+		{
+			if (depthStencilView.IsNull())
+			{
+				depthStencilView = AllocateHandle(D3D12_DESCRIPTOR_HEAP_TYPE_DSV, D3D12_DESCRIPTOR_HEAP_FLAG_NONE, 1);
+				if (depthStencilView.IsNull())
+				{
+					assert(false);
+					return;
+				}
+			}
+			D3D12_CPU_DESCRIPTOR_HANDLE depthStencilDescriptor = GetCpuPlatformHandle(depthStencilView);
+
+			if (depthStencilReadView.IsNull())
+			{
+				depthStencilReadView = AllocateHandle(D3D12_DESCRIPTOR_HEAP_TYPE_DSV, D3D12_DESCRIPTOR_HEAP_FLAG_NONE, 1);
+				if (depthStencilReadView.IsNull())
+				{
+					assert(false);
+					return;
+				}
+			}
+			D3D12_CPU_DESCRIPTOR_HANDLE depthStencilReadDescriptor = GetCpuPlatformHandle(depthStencilReadView);
+
+			D3D12_DEPTH_STENCIL_VIEW_DESC viewDesc;
+			ConvertImageView(image, imageViewDescriptor, viewDesc);
+			m_device->CreateDepthStencilView(image.GetMemoryView().GetMemory(), &viewDesc, depthStencilDescriptor);
+			viewDesc.Flags = D3D12_DSV_FLAG_READ_ONLY_DEPTH;
+
+			const bool isStencilFormat = GetStencilFormat(viewDesc.Format) != DXGI_FORMAT_UNKNOWN;
+			if (isStencilFormat)
+			{
+				viewDesc.Flags |= D3D12_DSV_FLAG_READ_ONLY_STENCIL;
+			}
+			m_device->CreateDepthStencilView(image.GetMemoryView().GetMemory(), &viewDesc, depthStencilReadDescriptor);
 		}
 
 		void DX_DescriptorContext::ReleaseDescriptor(DX_DescriptorHandle descriptorHandle)

@@ -52,6 +52,12 @@
     <Filter Include="Source Files\RHI\Allocator">
       <UniqueIdentifier>{2aff9e2b-1e0c-49fb-99a2-ada7d2245999}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Scene">
+      <UniqueIdentifier>{0b1ae6b1-56de-4726-8c10-85fa14c73525}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Scene">
+      <UniqueIdentifier>{76b534dc-a82b-438c-acfb-1d02e253a041}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Main.cpp">
@@ -267,17 +273,83 @@
     <ClCompile Include="src\DX_Interface\DX_PipelineLayout.cpp">
       <Filter>Source Files\DX</Filter>
     </ClCompile>
-    <ClCompile Include="src\Scene.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\MeshBuilder.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\RHI\InputStreamLayout.cpp">
       <Filter>Source Files\RHI</Filter>
     </ClCompile>
     <ClCompile Include="src\RHI\RenderStates.cpp">
       <Filter>Source Files\RHI</Filter>
+    </ClCompile>
+    <ClCompile Include="src\RHI\ImageView.cpp">
+      <Filter>Source Files\RHI\Memory</Filter>
+    </ClCompile>
+    <ClCompile Include="src\RHI\ImageViewDescriptor.cpp">
+      <Filter>Source Files\RHI\Memory</Filter>
+    </ClCompile>
+    <ClCompile Include="src\RHI\ImageDescriptor.cpp">
+      <Filter>Source Files\RHI\Memory</Filter>
+    </ClCompile>
+    <ClCompile Include="src\RHI\MultisampleState.cpp">
+      <Filter>Source Files\RHI</Filter>
+    </ClCompile>
+    <ClCompile Include="src\RHI\Image.cpp">
+      <Filter>Source Files\RHI\Memory</Filter>
+    </ClCompile>
+    <ClCompile Include="src\RHI\ImagePool.cpp">
+      <Filter>Source Files\RHI\Memory</Filter>
+    </ClCompile>
+    <ClCompile Include="src\RHI\ImageSubresource.cpp">
+      <Filter>Source Files\RHI\Memory</Filter>
+    </ClCompile>
+    <ClCompile Include="src\DX_Interface\DX_ImageView.cpp">
+      <Filter>Source Files\DX\Memory</Filter>
+    </ClCompile>
+    <ClCompile Include="src\DX_Interface\DX_Image.cpp">
+      <Filter>Source Files\DX\Memory</Filter>
+    </ClCompile>
+    <ClCompile Include="src\DX_Interface\DX_UploadQueue.cpp">
+      <Filter>Source Files\DX\Memory</Filter>
+    </ClCompile>
+    <ClCompile Include="src\DX_Interface\DX_ImagePool.cpp">
+      <Filter>Source Files\DX\Memory</Filter>
+    </ClCompile>
+    <ClCompile Include="src\DX_Interface\DX_ImagePoolResolver.cpp">
+      <Filter>Source Files\DX\Memory</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Scene\MeshBuilder.cpp">
+      <Filter>Source Files\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Scene\Scene.cpp">
+      <Filter>Source Files\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Scene\Mesh.cpp">
+      <Filter>Source Files\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Scene\ModelNode.cpp">
+      <Filter>Source Files\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Scene\Model.cpp">
+      <Filter>Source Files\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Scene\Material.cpp">
+      <Filter>Source Files\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="src\RHI\ImageSystem.cpp">
+      <Filter>Source Files\RHI\Memory</Filter>
+    </ClCompile>
+    <ClCompile Include="src\RHI\ShaderResourceGroupLayoutDescriptor.cpp">
+      <Filter>Source Files\RHI</Filter>
+    </ClCompile>
+    <ClCompile Include="src\RHI\ShaderResourceGroupLayout.cpp">
+      <Filter>Source Files\RHI</Filter>
+    </ClCompile>
+    <ClCompile Include="src\RHI\SamplerState.cpp">
+      <Filter>Source Files\RHI</Filter>
+    </ClCompile>
+    <ClCompile Include="src\RHI\Viewport.cpp">
+      <Filter>Source Files\RHI</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Scene\Camera.cpp">
+      <Filter>Source Files\Scene</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -575,17 +647,98 @@
     <ClInclude Include="src\DX_Interface\DX_PipelineLayout.h">
       <Filter>Header Files\DX</Filter>
     </ClInclude>
-    <ClInclude Include="src\Scene.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\MeshBuilder.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="src\RHI\InputStreamLayout.h">
       <Filter>Header Files\RHI</Filter>
     </ClInclude>
     <ClInclude Include="src\RHI\RenderStates.h">
       <Filter>Header Files\RHI</Filter>
+    </ClInclude>
+    <ClInclude Include="src\RHI\ImageView.h">
+      <Filter>Header Files\RHI\Memory</Filter>
+    </ClInclude>
+    <ClInclude Include="src\RHI\ImageViewDescriptor.h">
+      <Filter>Header Files\RHI\Memory</Filter>
+    </ClInclude>
+    <ClInclude Include="src\RHI\ImageDescriptor.h">
+      <Filter>Header Files\RHI\Memory</Filter>
+    </ClInclude>
+    <ClInclude Include="src\RHI\MultisampleState.h">
+      <Filter>Header Files\RHI</Filter>
+    </ClInclude>
+    <ClInclude Include="src\RHI\Image.h">
+      <Filter>Header Files\RHI\Memory</Filter>
+    </ClInclude>
+    <ClInclude Include="src\RHI\ImagePool.h">
+      <Filter>Header Files\RHI\Memory</Filter>
+    </ClInclude>
+    <ClInclude Include="src\RHI\ImagePoolDescriptor.h">
+      <Filter>Header Files\RHI\Memory</Filter>
+    </ClInclude>
+    <ClInclude Include="src\RHI\ImageEnums.h">
+      <Filter>Header Files\RHI\Memory</Filter>
+    </ClInclude>
+    <ClInclude Include="src\RHI\ImageSubresource.h">
+      <Filter>Header Files\RHI\Memory</Filter>
+    </ClInclude>
+    <ClInclude Include="src\DX_Interface\DX_ImageView.h">
+      <Filter>Header Files\DX\Memory</Filter>
+    </ClInclude>
+    <ClInclude Include="src\DX_Interface\DX_Image.h">
+      <Filter>Header Files\DX\Memory</Filter>
+    </ClInclude>
+    <ClInclude Include="src\DX_Interface\DX_UploadQueue.h">
+      <Filter>Header Files\DX\Memory</Filter>
+    </ClInclude>
+    <ClInclude Include="src\RHI\ImageProperty.h">
+      <Filter>Header Files\RHI\Memory</Filter>
+    </ClInclude>
+    <ClInclude Include="src\RHI\interval_map.h">
+      <Filter>Header Files\RHI</Filter>
+    </ClInclude>
+    <ClInclude Include="src\DX_Interface\DX_ImagePool.h">
+      <Filter>Header Files\DX\Memory</Filter>
+    </ClInclude>
+    <ClInclude Include="src\DX_Interface\DX_ImagePoolResolver.h">
+      <Filter>Header Files\DX\Memory</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Scene\MeshBuilder.h">
+      <Filter>Header Files\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Scene\Scene.h">
+      <Filter>Header Files\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Scene\Mesh.h">
+      <Filter>Header Files\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Scene\ModelNode.h">
+      <Filter>Header Files\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Scene\Model.h">
+      <Filter>Header Files\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Scene\Material.h">
+      <Filter>Header Files\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="src\RHI\ImageSystem.h">
+      <Filter>Header Files\RHI\Memory</Filter>
+    </ClInclude>
+    <ClInclude Include="src\RHI\ShaderResourceGroupLayoutDescriptor.h">
+      <Filter>Header Files\RHI</Filter>
+    </ClInclude>
+    <ClInclude Include="src\RHI\ShaderResourceGroupLayout.h">
+      <Filter>Header Files\RHI</Filter>
+    </ClInclude>
+    <ClInclude Include="src\RHI\SamplerState.h">
+      <Filter>Header Files\RHI</Filter>
+    </ClInclude>
+    <ClInclude Include="src\RHI\Viewport.h">
+      <Filter>Header Files\RHI</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Scene\Camera.h">
+      <Filter>Header Files\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Scene\Light.h">
+      <Filter>Header Files\Scene</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

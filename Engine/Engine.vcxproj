@@ -44,6 +44,10 @@
     <ClCompile Include="src\DX_Interface\DX_Fence.cpp" />
     <ClCompile Include="src\DX_Interface\DX_FrameGraphExecuter.cpp" />
     <ClCompile Include="src\DX_Interface\DX_Graphics.cpp" />
+    <ClCompile Include="src\DX_Interface\DX_Image.cpp" />
+    <ClCompile Include="src\DX_Interface\DX_ImagePool.cpp" />
+    <ClCompile Include="src\DX_Interface\DX_ImagePoolResolver.cpp" />
+    <ClCompile Include="src\DX_Interface\DX_ImageView.cpp" />
     <ClCompile Include="src\DX_Interface\DX_MemoryPageAllocator.cpp" />
     <ClCompile Include="src\DX_Interface\DX_MemoryView.cpp" />
     <ClCompile Include="src\DX_Interface\DX_PhysicalDevice.cpp" />
@@ -53,6 +57,7 @@
     <ClCompile Include="src\DX_Interface\DX_ShaderStageFunction.cpp" />
     <ClCompile Include="src\DX_Interface\DX_StagingMemoryAllocator.cpp" />
     <ClCompile Include="src\DX_Interface\DX_SwapChain.cpp" />
+    <ClCompile Include="src\DX_Interface\DX_UploadQueue.cpp" />
     <ClCompile Include="src\RHI\Allocator.cpp" />
     <ClCompile Include="src\RHI\Buffer.cpp" />
     <ClCompile Include="src\RHI\BufferDescriptor.cpp" />
@@ -71,11 +76,18 @@
     <ClCompile Include="src\RHI\Graphics.cpp" />
     <ClCompile Include="src\Main.cpp" />
     <ClCompile Include="src\RHI\Device.cpp" />
+    <ClCompile Include="src\RHI\Image.cpp" />
+    <ClCompile Include="src\RHI\ImageDescriptor.cpp" />
+    <ClCompile Include="src\RHI\ImagePool.cpp" />
+    <ClCompile Include="src\RHI\ImageSubresource.cpp" />
+    <ClCompile Include="src\RHI\ImageSystem.cpp" />
+    <ClCompile Include="src\RHI\ImageView.cpp" />
+    <ClCompile Include="src\RHI\ImageViewDescriptor.cpp" />
     <ClCompile Include="src\RHI\IndexBufferView.cpp" />
     <ClCompile Include="src\RHI\InputStreamLayout.cpp" />
     <ClCompile Include="src\RHI\LinearAllocator.cpp" />
     <ClCompile Include="src\RHI\MemoryUsage.cpp" />
-    <ClCompile Include="src\MeshBuilder.cpp" />
+    <ClCompile Include="src\RHI\MultisampleState.cpp" />
     <ClCompile Include="src\RHI\Object.cpp" />
     <ClCompile Include="src\RHI\PhysicalDevice.cpp" />
     <ClCompile Include="src\RHI\PipelineLayout.cpp" />
@@ -87,11 +99,21 @@
     <ClCompile Include="src\RHI\Resource.cpp" />
     <ClCompile Include="src\RHI\ResourcePool.cpp" />
     <ClCompile Include="src\RHI\ResourceView.cpp" />
+    <ClCompile Include="src\RHI\SamplerState.cpp" />
+    <ClCompile Include="src\RHI\ShaderResourceGroupLayout.cpp" />
+    <ClCompile Include="src\RHI\ShaderResourceGroupLayoutDescriptor.cpp" />
     <ClCompile Include="src\RHI\ShaderStageFunction.cpp" />
     <ClCompile Include="src\RHI\StreamBufferView.cpp" />
     <ClCompile Include="src\RHI\SwapChain.cpp" />
     <ClCompile Include="src\RHI\TypeHash.cpp" />
-    <ClCompile Include="src\Scene.cpp" />
+    <ClCompile Include="src\RHI\Viewport.cpp" />
+    <ClCompile Include="src\Scene\Camera.cpp" />
+    <ClCompile Include="src\Scene\Material.cpp" />
+    <ClCompile Include="src\Scene\Mesh.cpp" />
+    <ClCompile Include="src\Scene\MeshBuilder.cpp" />
+    <ClCompile Include="src\Scene\Model.cpp" />
+    <ClCompile Include="src\Scene\ModelNode.cpp" />
+    <ClCompile Include="src\Scene\Scene.cpp" />
     <ClCompile Include="src\VK_Interface\VK_Device.cpp" />
     <ClCompile Include="src\Window.cpp" />
   </ItemGroup>
@@ -125,6 +147,10 @@
     <ClInclude Include="src\DX_Interface\DX_FrameGraphExecuter.h" />
     <ClInclude Include="src\DX_Interface\DX_Graphics.h" />
     <ClInclude Include="src\DX_Interface\DX_Helper.h" />
+    <ClInclude Include="src\DX_Interface\DX_Image.h" />
+    <ClInclude Include="src\DX_Interface\DX_ImagePool.h" />
+    <ClInclude Include="src\DX_Interface\DX_ImagePoolResolver.h" />
+    <ClInclude Include="src\DX_Interface\DX_ImageView.h" />
     <ClInclude Include="src\DX_Interface\DX_MemoryPageAllocator.h" />
     <ClInclude Include="src\DX_Interface\DX_MemorySubAllocator.h" />
     <ClInclude Include="src\DX_Interface\DX_MemoryView.h" />
@@ -137,6 +163,7 @@
     <ClInclude Include="src\DX_Interface\DX_ShaderStageFunction.h" />
     <ClInclude Include="src\DX_Interface\DX_StagingMemoryAllocator.h" />
     <ClInclude Include="src\DX_Interface\DX_SwapChain.h" />
+    <ClInclude Include="src\DX_Interface\DX_UploadQueue.h" />
     <ClInclude Include="src\RHI\Allocator.h" />
     <ClInclude Include="src\RHI\AttachmentEnums.h" />
     <ClInclude Include="src\RHI\Buffer.h" />
@@ -161,8 +188,19 @@
     <ClInclude Include="src\RHI\DeviceFeatures.h" />
     <ClInclude Include="src\RHI\DeviceLimits.h" />
     <ClInclude Include="src\RHI\Handle.h" />
+    <ClInclude Include="src\RHI\Image.h" />
+    <ClInclude Include="src\RHI\ImageDescriptor.h" />
+    <ClInclude Include="src\RHI\ImageEnums.h" />
+    <ClInclude Include="src\RHI\ImagePool.h" />
+    <ClInclude Include="src\RHI\ImagePoolDescriptor.h" />
+    <ClInclude Include="src\RHI\ImageProperty.h" />
+    <ClInclude Include="src\RHI\ImageSubresource.h" />
+    <ClInclude Include="src\RHI\ImageSystem.h" />
+    <ClInclude Include="src\RHI\ImageView.h" />
+    <ClInclude Include="src\RHI\ImageViewDescriptor.h" />
     <ClInclude Include="src\RHI\IndexBufferView.h" />
     <ClInclude Include="src\RHI\InputStreamLayout.h" />
+    <ClInclude Include="src\RHI\interval_map.h" />
     <ClInclude Include="src\RHI\intrusive_base.h" />
     <ClInclude Include="src\RHI\intrusive_ptr.h" />
     <ClInclude Include="src\RHI\intrusive_refcount.h" />
@@ -173,7 +211,7 @@
     <ClInclude Include="src\RHI\MemoryLinearSubAllocator.h" />
     <ClInclude Include="src\RHI\MemorySubAllocator.h" />
     <ClInclude Include="src\RHI\MemoryUsage.h" />
-    <ClInclude Include="src\MeshBuilder.h" />
+    <ClInclude Include="src\RHI\MultisampleState.h" />
     <ClInclude Include="src\RHI\Object.h" />
     <ClInclude Include="src\RHI\ObjectCollector.h" />
     <ClInclude Include="src\RHI\ObjectPool.h" />
@@ -190,12 +228,23 @@
     <ClInclude Include="src\RHI\ResourcePoolDescriptor.h" />
     <ClInclude Include="src\RHI\ResourceView.h" />
     <ClInclude Include="src\RHI\RHI_Common.h" />
+    <ClInclude Include="src\RHI\SamplerState.h" />
+    <ClInclude Include="src\RHI\ShaderResourceGroupLayout.h" />
+    <ClInclude Include="src\RHI\ShaderResourceGroupLayoutDescriptor.h" />
     <ClInclude Include="src\RHI\ShaderStageFunction.h" />
     <ClInclude Include="src\RHI\StreamBufferView.h" />
     <ClInclude Include="src\RHI\SwapChain.h" />
     <ClInclude Include="src\RHI\SwapChainDescriptor.h" />
     <ClInclude Include="src\RHI\TypeHash.h" />
-    <ClInclude Include="src\Scene.h" />
+    <ClInclude Include="src\RHI\Viewport.h" />
+    <ClInclude Include="src\Scene\Camera.h" />
+    <ClInclude Include="src\Scene\Light.h" />
+    <ClInclude Include="src\Scene\Material.h" />
+    <ClInclude Include="src\Scene\Mesh.h" />
+    <ClInclude Include="src\Scene\MeshBuilder.h" />
+    <ClInclude Include="src\Scene\Model.h" />
+    <ClInclude Include="src\Scene\ModelNode.h" />
+    <ClInclude Include="src\Scene\Scene.h" />
     <ClInclude Include="src\VK_Interface\VK_Device.h" />
     <ClInclude Include="src\Window.h" />
   </ItemGroup>
@@ -299,10 +348,10 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions);COMPILE_CITY_CC</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions);COMPILE_CITY_CC;USE_DX12</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpplatest</LanguageStandard>
-      <AdditionalIncludeDirectories>$(ProjectDir)Dependencies\assimp\include;$(ProjectDir)Dependencies\GLFW\include;$(ProjectDir)Dependencies\d3dx12;$(ProjectDir)Dependencies\CityHash;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)Dependencies\glm;$(ProjectDir)Dependencies\DirectXTex\include;$(ProjectDir)Dependencies\assimp\include;$(ProjectDir)Dependencies\GLFW\include;$(ProjectDir)Dependencies\d3dx12;$(ProjectDir)Dependencies\CityHash;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
       <FloatingPointModel>Fast</FloatingPointModel>
@@ -310,8 +359,8 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>d3d12.lib;dxgi.lib;d3dcompiler.lib;glfw3.lib;assimp-vc142-mtd.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(ProjectDir)Dependencies\GLFW\lib-vc2019;$(ProjectDir)Dependencies\assimp\lib\Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>d3d12.lib;dxgi.lib;d3dcompiler.lib;glfw3.lib;assimp-vc142-mtd.lib;DirectXTex.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(ProjectDir)Dependencies\GLFW\lib-vc2019;$(ProjectDir)Dependencies\DirectXTex\bin\Debug;$(ProjectDir)Dependencies\assimp\lib\Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
       <Command>xcopy /y "$(ProjectDir)Dependencies\assimp\bin\Debug\assimp-vc142-mtd.dll" "$(OutDir)"
@@ -324,10 +373,10 @@ xcopy /y "$(ProjectDir)Dependencies\assimp\bin\Debug\assimp-vc142-mtd.pdb" "$(Ou
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions);COMPILE_CITY_CC</PreprocessorDefinitions>
+      <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions);COMPILE_CITY_CC;USE_DX12</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpplatest</LanguageStandard>
-      <AdditionalIncludeDirectories>$(ProjectDir)Dependencies\assimp\include;$(ProjectDir)Dependencies\GLFW\include;$(ProjectDir)Dependencies\d3dx12;$(ProjectDir)Dependencies\CityHash;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)Dependencies\glm;$(ProjectDir)Dependencies\DirectXTex\include;$(ProjectDir)Dependencies\assimp\include;$(ProjectDir)Dependencies\GLFW\include;$(ProjectDir)Dependencies\d3dx12;$(ProjectDir)Dependencies\CityHash;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
       <FloatingPointModel>Fast</FloatingPointModel>
@@ -337,8 +386,8 @@ xcopy /y "$(ProjectDir)Dependencies\assimp\bin\Debug\assimp-vc142-mtd.pdb" "$(Ou
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>d3d12.lib;dxgi.lib;d3dcompiler.lib;glfw3.lib;assimp-vc142-mt.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(ProjectDir)Dependencies\assimp\lib\Release;$(ProjectDir)Dependencies\GLFW\lib-vc2019;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>d3d12.lib;dxgi.lib;d3dcompiler.lib;glfw3.lib;assimp-vc142-mt.lib;DirectXTex.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(ProjectDir)Dependencies\DirectXTex\bin\Release;$(ProjectDir)Dependencies\assimp\lib\Release;$(ProjectDir)Dependencies\GLFW\lib-vc2019;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
       <Command>xcopy /y "$(ProjectDir)Dependencies\assimp\bin\Release\assimp-vc142-mt.dll" "$(OutDir)"

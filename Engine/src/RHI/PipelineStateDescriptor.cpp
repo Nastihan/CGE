@@ -41,7 +41,7 @@ namespace CGE
 			{
 				seed = TypeHash64(m_fragmentFunction->GetHash(), seed);
 			}
-			seed = TypeHash64(m_pipelineLayoutDescriptor->GetHash(), seed);
+			// seed = TypeHash64(m_pipelineLayoutDescriptor->GetHash(), seed);
 			seed = TypeHash64(m_inputStreamLayout.GetHash(), seed);
 			seed = m_renderStates.GetHash(seed);
 
