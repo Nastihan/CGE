@@ -1,7 +1,6 @@
 #pragma once
 #include "intrusive_ptr.h"
 #include "../CommonMacros.h"
-#include "MathTypedefs.h"
 
 namespace CGE
 {

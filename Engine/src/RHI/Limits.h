@@ -37,11 +37,14 @@ namespace CGE
 			{
 				// Max vertex buffers
 				constexpr uint32_t StreamCountMax = 12;
+
 				// Max channels in each vertex buffer
 				constexpr uint32_t StreamChannelCountMax = 16;
 				constexpr uint32_t AttachmentColorCountMax = 8;
 				constexpr uint32_t MultiSampleCustomLocationsCountMax = 16;
 				constexpr uint32_t MultiSampleCustomLocationGridSize = 16;
+
+				constexpr uint32_t ShaderResourceGroupCountMax = 3;
 			}
 
 			namespace Image

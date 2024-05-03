@@ -2,6 +2,9 @@
 // DX12
 #include "DX_PipelineLayout.h"
 
+// RHI
+#include "../RHI/Limits.h"
+
 namespace CGE
 {
 	namespace DX12

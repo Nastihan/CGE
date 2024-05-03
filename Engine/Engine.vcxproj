@@ -238,6 +238,7 @@
     <ClInclude Include="src\RHI\TypeHash.h" />
     <ClInclude Include="src\RHI\Viewport.h" />
     <ClInclude Include="src\Scene\Camera.h" />
+    <ClInclude Include="src\Scene\Light.h" />
     <ClInclude Include="src\Scene\Material.h" />
     <ClInclude Include="src\Scene\Mesh.h" />
     <ClInclude Include="src\Scene\MeshBuilder.h" />

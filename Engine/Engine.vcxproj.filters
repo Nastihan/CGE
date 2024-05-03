@@ -737,5 +737,8 @@
     <ClInclude Include="src\Scene\Camera.h">
       <Filter>Header Files\Scene</Filter>
     </ClInclude>
+    <ClInclude Include="src\Scene\Light.h">
+      <Filter>Header Files\Scene</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
