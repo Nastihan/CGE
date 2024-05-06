@@ -19,7 +19,8 @@ namespace CGE
 		{
 		public:
 			static RHI::Ptr<DX_PipelineLayout> Create();
-			void Init(ID3D12DeviceX* dx12Device, const std::vector<RHI::Ptr<RHI::ShaderResourceGroupLayout>>& srgLayouts);
+			void Init(ID3D12DeviceX* dx12Device, const std::vector<RHI::Ptr<RHI::ShaderResourceGroupLayout>>& srgLayouts, const std::string& name);
+			ID3D12RootSignature* Get() const;
 		private:
 			DX_PipelineLayout() = default;
 		

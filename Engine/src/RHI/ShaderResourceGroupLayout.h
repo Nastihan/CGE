@@ -7,6 +7,7 @@
 
 // std
 #include <span>
+#include <optional>
 
 namespace CGE
 {
@@ -38,6 +39,7 @@ namespace CGE
             void AddShaderInput(const ShaderInputImageUnboundedArrayDescriptor& imageUnboundedArray);
             void AddShaderInput(const ShaderInputSamplerDescriptor& sampler);
             void AddShaderInput(const ShaderInputConstantDescriptor& constant);
+            void SetRootConstantBinding(const RootConstantBinding& constant);
 
             std::span<const ShaderInputStaticSamplerDescriptor> GetStaticSamplers() const;
             std::span<const ShaderInputBufferDescriptor> GetShaderInputListForBuffers() const;
@@ -46,6 +48,7 @@ namespace CGE
             std::span<const ShaderInputConstantDescriptor> GetShaderInputListForConstants() const;
             std::span<const ShaderInputBufferUnboundedArrayDescriptor> GetShaderInputListForBufferUnboundedArrays() const;
             std::span<const ShaderInputImageUnboundedArrayDescriptor> GetShaderInputListForImageUnboundedArrays() const;
+            const std::optional<RootConstantBinding> GetRootConstant() const;
 
         private:
             ShaderResourceGroupLayout() = default;
@@ -54,11 +57,13 @@ namespace CGE
             HashValue64 m_hash = HashValue64{ 0 };
 
             std::vector<ShaderInputStaticSamplerDescriptor> m_staticSamplers;
+            std::vector< ShaderInputConstantDescriptor> m_constantBuffers;
             std::vector<ShaderInputBufferDescriptor> m_inputsForBuffers;
             std::vector<ShaderInputImageDescriptor> m_inputsForImages;
             std::vector<ShaderInputSamplerDescriptor> m_inputsForSamplers;
             std::vector<ShaderInputBufferUnboundedArrayDescriptor> m_inputsForBufferUnboundedArrays;
             std::vector<ShaderInputImageUnboundedArrayDescriptor>  m_inputsForImageUnboundedArrays;
+            std::optional<RootConstantBinding> m_rootConstantBinding;
         };
     }
 }

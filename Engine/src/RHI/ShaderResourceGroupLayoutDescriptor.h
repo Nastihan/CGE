@@ -5,11 +5,27 @@
 #include "TypeHash.h"
 #include "Handle.h"
 #include "SamplerState.h"
+#include "ShaderStages.h"
 
 namespace CGE
 {
     namespace RHI
     {
+        // Used in initilization of the root parameters. (Check DX_PipelineLayout::Init) (Pre D3D12_ROOT_PARAMETER)
+        struct ResourceBindingInfo
+        {
+            ResourceBindingInfo() = default;
+            ResourceBindingInfo(const RHI::ShaderStageMask& mask, uint32_t registerId, uint32_t spaceId) : m_shaderStageMask{ mask }, m_registerId{ registerId }, m_spaceId{ spaceId } {}
+            HashValue64 GetHash() const;
+
+            using Register = uint32_t;
+            static const Register InvalidRegister = ~0u;
+
+            RHI::ShaderStageMask m_shaderStageMask = RHI::ShaderStageMask::None;
+            uint32_t m_registerId = InvalidRegister;
+            uint32_t m_spaceId = InvalidRegister;
+        };
+
         enum class ShaderInputType : uint32_t
         {
             Buffer = 0,
@@ -43,7 +59,7 @@ namespace CGE
         {
         public:
             ShaderInputBufferDescriptor() = default;
-            ShaderInputBufferDescriptor(const std::string& name, ShaderInputBufferAccess access, ShaderInputBufferType type, uint32_t bufferCount, uint32_t strideSize, uint32_t registerId, uint32_t spaceId);
+            ShaderInputBufferDescriptor(const std::string& name, ShaderInputBufferAccess access, ShaderInputBufferType type, uint32_t bufferCount, uint32_t strideSize, const RHI::ShaderStageMask& mask, uint32_t registerId, uint32_t spaceId);
             HashValue64 GetHash(HashValue64 seed = HashValue64{ 0 }) const;
 
             // The name id used to reflect the buffer input.
@@ -53,8 +69,7 @@ namespace CGE
             ShaderInputBufferAccess m_access = ShaderInputBufferAccess::Read;
             uint32_t m_count = 0;
             uint32_t m_strideSize = 0;
-            uint32_t m_registerId = UndefinedRegisterSlot;
-            uint32_t m_spaceId = UndefinedRegisterSlot;
+            ResourceBindingInfo m_resourceBindingInfo;
         };
 
         enum class ShaderInputImageAccess : uint32_t
@@ -82,7 +97,7 @@ namespace CGE
         {
         public:
             ShaderInputImageDescriptor() = default;
-            ShaderInputImageDescriptor(const std::string& name, ShaderInputImageAccess access, ShaderInputImageType type, uint32_t imageCount, uint32_t registerId, uint32_t spaceId);
+            ShaderInputImageDescriptor(const std::string& name, ShaderInputImageAccess access, ShaderInputImageType type, uint32_t imageCount, const RHI::ShaderStageMask& mask, uint32_t registerId, uint32_t spaceId);
             HashValue64 GetHash(HashValue64 seed = HashValue64{ 0 }) const;
 
             // The name id used to reflect the image input.
@@ -91,15 +106,14 @@ namespace CGE
             ShaderInputImageType m_type = ShaderInputImageType::Unknown;
             ShaderInputImageAccess m_access = ShaderInputImageAccess::Read;
             uint32_t m_count = 0;
-            uint32_t m_registerId = UndefinedRegisterSlot;
-            uint32_t m_spaceId = UndefinedRegisterSlot;
+            ResourceBindingInfo m_resourceBindingInfo;
         };
 
         class ShaderInputBufferUnboundedArrayDescriptor final
         {
         public:
             ShaderInputBufferUnboundedArrayDescriptor() = default;
-            ShaderInputBufferUnboundedArrayDescriptor(const std::string& name, ShaderInputBufferAccess access, ShaderInputBufferType type, uint32_t strideSize, uint32_t registerId, uint32_t spaceId);
+            ShaderInputBufferUnboundedArrayDescriptor(const std::string& name, ShaderInputBufferAccess access, ShaderInputBufferType type, uint32_t strideSize, const RHI::ShaderStageMask& mask, uint32_t registerId, uint32_t spaceId);
             HashValue64 GetHash(HashValue64 seed = HashValue64{ 0 }) const;
 
             // The name id used to reflect the image input.
@@ -108,15 +122,14 @@ namespace CGE
             ShaderInputBufferType m_type = ShaderInputBufferType::Unknown;
             ShaderInputBufferAccess m_access = ShaderInputBufferAccess::Read;
             uint32_t m_strideSize = 0;
-            uint32_t m_registerId = UndefinedRegisterSlot;
-            uint32_t m_spaceId = UndefinedRegisterSlot;
+            ResourceBindingInfo m_resourceBindingInfo;
         };
 
         class ShaderInputImageUnboundedArrayDescriptor final
         {
         public:
             ShaderInputImageUnboundedArrayDescriptor() = default;
-            ShaderInputImageUnboundedArrayDescriptor(const std::string& name, ShaderInputImageAccess access, ShaderInputImageType type, uint32_t registerId, uint32_t spaceId);
+            ShaderInputImageUnboundedArrayDescriptor(const std::string& name, ShaderInputImageAccess access, ShaderInputImageType type, const RHI::ShaderStageMask& mask, uint32_t registerId, uint32_t spaceId);
             HashValue64 GetHash(HashValue64 seed = HashValue64{ 0 }) const;
 
             // The name id used to reflect the image input.
@@ -124,54 +137,62 @@ namespace CGE
             std::string m_name;
             ShaderInputImageType m_type = ShaderInputImageType::Unknown;
             ShaderInputImageAccess m_access = ShaderInputImageAccess::Read;
-            uint32_t m_registerId = UndefinedRegisterSlot;
-            uint32_t m_spaceId = UndefinedRegisterSlot;
+            ResourceBindingInfo m_resourceBindingInfo;
         };
 
         class ShaderInputSamplerDescriptor final
         {
         public:
             ShaderInputSamplerDescriptor() = default;
-            ShaderInputSamplerDescriptor(const std::string& name, uint32_t samplerCount, uint32_t registerId, uint32_t spaceId);
+            ShaderInputSamplerDescriptor(const std::string& name, uint32_t samplerCount, const RHI::ShaderStageMask& mask, uint32_t registerId, uint32_t spaceId);
             HashValue64 GetHash(HashValue64 seed = HashValue64{ 0 }) const;
 
             // The name id used to reflect the image input.
             // [todo] Empty for now need to reflect from shader.
             std::string m_name;
             uint32_t m_count = 0;
-            uint32_t m_registerId = UndefinedRegisterSlot;
-            uint32_t m_spaceId = UndefinedRegisterSlot;
+            ResourceBindingInfo m_resourceBindingInfo;
         };
 
         class ShaderInputConstantDescriptor final
         {
         public:
             ShaderInputConstantDescriptor() = default;
-            ShaderInputConstantDescriptor(const std::string& name, uint32_t constantByteOffset, uint32_t constantByteCount, uint32_t registerId, uint32_t spaceId);
+            ShaderInputConstantDescriptor(const std::string& name, const RHI::ShaderStageMask& mask, uint32_t registerId, uint32_t spaceId);
             HashValue64 GetHash(HashValue64 seed = HashValue64{ 0 }) const;
 
             // The name id used to reflect the image input.
             // [todo] Empty for now need to reflect from shader.
             std::string m_name;
-            uint32_t m_constantByteOffset = 0;
-            uint32_t m_constantByteCount = 0;
-            uint32_t m_registerId = UndefinedRegisterSlot;
-            uint32_t m_spaceId = UndefinedRegisterSlot;
+            ShaderInputBufferType m_type = ShaderInputBufferType::Constant;
+            uint32_t m_count = 0;
+            ResourceBindingInfo m_resourceBindingInfo;
         };
 
         class ShaderInputStaticSamplerDescriptor final
         {
         public:
             ShaderInputStaticSamplerDescriptor() = default;
-            ShaderInputStaticSamplerDescriptor(const std::string& name, const SamplerState& samplerState, uint32_t registerId, uint32_t spaceId);
+            ShaderInputStaticSamplerDescriptor(const std::string& name, const SamplerState& samplerState, const RHI::ShaderStageMask& mask, uint32_t registerId, uint32_t spaceId);
             HashValue64 GetHash(HashValue64 seed = HashValue64{ 0 }) const;
 
             // The name id used to reflect the image input.
             // [todo] Empty for now need to reflect from shader.
             std::string m_name;
             SamplerState m_samplerState;
-            uint32_t m_registerId = UndefinedRegisterSlot;
-            uint32_t m_spaceId = UndefinedRegisterSlot;
+            ResourceBindingInfo m_resourceBindingInfo;
+        };
+
+        // Used for root constants.
+        struct RootConstantBinding
+        {
+            RootConstantBinding() = default;
+            RootConstantBinding(uint32_t constantCount, uint32_t constantRegister, uint32_t constantRegisterSpace);
+            HashValue64 GetHash(HashValue64 seed = HashValue64{ 0 }) const;
+
+            uint32_t m_constantCount = 0;
+            uint32_t m_constantRegister = 0;
+            uint32_t m_constantRegisterSpace = 0;
         };
     }
 }

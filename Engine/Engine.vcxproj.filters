@@ -740,5 +740,8 @@
     <ClInclude Include="src\Scene\Light.h">
       <Filter>Header Files\Scene</Filter>
     </ClInclude>
+    <ClInclude Include="src\RHI\ShaderStages.h">
+      <Filter>Header Files\RHI</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
