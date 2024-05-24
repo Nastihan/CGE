@@ -743,5 +743,176 @@ namespace CGE
                 return 0;
             }
         }
+
+        D3D12_SHADER_VISIBILITY ConvertShaderStageMask(RHI::ShaderStageMask mask)
+        {
+            // If more than one stage is in the mask, we return the visibility for all stages
+            // since D3D12_SHADER_VISIBILITY is NOT a mask, but an enum per stage.
+            if (RHI::CountBitsSet(static_cast<uint64_t>(mask)) > 1)
+            {
+                return D3D12_SHADER_VISIBILITY_ALL;
+            }
+            switch (mask)
+            {
+            case RHI::ShaderStageMask::None:
+                return D3D12_SHADER_VISIBILITY_ALL;
+            case RHI::ShaderStageMask::Vertex:
+                return D3D12_SHADER_VISIBILITY_VERTEX;
+            case RHI::ShaderStageMask::Fragment:
+                return D3D12_SHADER_VISIBILITY_PIXEL;
+            case RHI::ShaderStageMask::Compute:
+                // Compute always uses D3D12_SHADER_VISIBILITY_ALL (since there is only one active stage)
+                return D3D12_SHADER_VISIBILITY_ALL;
+            case RHI::ShaderStageMask::RayTracing:
+                return D3D12_SHADER_VISIBILITY_ALL;
+            default:
+                assert(false, "Invalid shader stage mask.");
+                return D3D12_SHADER_VISIBILITY_ALL;
+            }
+        }
+
+        D3D12_FILTER_TYPE ConvertFilterMode(RHI::FilterMode mode)
+        {
+            switch (mode)
+            {
+            case RHI::FilterMode::Point:
+                return D3D12_FILTER_TYPE_POINT;
+            case RHI::FilterMode::Linear:
+                return D3D12_FILTER_TYPE_LINEAR;
+            }
+            assert(false, "bad conversion in ConvertFilterMode");
+            return D3D12_FILTER_TYPE_POINT;
+        }
+
+        D3D12_FILTER_REDUCTION_TYPE ConvertReductionType(RHI::ReductionType reductionType)
+        {
+            switch (reductionType)
+            {
+            case RHI::ReductionType::Filter:
+                return D3D12_FILTER_REDUCTION_TYPE_STANDARD;
+            case RHI::ReductionType::Comparison:
+                return D3D12_FILTER_REDUCTION_TYPE_COMPARISON;
+            case RHI::ReductionType::Minimum:
+                return D3D12_FILTER_REDUCTION_TYPE_MINIMUM;
+            case RHI::ReductionType::Maximum:
+                return D3D12_FILTER_REDUCTION_TYPE_MAXIMUM;
+            }
+            assert(false, "bad conversion in ConvertReductionType");
+            return D3D12_FILTER_REDUCTION_TYPE_STANDARD;
+        }
+
+        D3D12_TEXTURE_ADDRESS_MODE ConvertAddressMode(RHI::AddressMode addressMode)
+        {
+            switch (addressMode)
+            {
+            case RHI::AddressMode::Wrap:
+                return D3D12_TEXTURE_ADDRESS_MODE_WRAP;
+            case RHI::AddressMode::Clamp:
+                return D3D12_TEXTURE_ADDRESS_MODE_CLAMP;
+            case RHI::AddressMode::Mirror:
+                return D3D12_TEXTURE_ADDRESS_MODE_MIRROR;
+            case RHI::AddressMode::MirrorOnce:
+                return D3D12_TEXTURE_ADDRESS_MODE_MIRROR_ONCE;
+            case RHI::AddressMode::Border:
+                return D3D12_TEXTURE_ADDRESS_MODE_BORDER;
+            }
+            assert(false, "bad conversion in ConvertAddressMode");
+            return D3D12_TEXTURE_ADDRESS_MODE_WRAP;
+        }
+
+        void ConvertBorderColor(RHI::BorderColor color, float outputColor[4])
+        {
+            switch (color)
+            {
+            case RHI::BorderColor::OpaqueBlack:
+                outputColor[0] = outputColor[1] = outputColor[2] = 0.0f;
+                outputColor[3] = 1.0f;
+                return;
+            case RHI::BorderColor::TransparentBlack:
+                outputColor[0] = outputColor[1] = outputColor[2] = outputColor[3] = 0.0f;
+                return;
+            case RHI::BorderColor::OpaqueWhite:
+                outputColor[0] = outputColor[1] = outputColor[2] = outputColor[3] = 1.0f;
+                return;
+            }
+        }
+
+        D3D12_STATIC_BORDER_COLOR ConvertBorderColor(RHI::BorderColor color)
+        {
+            switch (color)
+            {
+            case RHI::BorderColor::OpaqueBlack:
+                return D3D12_STATIC_BORDER_COLOR_OPAQUE_BLACK;
+            case RHI::BorderColor::TransparentBlack:
+                return D3D12_STATIC_BORDER_COLOR_TRANSPARENT_BLACK;
+            case RHI::BorderColor::OpaqueWhite:
+                return D3D12_STATIC_BORDER_COLOR_OPAQUE_WHITE;
+            }
+            return D3D12_STATIC_BORDER_COLOR_TRANSPARENT_BLACK;
+        }
+
+        D3D12_COMPARISON_FUNC ConvertComparisonFunc(RHI::ComparisonFunc func)
+        {
+            static const D3D12_COMPARISON_FUNC table[] =
+            {
+                D3D12_COMPARISON_FUNC_NEVER,
+                D3D12_COMPARISON_FUNC_LESS,
+                D3D12_COMPARISON_FUNC_EQUAL,
+                D3D12_COMPARISON_FUNC_LESS_EQUAL,
+                D3D12_COMPARISON_FUNC_GREATER,
+                D3D12_COMPARISON_FUNC_NOT_EQUAL,
+                D3D12_COMPARISON_FUNC_GREATER_EQUAL,
+                D3D12_COMPARISON_FUNC_ALWAYS
+            };
+            return table[(uint32_t)func];
+        }
+
+        void ConvertSamplerState(const RHI::SamplerState& state, D3D12_SAMPLER_DESC& samplerDesc)
+        {
+            D3D12_FILTER filter;
+            D3D12_FILTER_REDUCTION_TYPE reduction = ConvertReductionType(state.m_reductionType);
+            if (state.m_anisotropyEnable)
+            {
+                filter = D3D12_ENCODE_ANISOTROPIC_FILTER(reduction);
+            }
+            else
+            {
+                D3D12_FILTER_TYPE min = ConvertFilterMode(state.m_filterMin);
+                D3D12_FILTER_TYPE mag = ConvertFilterMode(state.m_filterMag);
+                D3D12_FILTER_TYPE mip = ConvertFilterMode(state.m_filterMip);
+                filter = D3D12_ENCODE_BASIC_FILTER(min, mag, mip, reduction);
+            }
+
+            samplerDesc.AddressU = ConvertAddressMode(state.m_addressU);
+            samplerDesc.AddressV = ConvertAddressMode(state.m_addressV);
+            samplerDesc.AddressW = ConvertAddressMode(state.m_addressW);
+            ConvertBorderColor(state.m_borderColor, samplerDesc.BorderColor);
+            samplerDesc.ComparisonFunc = ConvertComparisonFunc(state.m_comparisonFunc);
+            samplerDesc.Filter = filter;
+            samplerDesc.MaxAnisotropy = uint8_t(state.m_anisotropyMax);
+            samplerDesc.MaxLOD = uint8_t(state.m_mipLodMax);
+            samplerDesc.MinLOD = uint8_t(state.m_mipLodMin);
+            samplerDesc.MipLODBias = state.m_mipLodBias;
+        }
+
+        void ConvertStaticSampler(const RHI::SamplerState& state, uint32_t shaderRegister, uint32_t shaderRegisterSpace, D3D12_SHADER_VISIBILITY shaderVisibility, D3D12_STATIC_SAMPLER_DESC& staticSamplerDesc)
+        {
+            D3D12_SAMPLER_DESC samplerDesc;
+            ConvertSamplerState(state, samplerDesc);
+
+            staticSamplerDesc.AddressU = samplerDesc.AddressU;
+            staticSamplerDesc.AddressV = samplerDesc.AddressV;
+            staticSamplerDesc.AddressW = samplerDesc.AddressW;
+            staticSamplerDesc.BorderColor = ConvertBorderColor(state.m_borderColor);
+            staticSamplerDesc.ComparisonFunc = samplerDesc.ComparisonFunc;
+            staticSamplerDesc.Filter = samplerDesc.Filter;
+            staticSamplerDesc.MaxAnisotropy = samplerDesc.MaxAnisotropy;
+            staticSamplerDesc.MaxLOD = samplerDesc.MaxLOD;
+            staticSamplerDesc.MinLOD = samplerDesc.MinLOD;
+            staticSamplerDesc.MipLODBias = samplerDesc.MipLODBias;
+            staticSamplerDesc.ShaderRegister = shaderRegister;
+            staticSamplerDesc.RegisterSpace = shaderRegisterSpace;
+            staticSamplerDesc.ShaderVisibility = shaderVisibility;
+        }
     }
 }

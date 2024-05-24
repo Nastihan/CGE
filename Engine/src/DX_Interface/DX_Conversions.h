@@ -13,6 +13,8 @@
 #include "../RHI/BufferDescriptor.h"
 #include "../RHI/BufferViewDescriptor.h"
 #include "../RHI/ClearValue.h"
+#include "../RHI/ShaderStages.h"
+#include "../RHI/SamplerState.h"
 
 namespace CGE
 {
@@ -46,5 +48,17 @@ namespace CGE
 		void ConvertImageView(const DX_Image& image, const RHI::ImageViewDescriptor& imageViewDescriptor, D3D12_SHADER_RESOURCE_VIEW_DESC& shaderResourceView);
 		void ConvertImageView(const DX_Image& image, const RHI::ImageViewDescriptor& imageViewDescriptor, D3D12_UNORDERED_ACCESS_VIEW_DESC& unorderedAccessView);
 		uint16_t ConvertImageAspectToPlaneSlice(RHI::ImageAspect aspect);
+
+		D3D12_SHADER_VISIBILITY ConvertShaderStageMask(RHI::ShaderStageMask mask);
+
+		// Sampler
+		D3D12_FILTER_TYPE ConvertFilterMode(RHI::FilterMode mode);
+		D3D12_FILTER_REDUCTION_TYPE ConvertReductionType(RHI::ReductionType reductionType);
+		D3D12_TEXTURE_ADDRESS_MODE ConvertAddressMode(RHI::AddressMode addressMode);
+		void ConvertBorderColor(RHI::BorderColor color, float outputColor[4]);
+		D3D12_STATIC_BORDER_COLOR ConvertBorderColor(RHI::BorderColor color);
+		D3D12_COMPARISON_FUNC ConvertComparisonFunc(RHI::ComparisonFunc func);
+		void ConvertSamplerState(const RHI::SamplerState& state, D3D12_SAMPLER_DESC& samplerDesc);
+		void ConvertStaticSampler(const RHI::SamplerState& state, uint32_t shaderRegister, uint32_t shaderRegisterSpace, D3D12_SHADER_VISIBILITY shaderVisibility, D3D12_STATIC_SAMPLER_DESC& staticSamplerDesc);
 	}
 }

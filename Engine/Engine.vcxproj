@@ -232,6 +232,7 @@
     <ClInclude Include="src\RHI\ShaderResourceGroupLayout.h" />
     <ClInclude Include="src\RHI\ShaderResourceGroupLayoutDescriptor.h" />
     <ClInclude Include="src\RHI\ShaderStageFunction.h" />
+    <ClInclude Include="src\RHI\ShaderStages.h" />
     <ClInclude Include="src\RHI\StreamBufferView.h" />
     <ClInclude Include="src\RHI\SwapChain.h" />
     <ClInclude Include="src\RHI\SwapChainDescriptor.h" />

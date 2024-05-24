@@ -63,7 +63,12 @@ namespace CGE
 
 		void ShaderResourceGroupLayout::AddShaderInput(const ShaderInputConstantDescriptor& constant)
 		{
-			// m_constantsDataLayout->AddShaderInput(constant);
+			m_constantBuffers.push_back(constant);
+		}
+
+		void ShaderResourceGroupLayout::SetRootConstantBinding(const RootConstantBinding& rootConstantBinding)
+		{
+			m_rootConstantBinding = rootConstantBinding;
 		}
 
 		std::span<const ShaderInputStaticSamplerDescriptor> ShaderResourceGroupLayout::GetStaticSamplers() const
@@ -86,10 +91,10 @@ namespace CGE
 			return m_inputsForSamplers;
 		}
 
-		// std::span<const ShaderInputConstantDescriptor> ShaderResourceGroupLayout::GetShaderInputListForConstants() const
-		// {
-			// return m_constantsDataLayout;
-		// }
+		std::span<const ShaderInputConstantDescriptor> ShaderResourceGroupLayout::GetShaderInputListForConstants() const
+		{
+			return m_constantBuffers;
+		}
 
 		std::span<const ShaderInputBufferUnboundedArrayDescriptor> ShaderResourceGroupLayout::GetShaderInputListForBufferUnboundedArrays() const
 		{
@@ -99,6 +104,11 @@ namespace CGE
 		std::span<const ShaderInputImageUnboundedArrayDescriptor> ShaderResourceGroupLayout::GetShaderInputListForImageUnboundedArrays() const
 		{
 			return m_inputsForImageUnboundedArrays;
+		}
+
+		const std::optional<RootConstantBinding> ShaderResourceGroupLayout::GetRootConstant() const
+		{
+			return m_rootConstantBinding;
 		}
 	}
 }
