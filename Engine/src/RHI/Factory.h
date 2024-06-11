@@ -17,6 +17,10 @@ namespace CGE
 		class Image;
 		class ImagePool;
 		class ImageView;
+		class PipelineLayoutDescriptor;
+		class ShaderStageFunction;
+		class PipelineState;
+		class ShaderResourceGroup;
 
 		class Factory : public Object
 		{
@@ -25,7 +29,7 @@ namespace CGE
 			virtual ~Factory() = default;
 			REMOVE_COPY_AND_MOVE(Factory);
 
-			static Factory& Get();
+			const std::string& GetBackendName();
 
 		public:
 			virtual Ptr<PhysicalDevice> CreatePhysicalDevice() = 0;
@@ -40,6 +44,14 @@ namespace CGE
 			virtual Ptr<ImageView> CreateImageView() = 0;
 			virtual Ptr<Image> CreateImage() = 0;
 			virtual Ptr<ImagePool> CreateImagePool() = 0;
+
+			virtual Ptr<PipelineState> CreatePipelineState() = 0;
+			virtual Ptr<PipelineLayoutDescriptor> CreatePipelineLayoutDescriptor() = 0;
+			virtual Ptr<ShaderStageFunction> CreateShaderStageFunction() = 0;
+			virtual Ptr<ShaderResourceGroup> CreateShaderResourceGroup() = 0;
+
+		protected:
+			std::string m_backendName;
 		};
 	}
 }

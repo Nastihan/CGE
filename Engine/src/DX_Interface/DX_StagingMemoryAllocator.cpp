@@ -20,7 +20,9 @@ namespace CGE
                 poolDesc.m_collectLatency = descriptor.m_collectLatency;
                 poolDesc.m_getHeapMemoryUsageFunction = [this]() { return &m_memoryUsage; };
                 poolDesc.m_recycleOnCollect = true;
+
                 m_mediumPageAllocator.Init(poolDesc);
+                m_mediumBlockAllocators.Init(m_mediumPageAllocator);
             }
 
             {
@@ -30,8 +32,8 @@ namespace CGE
                 poolDesc.m_collectLatency = descriptor.m_collectLatency;
                 poolDesc.m_getHeapMemoryUsageFunction = [this]() { return &m_memoryUsage; };
                 poolDesc.m_recycleOnCollect = true;
-                m_largePageAllocator.Init(poolDesc);
 
+                m_largePageAllocator.Init(poolDesc);
                 m_largeBlockAllocator.Init(m_largePageAllocator);
             }
 		}

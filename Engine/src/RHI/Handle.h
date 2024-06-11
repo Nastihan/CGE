@@ -7,43 +7,14 @@ namespace CGE
 {
 	namespace RHI
 	{
-        //! Handle a simple wrapper around an integral type, which adds the formal concept of a 'Null' value. It
-        //! is designed to accommodate a zero-based 'index' where a value of 0 is considered valid. As such, the null value
-        //! is equal to -1 casted to the type.
-        //!
-        //! @tparam T
-        //!  An integral type held by the Handle container. A value of -1 (or max value for unsigned types) is reserved for
-        //!  the null index.
-        //!
-        //! @tparam NamespaceType
-        //!  An optional typename used to create a compile-time unique variant of Handle. This disallows trivial
-        //!  copying of unrelated 'types'. Useful to make a handle variant typed to a client class.
-        //!
-        //! Sample Usage:
-        //! @code{.cpp}
-        //!     class Foo;
-        //!     using FooHandle = Handle<uint16_t, Foo>;
-        //!     FooHandle fooHandle;
-        //!
-        //!     class Bar;
-        //!     using BarHandle = Handle<uint16_t, Bar>;
-        //!     BarHandle barHandle;
-        //!
-        //!     fooHandle = barHandle; // Error! Different types!
-        //!     fooHandle.IsNull();    // true
-        //!     fooHandle.GetIndex();  // FooHandle::NullIndex
-        //!
-        //!     fooHandle = 15;
-        //!     fooHandle.GetIndex();  // 15
-        //!     fooHandle.IsNull();    // false
-        //! @endcode
-        template <typename T = uint32_t>
+        struct DefaultNamespaceType {};
+
+        template <typename T = uint32_t, typename NamespaceType = DefaultNamespaceType>
         struct Handle
         {
             using IndexType = T;
-            static_assert(std::is_integral<T>::value);
+            static_assert(std::is_integral<T>::value, "Integral type required for Handle<>.");
 
-            // two's complement (max value)
             static const constexpr T NullIndex = T(-1);
             struct NullType {};
             static constexpr NullType Null{};
@@ -51,6 +22,9 @@ namespace CGE
 
             constexpr Handle() = default;
             constexpr explicit Handle(T index) : m_index{ index } {}
+
+            template <typename U>
+            constexpr explicit Handle(U index) : m_index{ static_cast<uint32_t>(index) } {}
 
             constexpr bool operator==(const Handle& rhs) const;
             constexpr bool operator!=(const Handle& rhs) const;
@@ -73,58 +47,74 @@ namespace CGE
             T m_index = NullIndex;
         };
 
-        template <typename T>
-        constexpr bool Handle<T>::operator==(const Handle& rhs) const
+        template <typename T, typename NamespaceType>
+        constexpr bool Handle<T, NamespaceType>::operator==(const Handle& rhs) const
         {
             return m_index == rhs.m_index;
         }
 
-        template <typename T>
-        constexpr bool Handle<T>::operator!=(const Handle& rhs) const
+        template <typename T, typename NamespaceType>
+        constexpr bool Handle<T, NamespaceType>::operator!=(const Handle& rhs) const
         {
             return m_index != rhs.m_index;
         }
 
-        template <typename T>
-        constexpr bool Handle<T>::operator<(const Handle& rhs) const
+        template <typename T, typename NamespaceType>
+        constexpr bool Handle<T, NamespaceType>::operator<(const Handle& rhs) const
         {
             return m_index < rhs.m_index;
         }
 
-        template <typename T>
-        constexpr bool Handle<T>::operator<=(const Handle& rhs) const
+        template <typename T, typename NamespaceType>
+        constexpr bool Handle<T, NamespaceType>::operator<=(const Handle& rhs) const
         {
             return m_index <= rhs.m_index;
         }
 
-        template <typename T>
-        constexpr bool Handle<T>::operator>(const Handle& rhs) const
+        template <typename T, typename NamespaceType>
+        constexpr bool Handle<T, NamespaceType>::operator>(const Handle& rhs) const
         {
             return m_index > rhs.m_index;
         }
 
-        template <typename T>
-        void Handle<T>::Reset()
+        template <typename T, typename NamespaceType>
+        void Handle<T, NamespaceType>::Reset()
         {
             m_index = NullIndex;
         }
 
-        template <typename T>
-        constexpr T Handle<T>::GetIndex() const
+        template <typename T, typename NamespaceType>
+        constexpr T Handle<T, NamespaceType>::GetIndex() const
         {
             return m_index;
         }
 
-        template <typename T>
-        constexpr bool Handle<T>::IsNull() const
+        template <typename T, typename NamespaceType>
+        constexpr bool Handle<T, NamespaceType>::IsNull() const
         {
             return m_index == NullIndex;
         }
 
-        template <typename T>
-        constexpr bool Handle<T>::IsValid() const
+        template <typename T, typename NamespaceType>
+        constexpr bool Handle<T, NamespaceType>::IsValid() const
         {
             return m_index != NullIndex;
         }
+
+        template<class T>
+        struct hash;
+
+        template<typename HandleType, typename NamespaceType>
+        struct hash<Handle<HandleType, NamespaceType>>
+        {
+            typedef size_t result_type;
+            typedef Handle<HandleType, NamespaceType> argument;
+            using argument_type = typename argument::IndexType;
+
+            result_type operator()(const argument& value) const
+            {
+                return static_cast<result_type>(*reinterpret_cast<const argument_type*>(&value));
+            }
+        };
 	}
 }

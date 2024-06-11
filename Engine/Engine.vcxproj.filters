@@ -58,6 +58,27 @@
     <Filter Include="Source Files\Scene">
       <UniqueIdentifier>{76b534dc-a82b-438c-acfb-1d02e253a041}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\RHI\PipelineBindings">
+      <UniqueIdentifier>{dd677c97-c6a6-4c70-856d-89d6ea7b496d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\RHI\PipelineBindings">
+      <UniqueIdentifier>{fb624298-f09e-43c7-9434-80fa8e8a2dd2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\DX\PipelineBindings">
+      <UniqueIdentifier>{e6498e3a-a2b2-4c93-bbff-0c3688a59011}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\DX\PipelineBindings">
+      <UniqueIdentifier>{2c5ffa59-994b-43b8-9c4a-f53e9778d5db}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Pass">
+      <UniqueIdentifier>{256ec874-a473-4691-856f-212190e8d727}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Pass">
+      <UniqueIdentifier>{bd33c064-c0fc-4afc-b9be-ee7d0e606d50}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="imgui">
+      <UniqueIdentifier>{f40d6f87-9e7c-4c12-bf81-a6d384e80c32}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Main.cpp">
@@ -267,12 +288,6 @@
     <ClCompile Include="src\DX_Interface\DX_PipelineState.cpp">
       <Filter>Source Files\DX</Filter>
     </ClCompile>
-    <ClCompile Include="src\RHI\PipelineLayout.cpp">
-      <Filter>Source Files\RHI</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DX_Interface\DX_PipelineLayout.cpp">
-      <Filter>Source Files\DX</Filter>
-    </ClCompile>
     <ClCompile Include="src\RHI\InputStreamLayout.cpp">
       <Filter>Source Files\RHI</Filter>
     </ClCompile>
@@ -315,9 +330,6 @@
     <ClCompile Include="src\DX_Interface\DX_ImagePoolResolver.cpp">
       <Filter>Source Files\DX\Memory</Filter>
     </ClCompile>
-    <ClCompile Include="src\Scene\MeshBuilder.cpp">
-      <Filter>Source Files\Scene</Filter>
-    </ClCompile>
     <ClCompile Include="src\Scene\Scene.cpp">
       <Filter>Source Files\Scene</Filter>
     </ClCompile>
@@ -336,12 +348,6 @@
     <ClCompile Include="src\RHI\ImageSystem.cpp">
       <Filter>Source Files\RHI\Memory</Filter>
     </ClCompile>
-    <ClCompile Include="src\RHI\ShaderResourceGroupLayoutDescriptor.cpp">
-      <Filter>Source Files\RHI</Filter>
-    </ClCompile>
-    <ClCompile Include="src\RHI\ShaderResourceGroupLayout.cpp">
-      <Filter>Source Files\RHI</Filter>
-    </ClCompile>
     <ClCompile Include="src\RHI\SamplerState.cpp">
       <Filter>Source Files\RHI</Filter>
     </ClCompile>
@@ -350,6 +356,75 @@
     </ClCompile>
     <ClCompile Include="src\Scene\Camera.cpp">
       <Filter>Source Files\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="src\RHI\Scissor.cpp">
+      <Filter>Source Files\RHI</Filter>
+    </ClCompile>
+    <ClCompile Include="src\RHI\ShaderResourceGroupLayout.cpp">
+      <Filter>Source Files\RHI\PipelineBindings</Filter>
+    </ClCompile>
+    <ClCompile Include="src\RHI\ShaderResourceGroupLayoutDescriptor.cpp">
+      <Filter>Source Files\RHI\PipelineBindings</Filter>
+    </ClCompile>
+    <ClCompile Include="src\DX_Interface\DX_ShaderResourceGroup.cpp">
+      <Filter>Source Files\DX\PipelineBindings</Filter>
+    </ClCompile>
+    <ClCompile Include="src\RHI\ShaderResourceGroupData.cpp">
+      <Filter>Source Files\RHI\PipelineBindings</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Pass\ForwardPass.cpp">
+      <Filter>Source Files\Pass</Filter>
+    </ClCompile>
+    <ClCompile Include="src\DX_Interface\DX_PipelineLayout.cpp">
+      <Filter>Source Files\DX\PipelineBindings</Filter>
+    </ClCompile>
+    <ClCompile Include="src\DX_Interface\DX_PipelineLayoutDescriptor.cpp">
+      <Filter>Source Files\DX\PipelineBindings</Filter>
+    </ClCompile>
+    <ClCompile Include="src\RHI\PipelineLayoutDescriptor.cpp">
+      <Filter>Source Files\RHI\PipelineBindings</Filter>
+    </ClCompile>
+    <ClCompile Include="src\RHI\ShaderResourceGroup.cpp">
+      <Filter>Source Files\RHI\PipelineBindings</Filter>
+    </ClCompile>
+    <ClCompile Include="src\RHI\RenderAttachmentLayout.cpp">
+      <Filter>Source Files\RHI</Filter>
+    </ClCompile>
+    <ClCompile Include="src\RHI\AttachmentLoadStoreAction.cpp">
+      <Filter>Source Files\RHI</Filter>
+    </ClCompile>
+    <ClCompile Include="src\DX_Interface\DX_DXShaderCompiler.cpp">
+      <Filter>Source Files\DX</Filter>
+    </ClCompile>
+    <ClCompile Include="src\imgui\imgui.cpp">
+      <Filter>imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="src\imgui\imgui_demo.cpp">
+      <Filter>imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="src\imgui\imgui_draw.cpp">
+      <Filter>imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="src\imgui\imgui_impl_dx12.cpp">
+      <Filter>imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="src\imgui\imgui_impl_glfw.cpp">
+      <Filter>imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="src\imgui\imgui_tables.cpp">
+      <Filter>imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="src\imgui\imgui_widgets.cpp">
+      <Filter>imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ImguiManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\RHI\Factory.cpp">
+      <Filter>Source Files\RHI</Filter>
+    </ClCompile>
+    <ClCompile Include="src\DX_Interface\DX_ImguiManager.cpp">
+      <Filter>Source Files\DX</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -641,12 +716,6 @@
     <ClInclude Include="src\DX_Interface\DX_PipelineState.h">
       <Filter>Header Files\DX</Filter>
     </ClInclude>
-    <ClInclude Include="src\RHI\PipelineLayout.h">
-      <Filter>Header Files\RHI</Filter>
-    </ClInclude>
-    <ClInclude Include="src\DX_Interface\DX_PipelineLayout.h">
-      <Filter>Header Files\DX</Filter>
-    </ClInclude>
     <ClInclude Include="src\RHI\InputStreamLayout.h">
       <Filter>Header Files\RHI</Filter>
     </ClInclude>
@@ -701,9 +770,6 @@
     <ClInclude Include="src\DX_Interface\DX_ImagePoolResolver.h">
       <Filter>Header Files\DX\Memory</Filter>
     </ClInclude>
-    <ClInclude Include="src\Scene\MeshBuilder.h">
-      <Filter>Header Files\Scene</Filter>
-    </ClInclude>
     <ClInclude Include="src\Scene\Scene.h">
       <Filter>Header Files\Scene</Filter>
     </ClInclude>
@@ -722,12 +788,6 @@
     <ClInclude Include="src\RHI\ImageSystem.h">
       <Filter>Header Files\RHI\Memory</Filter>
     </ClInclude>
-    <ClInclude Include="src\RHI\ShaderResourceGroupLayoutDescriptor.h">
-      <Filter>Header Files\RHI</Filter>
-    </ClInclude>
-    <ClInclude Include="src\RHI\ShaderResourceGroupLayout.h">
-      <Filter>Header Files\RHI</Filter>
-    </ClInclude>
     <ClInclude Include="src\RHI\SamplerState.h">
       <Filter>Header Files\RHI</Filter>
     </ClInclude>
@@ -742,6 +802,84 @@
     </ClInclude>
     <ClInclude Include="src\RHI\ShaderStages.h">
       <Filter>Header Files\RHI</Filter>
+    </ClInclude>
+    <ClInclude Include="src\RHI\Scissor.h">
+      <Filter>Header Files\RHI</Filter>
+    </ClInclude>
+    <ClInclude Include="src\RHI\ShaderResourceGroup.h">
+      <Filter>Header Files\RHI\PipelineBindings</Filter>
+    </ClInclude>
+    <ClInclude Include="src\RHI\ShaderResourceGroupLayout.h">
+      <Filter>Header Files\RHI\PipelineBindings</Filter>
+    </ClInclude>
+    <ClInclude Include="src\RHI\ShaderResourceGroupLayoutDescriptor.h">
+      <Filter>Header Files\RHI\PipelineBindings</Filter>
+    </ClInclude>
+    <ClInclude Include="src\DX_Interface\DX_ShaderResourceGroup.h">
+      <Filter>Header Files\DX\PipelineBindings</Filter>
+    </ClInclude>
+    <ClInclude Include="src\RHI\ShaderResourceGroupData.h">
+      <Filter>Header Files\RHI\PipelineBindings</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Pass\ForwardPass.h">
+      <Filter>Header Files\Pass</Filter>
+    </ClInclude>
+    <ClInclude Include="src\DX_Interface\DX_PipelineLayout.h">
+      <Filter>Header Files\DX\PipelineBindings</Filter>
+    </ClInclude>
+    <ClInclude Include="src\DX_Interface\DX_PipelineLayoutDescriptor.h">
+      <Filter>Header Files\DX\PipelineBindings</Filter>
+    </ClInclude>
+    <ClInclude Include="src\RHI\PipelineLayoutDescriptor.h">
+      <Filter>Header Files\RHI\PipelineBindings</Filter>
+    </ClInclude>
+    <ClInclude Include="src\RHI\Interval.h">
+      <Filter>Header Files\RHI</Filter>
+    </ClInclude>
+    <ClInclude Include="src\RHI\BindlessSrgDescriptor.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\RHI\CommandListStates.h">
+      <Filter>Header Files\RHI</Filter>
+    </ClInclude>
+    <ClInclude Include="src\RHI\RenderAttachmentLayout.h">
+      <Filter>Header Files\RHI</Filter>
+    </ClInclude>
+    <ClInclude Include="src\RHI\AttachmentLoadStoreAction.h">
+      <Filter>Header Files\RHI</Filter>
+    </ClInclude>
+    <ClInclude Include="src\DX_Interface\DX_DXShaderCompiler.h">
+      <Filter>Header Files\DX</Filter>
+    </ClInclude>
+    <ClInclude Include="src\imgui\imconfig.h">
+      <Filter>imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="src\imgui\imgui.h">
+      <Filter>imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="src\imgui\imgui_impl_dx12.h">
+      <Filter>imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="src\imgui\imgui_impl_glfw.h">
+      <Filter>imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="src\imgui\imgui_internal.h">
+      <Filter>imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="src\imgui\imstb_rectpack.h">
+      <Filter>imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="src\imgui\imstb_textedit.h">
+      <Filter>imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="src\imgui\imstb_truetype.h">
+      <Filter>imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ImguiManager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\DX_Interface\DX_ImguiManager.h">
+      <Filter>Header Files\DX</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

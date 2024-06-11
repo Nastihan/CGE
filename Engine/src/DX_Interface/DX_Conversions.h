@@ -15,6 +15,9 @@
 #include "../RHI/ClearValue.h"
 #include "../RHI/ShaderStages.h"
 #include "../RHI/SamplerState.h"
+#include "../RHI/ShaderResourceGroupLayoutDescriptor.h"
+#include "../RHI/InputStreamLayout.h"
+#include "../RHI/RenderStates.h"
 
 namespace CGE
 {
@@ -25,6 +28,7 @@ namespace CGE
 		std::wstring s2ws(const std::string& str);
 
 		DXGI_FORMAT ConvertFormat(RHI::Format format);
+		RHI::Format ConvertFormat(DXGI_FORMAT format);
 
 		DXGI_SCALING ConvertScaling(RHI::Scaling scaling);
 
@@ -60,5 +64,26 @@ namespace CGE
 		D3D12_COMPARISON_FUNC ConvertComparisonFunc(RHI::ComparisonFunc func);
 		void ConvertSamplerState(const RHI::SamplerState& state, D3D12_SAMPLER_DESC& samplerDesc);
 		void ConvertStaticSampler(const RHI::SamplerState& state, uint32_t shaderRegister, uint32_t shaderRegisterSpace, D3D12_SHADER_VISIBILITY shaderVisibility, D3D12_STATIC_SAMPLER_DESC& staticSamplerDesc);
+
+		D3D12_DESCRIPTOR_RANGE_TYPE ConvertShaderInputBufferAccess(RHI::ShaderInputBufferAccess access);
+		D3D12_DESCRIPTOR_RANGE_TYPE ConvertShaderInputImageAccess(RHI::ShaderInputImageAccess access);
+
+		D3D12_SRV_DIMENSION ConvertSRVDimension(RHI::ShaderInputImageType type);
+		D3D12_UAV_DIMENSION ConvertUAVDimension(RHI::ShaderInputImageType type);
+
+		D3D12_PRIMITIVE_TOPOLOGY ConvertTopology(RHI::PrimitiveTopology topology);
+
+		std::vector<D3D12_INPUT_ELEMENT_DESC> ConvertInputElements(const RHI::InputStreamLayout& layout);
+		D3D12_PRIMITIVE_TOPOLOGY_TYPE ConvertToTopologyType(RHI::PrimitiveTopology type);
+		D3D12_BLEND_DESC ConvertBlendState(const RHI::BlendState& blend);
+		D3D12_BLEND_OP ConvertBlendOp(RHI::BlendOp op);
+		D3D12_BLEND ConvertBlendFactor(RHI::BlendFactor factor);
+		uint8_t ConvertColorWriteMask(uint8_t writeMask);
+		D3D12_RASTERIZER_DESC ConvertRasterState(const RHI::RasterState& raster);
+		D3D12_CULL_MODE ConvertCullMode(RHI::CullMode mode);
+		D3D12_FILL_MODE ConvertFillMode(RHI::FillMode mode);
+		D3D12_DEPTH_STENCIL_DESC ConvertDepthStencilState(const RHI::DepthStencilState& depthStencil);
+		D3D12_STENCIL_OP ConvertStencilOp(RHI::StencilOp op);
+		D3D12_DEPTH_WRITE_MASK ConvertDepthWriteMask(RHI::DepthWriteMask mask);
 	}
 }

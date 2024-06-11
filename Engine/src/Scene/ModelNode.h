@@ -8,11 +8,24 @@
 
 #include <glm/glm.hpp>
 
+#include "../RHI/ShaderResourceGroup.h"
+
 namespace CGE
 {
+	namespace RHI
+	{
+		class CommandList;
+	}
+
+	namespace Pass
+	{
+		class ForwardPass;
+	}
+
 	namespace Scene
 	{
 		class Mesh;
+		class Camera;
 
 		// The scene will consist of models each model is a collection on meshesh.
 		// Each mesh (sub-mesh) position can be offset relative to the base of the model (root) or any other sub-mesh in the model.
@@ -42,6 +55,8 @@ namespace CGE
 
 			void AddMesh(std::shared_ptr<Mesh> mesh);
 			void RemoveMesh(std::shared_ptr<Mesh> mesh);
+
+			void Render(Pass::ForwardPass* pForwardPass, Camera& camera, RHI::CommandList* commandList) const;
 
 		private:
 			glm::mat4 GetParentWorldTransform() const;

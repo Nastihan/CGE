@@ -22,12 +22,12 @@ namespace CGE
             RHI::Ptr<RHI::ImagePool> GetSimpleImagePool();
 
         protected:
-            bool CreateShaderReadImagePool();
+            bool CreateImagePool();
 
         private:
             // For now keeping it simple pool for textures used in shaders.
             // [todo] Initialize different pools for different type of attachments and resources.
-            RHI::Ptr<RHI::ImagePool> m_shaderReadImagePool;
+            RHI::Ptr<RHI::ImagePool> m_imagePool;
             bool m_initialized = false;
 		};
 	}

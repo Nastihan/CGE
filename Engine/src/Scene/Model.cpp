@@ -4,6 +4,10 @@
 #include "ModelNode.h"
 #include "Mesh.h"
 #include "Material.h"
+#include "Scene.h"
+
+// Pass
+#include "../Pass/ForwardPass.h"
 
 // assimp
 #include <assimp/Importer.hpp>
@@ -24,10 +28,14 @@
 #include "../RHI/Graphics.h"
 #include "../RHI/Image.h"
 #include "../RHI/Buffer.h"
+#include "../RHI/CommandList.h"
 
 // DX12
 #include "../DX_Interface/DX_CommonHeaders.h"
 #include "../DX_Interface/DX_Conversions.h"
+
+#define STRINGIFY(x) #x
+#define EXPAND(x) STRINGIFY(x)
 
 using namespace DirectX;
 
@@ -40,11 +48,17 @@ namespace CGE
 
 		Model::~Model() {}
 
-		bool Model::LoadFromFile(const std::string& pathString)
+		bool Model::LoadFromFile(const std::string& pathString, Pass::ForwardPass* pForwardPass)
 		{
+            std::string projPath = EXPAND(UNITTESTPRJ);
+            projPath.erase(0, 1);
+            projPath.erase(projPath.size() - 2);
+            std::filesystem::path fullFilePath = projPath + "Models\\" + pathString;
+            std::filesystem::path rootModelPath = fullFilePath.parent_path();
+
             Assimp::Importer imp;
             const aiScene* pScene;
-            pScene = imp.ReadFile(pathString.c_str(),
+            pScene = imp.ReadFile(fullFilePath.string(),
                 aiProcess_Triangulate |
                 aiProcess_JoinIdenticalVertices |
                 aiProcess_ConvertToLeftHanded |
@@ -68,12 +82,12 @@ namespace CGE
             // Import scene materials.
             for (unsigned int i = 0; i < pScene->mNumMaterials; ++i)
             {
-                ImportMaterial(*pScene->mMaterials[i], pathString);
+                ImportMaterial(*pScene->mMaterials[i], rootModelPath.string());
             }
             // Import meshes
             for (unsigned int i = 0; i < pScene->mNumMeshes; ++i)
             {
-                ImportMesh(*pScene->mMeshes[i]);
+                ImportMesh(*pScene->mMeshes[i], pForwardPass);
             }
 
             m_root = ImportSceneNode(m_root, pScene->mRootNode);
@@ -147,11 +161,18 @@ namespace CGE
             {
                 TexMetadata metaData;
                 ScratchImage scratchImage;
-                DX12::DXAssertSuccess(LoadFromWICFile(DX12::s2ws(rootPath + aiTexturePath.C_Str()).c_str(), WIC_FLAGS_FORCE_RGB, &metaData, scratchImage));
+                std::string fullPath = rootPath + aiTexturePath.C_Str();
+                DX12::DXAssertSuccess(LoadFromWICFile(DX12::s2ws(fullPath).c_str(), WIC_FLAGS_FORCE_RGB, &metaData, scratchImage));
 
-                RHI::Ptr<RHI::Image> image;
+                RHI::Ptr<RHI::Image> image = RHI::Graphics::GetFactory().CreateImage();
                 ConstructTexture(image, metaData, scratchImage);
-                pMaterial->SetTexture(Material::TextureType::Ambient, image);
+
+                RHI::ImageDescriptor imageDesc = image->GetDescriptor();
+                RHI::Ptr<RHI::ImageView> imageView = RHI::Graphics::GetFactory().CreateImageView();
+                RHI::ImageViewDescriptor imageViewDesc = RHI::ImageViewDescriptor::Create(imageDesc.m_format, 0, 0);
+                imageView->Init(*image, imageViewDesc);
+
+                pMaterial->SetTexture(Material::TextureType::Ambient, image, imageView);
             }
 
             // Load emissive textures.
@@ -160,11 +181,18 @@ namespace CGE
             {
                 TexMetadata metaData;
                 ScratchImage scratchImage;
-                DX12::DXAssertSuccess(LoadFromWICFile(DX12::s2ws(rootPath + aiTexturePath.C_Str()).c_str(), WIC_FLAGS_FORCE_RGB, &metaData, scratchImage));
+                std::string fullPath = rootPath + aiTexturePath.C_Str();
+                DX12::DXAssertSuccess(LoadFromWICFile(DX12::s2ws(fullPath).c_str(), WIC_FLAGS_FORCE_RGB, &metaData, scratchImage));
 
-                RHI::Ptr<RHI::Image> image;
+                RHI::Ptr<RHI::Image> image = RHI::Graphics::GetFactory().CreateImage();
                 ConstructTexture(image, metaData, scratchImage);
-                pMaterial->SetTexture(Material::TextureType::Ambient, image);
+
+                RHI::ImageDescriptor imageDesc = image->GetDescriptor();
+                RHI::Ptr<RHI::ImageView> imageView = RHI::Graphics::GetFactory().CreateImageView();
+                RHI::ImageViewDescriptor imageViewDesc = RHI::ImageViewDescriptor::Create(imageDesc.m_format, 0, 0);
+                imageView->Init(*image, imageViewDesc);
+
+                pMaterial->SetTexture(Material::TextureType::Emissive, image, imageView);
             }
 
             // Load diffuse textures.
@@ -173,11 +201,18 @@ namespace CGE
             {
                 TexMetadata metaData;
                 ScratchImage scratchImage;
-                DX12::DXAssertSuccess(LoadFromWICFile(DX12::s2ws(rootPath + aiTexturePath.C_Str()).c_str(), WIC_FLAGS_FORCE_RGB, &metaData, scratchImage));
+                std::string fullPath = rootPath + aiTexturePath.C_Str();
+                DX12::DXAssertSuccess(LoadFromWICFile(DX12::s2ws(fullPath).c_str(), WIC_FLAGS_FORCE_RGB, &metaData, scratchImage));
 
-                RHI::Ptr<RHI::Image> image;
+                RHI::Ptr<RHI::Image> image = RHI::Graphics::GetFactory().CreateImage();
                 ConstructTexture(image, metaData, scratchImage);
-                pMaterial->SetTexture(Material::TextureType::Ambient, image);
+                
+                RHI::ImageDescriptor imageDesc = image->GetDescriptor();
+                RHI::Ptr<RHI::ImageView> imageView = RHI::Graphics::GetFactory().CreateImageView();
+                RHI::ImageViewDescriptor imageViewDesc = RHI::ImageViewDescriptor::Create(imageDesc.m_format, 0, 0);
+                imageView->Init(*image, imageViewDesc);
+
+                pMaterial->SetTexture(Material::TextureType::Diffuse, image, imageView);
             }
 
             // Load specular texture.
@@ -186,11 +221,18 @@ namespace CGE
             {
                 TexMetadata metaData;
                 ScratchImage scratchImage;
-                DX12::DXAssertSuccess(LoadFromWICFile(DX12::s2ws(rootPath + aiTexturePath.C_Str()).c_str(), WIC_FLAGS_FORCE_RGB, &metaData, scratchImage));
+                std::string fullPath = rootPath + aiTexturePath.C_Str();
+                DX12::DXAssertSuccess(LoadFromWICFile(DX12::s2ws(fullPath).c_str(), WIC_FLAGS_FORCE_RGB, &metaData, scratchImage));
 
-                RHI::Ptr<RHI::Image> image;
+                RHI::Ptr<RHI::Image> image = RHI::Graphics::GetFactory().CreateImage();
                 ConstructTexture(image, metaData, scratchImage);
-                pMaterial->SetTexture(Material::TextureType::Ambient, image);
+                
+                RHI::ImageDescriptor imageDesc = image->GetDescriptor();
+                RHI::Ptr<RHI::ImageView> imageView = RHI::Graphics::GetFactory().CreateImageView();
+                RHI::ImageViewDescriptor imageViewDesc = RHI::ImageViewDescriptor::Create(imageDesc.m_format, 0, 0);
+                imageView->Init(*image, imageViewDesc);
+
+                pMaterial->SetTexture(Material::TextureType::Specular, image, imageView);
             }
 
 
@@ -200,11 +242,18 @@ namespace CGE
             {
                 TexMetadata metaData;
                 ScratchImage scratchImage;
-                DX12::DXAssertSuccess(LoadFromWICFile(DX12::s2ws(rootPath + aiTexturePath.C_Str()).c_str(), WIC_FLAGS_FORCE_RGB, &metaData, scratchImage));
+                std::string fullPath = rootPath + aiTexturePath.C_Str();
+                DX12::DXAssertSuccess(LoadFromWICFile(DX12::s2ws(fullPath).c_str(), WIC_FLAGS_FORCE_RGB, &metaData, scratchImage));
 
-                RHI::Ptr<RHI::Image> image;
+                RHI::Ptr<RHI::Image> image = RHI::Graphics::GetFactory().CreateImage();
                 ConstructTexture(image, metaData, scratchImage);
-                pMaterial->SetTexture(Material::TextureType::Ambient, image);
+                
+                RHI::ImageDescriptor imageDesc = image->GetDescriptor();
+                RHI::Ptr<RHI::ImageView> imageView = RHI::Graphics::GetFactory().CreateImageView();
+                RHI::ImageViewDescriptor imageViewDesc = RHI::ImageViewDescriptor::Create(imageDesc.m_format, 0, 0);
+                imageView->Init(*image, imageViewDesc);
+
+                pMaterial->SetTexture(Material::TextureType::SpecularPower, image, imageView);
             }
 
             if (material.GetTextureCount(aiTextureType_OPACITY) > 0 &&
@@ -212,11 +261,18 @@ namespace CGE
             {
                 TexMetadata metaData;
                 ScratchImage scratchImage;
-                DX12::DXAssertSuccess(LoadFromWICFile(DX12::s2ws(rootPath + aiTexturePath.C_Str()).c_str(), WIC_FLAGS_FORCE_RGB, &metaData, scratchImage));
+                std::string fullPath = rootPath + aiTexturePath.C_Str();
+                DX12::DXAssertSuccess(LoadFromWICFile(DX12::s2ws(fullPath).c_str(), WIC_FLAGS_FORCE_RGB, &metaData, scratchImage));
 
-                RHI::Ptr<RHI::Image> image;
+                RHI::Ptr<RHI::Image> image = RHI::Graphics::GetFactory().CreateImage();
                 ConstructTexture(image, metaData, scratchImage);
-                pMaterial->SetTexture(Material::TextureType::Ambient, image);
+                
+                RHI::ImageDescriptor imageDesc = image->GetDescriptor();
+                RHI::Ptr<RHI::ImageView> imageView = RHI::Graphics::GetFactory().CreateImageView();
+                RHI::ImageViewDescriptor imageViewDesc = RHI::ImageViewDescriptor::Create(imageDesc.m_format, 0, 0);
+                imageView->Init(*image, imageViewDesc);
+
+                pMaterial->SetTexture(Material::TextureType::Opacity, image, imageView);
             }
 
             // Load normal map texture.
@@ -225,11 +281,18 @@ namespace CGE
             {
                 TexMetadata metaData;
                 ScratchImage scratchImage;
-                DX12::DXAssertSuccess(LoadFromWICFile(DX12::s2ws(rootPath + aiTexturePath.C_Str()).c_str(), WIC_FLAGS_FORCE_RGB, &metaData, scratchImage));
+                std::string fullPath = rootPath + aiTexturePath.C_Str();
+                DX12::DXAssertSuccess(LoadFromWICFile(DX12::s2ws(fullPath).c_str(), WIC_FLAGS_FORCE_RGB, &metaData, scratchImage));
 
-                RHI::Ptr<RHI::Image> image;
+                RHI::Ptr<RHI::Image> image = RHI::Graphics::GetFactory().CreateImage();
                 ConstructTexture(image, metaData, scratchImage);
-                pMaterial->SetTexture(Material::TextureType::Ambient, image);
+                
+                RHI::ImageDescriptor imageDesc = image->GetDescriptor();
+                RHI::Ptr<RHI::ImageView> imageView = RHI::Graphics::GetFactory().CreateImageView();
+                RHI::ImageViewDescriptor imageViewDesc = RHI::ImageViewDescriptor::Create(imageDesc.m_format, 0, 0);
+                imageView->Init(*image, imageViewDesc);
+
+                pMaterial->SetTexture(Material::TextureType::Normal, image, imageView);
             }
             // Load bump map (only if there is no normal map).
             else if (material.GetTextureCount(aiTextureType_HEIGHT) > 0 &&
@@ -237,17 +300,27 @@ namespace CGE
             {
                 TexMetadata metaData;
                 ScratchImage scratchImage;
-                DX12::DXAssertSuccess(LoadFromWICFile(DX12::s2ws(rootPath + aiTexturePath.C_Str()).c_str(), WIC_FLAGS_FORCE_RGB, &metaData, scratchImage));
+                std::string fullPath = rootPath + aiTexturePath.C_Str();
+                DX12::DXAssertSuccess(LoadFromWICFile(DX12::s2ws(fullPath).c_str(), WIC_FLAGS_FORCE_RGB, &metaData, scratchImage));
 
-                RHI::Ptr<RHI::Image> image;
+                RHI::Ptr<RHI::Image> image = RHI::Graphics::GetFactory().CreateImage();
                 ConstructTexture(image, metaData, scratchImage);
-                pMaterial->SetTexture(Material::TextureType::Ambient, image);
+                
+                RHI::ImageDescriptor imageDesc = image->GetDescriptor();
+                RHI::Ptr<RHI::ImageView> imageView = RHI::Graphics::GetFactory().CreateImageView();
+                RHI::ImageViewDescriptor imageViewDesc = RHI::ImageViewDescriptor::Create(imageDesc.m_format, 0, 0);
+                imageView->Init(*image, imageViewDesc);
+
+                pMaterial->SetTexture(Material::TextureType::Bump, image, imageView);
             }
+            pMaterial->InitMaterialCbuff();
             m_materials.push_back(pMaterial);
 		}
 
-		void Model::ImportMesh(const aiMesh& mesh)
+		void Model::ImportMesh(const aiMesh& mesh, Pass::ForwardPass* pForwardPass)
 		{
+            auto& rhiFactory = RHI::Graphics::GetFactory();
+
 			std::shared_ptr<Mesh> pMesh = std::make_shared<Mesh>();
 			assert(mesh.mMaterialIndex < m_materials.size());
             pMesh->SetMaterial(m_materials[mesh.mMaterialIndex]);
@@ -256,45 +329,45 @@ namespace CGE
             uint32_t streamBufferIdx = 0;
             if (mesh.HasPositions())
             {
-                RHI::Ptr<RHI::Buffer> positions;
+                RHI::Ptr<RHI::Buffer> positions = rhiFactory.CreateBuffer();
                 ConstructInputAssemblyBuffer(positions, &(mesh.mVertices[0].x), mesh.mNumVertices, sizeof(aiVector3D));
                 RHI::StreamBufferView positionBufferView(*positions, 0, mesh.mNumVertices, sizeof(aiVector3D));
                 inputStreamLayoutPacked.SetTopology(RHI::PrimitiveTopology::TriangleList);
                 inputStreamLayoutPacked.AddStreamBuffer(RHI::StreamBufferDescriptor{ RHI::StreamStepFunction::PerVertex, 1, sizeof(aiVector3D) });
-                inputStreamLayoutPacked.AddStreamChannel(RHI::StreamChannelDescriptor{ RHI::ShaderSemantic{L"POSITION", 0}, RHI::Format::R32G32B32_FLOAT, 0, streamBufferIdx });
+                inputStreamLayoutPacked.AddStreamChannel(RHI::StreamChannelDescriptor{ RHI::ShaderSemantic{"POSITION", 0}, RHI::Format::R32G32B32_FLOAT, 0, streamBufferIdx });
                 pMesh->AddVertexBuffer(positions, positionBufferView);
                 streamBufferIdx++;
             }
 
             if (mesh.HasNormals())
             {
-                RHI::Ptr<RHI::Buffer> normals;
+                RHI::Ptr<RHI::Buffer> normals = rhiFactory.CreateBuffer();
                 ConstructInputAssemblyBuffer(normals, &(mesh.mNormals[0].x), mesh.mNumVertices, sizeof(aiVector3D));
                 RHI::StreamBufferView normalBufferView(*normals, 0, mesh.mNumVertices, sizeof(aiVector3D));
                 inputStreamLayoutPacked.SetTopology(RHI::PrimitiveTopology::TriangleList);
                 inputStreamLayoutPacked.AddStreamBuffer(RHI::StreamBufferDescriptor{ RHI::StreamStepFunction::PerVertex, 1, sizeof(aiVector3D) });
-                inputStreamLayoutPacked.AddStreamChannel(RHI::StreamChannelDescriptor{ RHI::ShaderSemantic{L"NORMAL", 0}, RHI::Format::R32G32B32_FLOAT, 0, streamBufferIdx });
+                inputStreamLayoutPacked.AddStreamChannel(RHI::StreamChannelDescriptor{ RHI::ShaderSemantic{"NORMAL", 0}, RHI::Format::R32G32B32_FLOAT, 0, streamBufferIdx });
                 pMesh->AddVertexBuffer(normals, normalBufferView);
                 streamBufferIdx++;
             }
 
             if (mesh.HasTangentsAndBitangents())
             {
-                RHI::Ptr<RHI::Buffer> tangents;
+                RHI::Ptr<RHI::Buffer> tangents = rhiFactory.CreateBuffer();
                 ConstructInputAssemblyBuffer(tangents, &(mesh.mTangents[0].x), mesh.mNumVertices, sizeof(aiVector3D));
                 RHI::StreamBufferView tangentBufferView(*tangents, 0, mesh.mNumVertices, sizeof(aiVector3D));
                 inputStreamLayoutPacked.SetTopology(RHI::PrimitiveTopology::TriangleList);
                 inputStreamLayoutPacked.AddStreamBuffer(RHI::StreamBufferDescriptor{ RHI::StreamStepFunction::PerVertex, 1, sizeof(aiVector3D) });
-                inputStreamLayoutPacked.AddStreamChannel(RHI::StreamChannelDescriptor{ RHI::ShaderSemantic{L"TANGENT", 0}, RHI::Format::R32G32B32_FLOAT, 0, streamBufferIdx });
+                inputStreamLayoutPacked.AddStreamChannel(RHI::StreamChannelDescriptor{ RHI::ShaderSemantic{"TANGENT", 0}, RHI::Format::R32G32B32_FLOAT, 0, streamBufferIdx });
                 pMesh->AddVertexBuffer(tangents, tangentBufferView);
                 streamBufferIdx++;
 
-                RHI::Ptr<RHI::Buffer> bitangents;
+                RHI::Ptr<RHI::Buffer> bitangents = rhiFactory.CreateBuffer();
                 ConstructInputAssemblyBuffer(bitangents, &(mesh.mBitangents[0].x), mesh.mNumVertices, sizeof(aiVector3D));
                 RHI::StreamBufferView bitangentBufferView(*bitangents, 0, mesh.mNumVertices, sizeof(aiVector3D));
                 inputStreamLayoutPacked.SetTopology(RHI::PrimitiveTopology::TriangleList);
                 inputStreamLayoutPacked.AddStreamBuffer(RHI::StreamBufferDescriptor{ RHI::StreamStepFunction::PerVertex, 1, sizeof(aiVector3D) });
-                inputStreamLayoutPacked.AddStreamChannel(RHI::StreamChannelDescriptor{ RHI::ShaderSemantic{L"BINORMAL", 0}, RHI::Format::R32G32B32_FLOAT, 0, streamBufferIdx });
+                inputStreamLayoutPacked.AddStreamChannel(RHI::StreamChannelDescriptor{ RHI::ShaderSemantic{"BINORMAL", 0}, RHI::Format::R32G32B32_FLOAT, 0, streamBufferIdx });
                 pMesh->AddVertexBuffer(bitangents, bitangentBufferView);
                 streamBufferIdx++;
             }
@@ -311,12 +384,12 @@ namespace CGE
                     {
                         texcoods1D[j] = mesh.mTextureCoords[i][j].x;
                     }
-                    RHI::Ptr<RHI::Buffer> texcoords;
+                    RHI::Ptr<RHI::Buffer> texcoords = rhiFactory.CreateBuffer();
                     ConstructInputAssemblyBuffer(texcoords, texcoods1D.data(), (unsigned int)texcoods1D.size(), sizeof(float));
                     RHI::StreamBufferView texcoordBufferView(*texcoords, 0, (unsigned int)texcoods1D.size(), sizeof(float));
                     inputStreamLayoutPacked.SetTopology(RHI::PrimitiveTopology::TriangleList);
                     inputStreamLayoutPacked.AddStreamBuffer(RHI::StreamBufferDescriptor{ RHI::StreamStepFunction::PerVertex, 1, sizeof(float) });
-                    inputStreamLayoutPacked.AddStreamChannel(RHI::StreamChannelDescriptor{ RHI::ShaderSemantic{L"TEXCOORD", 0}, RHI::Format::R32_FLOAT, 0, streamBufferIdx });
+                    inputStreamLayoutPacked.AddStreamChannel(RHI::StreamChannelDescriptor{ RHI::ShaderSemantic{"TEXCOORD", 0}, RHI::Format::R32_FLOAT, 0, streamBufferIdx });
                     pMesh->AddVertexBuffer(texcoords, texcoordBufferView);
                     streamBufferIdx++;
                 }
@@ -328,12 +401,12 @@ namespace CGE
                     {
                         texcoods2D[j] = aiVector2D(mesh.mTextureCoords[i][j].x, mesh.mTextureCoords[i][j].y);
                     }
-                    RHI::Ptr<RHI::Buffer> texcoords;
+                    RHI::Ptr<RHI::Buffer> texcoords = rhiFactory.CreateBuffer();
                     ConstructInputAssemblyBuffer(texcoords, &(texcoods2D[0].x), (unsigned int)texcoods2D.size(), sizeof(aiVector2D));
                     RHI::StreamBufferView texcoordBufferView(*texcoords, 0, (unsigned int)texcoods2D.size(), sizeof(aiVector2D));
                     inputStreamLayoutPacked.SetTopology(RHI::PrimitiveTopology::TriangleList);
                     inputStreamLayoutPacked.AddStreamBuffer(RHI::StreamBufferDescriptor{ RHI::StreamStepFunction::PerVertex, 1, sizeof(aiVector2D) });
-                    inputStreamLayoutPacked.AddStreamChannel(RHI::StreamChannelDescriptor{ RHI::ShaderSemantic{L"TEXCOORD", 0}, RHI::Format::R32G32_FLOAT, 0, streamBufferIdx });
+                    inputStreamLayoutPacked.AddStreamChannel(RHI::StreamChannelDescriptor{ RHI::ShaderSemantic{"TEXCOORD", 0}, RHI::Format::R32G32_FLOAT, 0, streamBufferIdx });
                     pMesh->AddVertexBuffer(texcoords, texcoordBufferView);
                     streamBufferIdx++;
                 }
@@ -345,12 +418,12 @@ namespace CGE
                     {
                         texcoods3D[j] = mesh.mTextureCoords[i][j];
                     }
-                    RHI::Ptr<RHI::Buffer> texcoords;
+                    RHI::Ptr<RHI::Buffer> texcoords = rhiFactory.CreateBuffer();
                     ConstructInputAssemblyBuffer(texcoords, &(texcoods3D[0].x), (unsigned int)texcoods3D.size(), sizeof(aiVector3D));
                     RHI::StreamBufferView texcoordBufferView(*texcoords, 0, (unsigned int)texcoods3D.size(), sizeof(aiVector3D));
                     inputStreamLayoutPacked.SetTopology(RHI::PrimitiveTopology::TriangleList);
                     inputStreamLayoutPacked.AddStreamBuffer(RHI::StreamBufferDescriptor{ RHI::StreamStepFunction::PerVertex, 1, sizeof(aiVector3D) });
-                    inputStreamLayoutPacked.AddStreamChannel(RHI::StreamChannelDescriptor{ RHI::ShaderSemantic{L"TEXCOORD", 0}, RHI::Format::R32G32B32_FLOAT, 0, streamBufferIdx });
+                    inputStreamLayoutPacked.AddStreamChannel(RHI::StreamChannelDescriptor{ RHI::ShaderSemantic{"TEXCOORD", 0}, RHI::Format::R32G32B32_FLOAT, 0, streamBufferIdx });
                     pMesh->AddVertexBuffer(texcoords, texcoordBufferView);
                     streamBufferIdx++;
                 }
@@ -373,7 +446,7 @@ namespace CGE
                 }
                 if (indices.size() > 0)
                 {
-                    RHI::Ptr<RHI::Buffer> indexBuffer;
+                    RHI::Ptr<RHI::Buffer> indexBuffer = rhiFactory.CreateBuffer();
                     ConstructInputAssemblyBuffer(indexBuffer, indices.data(), indices.size(), sizeof(unsigned short));
                     RHI::IndexBufferView indexBufferView = RHI::IndexBufferView{
                         *indexBuffer,
@@ -381,9 +454,11 @@ namespace CGE
                         static_cast<uint32_t>(indices.size() * sizeof(unsigned short)),
                         RHI::IndexFormat::Uint16 };
 
-                    pMesh->SetIndexBufferAndView(indexBuffer, indexBufferView);
+                    pMesh->SetIndexBufferAndView(indexBuffer, indexBufferView, mesh.mNumFaces * 3);
                 }
             }
+            pMesh->SetInputStreamLayout(inputStreamLayoutPacked);
+            pMesh->BuildSrg(pForwardPass);
             m_meshes.push_back(pMesh);
 		}
 
@@ -436,15 +511,14 @@ namespace CGE
             RHI::ResultCode result = RHI::ResultCode::Fail;
 
             // Init the image
-            image = RHI::Graphics::GetFactory().CreateImage();
             RHI::ImageInitRequest imageInitRequest;
             imageInitRequest.m_image = image.get();
             imageInitRequest.m_descriptor = RHI::ImageDescriptor::Create2D(RHI::ImageBindFlags::ShaderRead,
                 static_cast<uint32_t>(metaData.width),
                 static_cast<uint32_t>(metaData.width),
-                static_cast<RHI::Format>(metaData.format));
+                DX12::ConvertFormat(metaData.format));
             result = imagePool->InitImage(imageInitRequest);
-            assert(result != RHI::ResultCode::Success);
+            assert(result == RHI::ResultCode::Success);
 
             // Update the image contents with the scratch image
             RHI::ImageUpdateRequest imageUpdateRequest;
@@ -452,7 +526,7 @@ namespace CGE
             imageUpdateRequest.m_sourceSubresourceLayout = RHI::GetImageSubresourceLayout(image->GetDescriptor(), RHI::ImageSubresource{});
             imageUpdateRequest.m_sourceData = scratchImage.GetImages()[0].pixels;
             result = imagePool->UpdateImageContents(imageUpdateRequest);
-            assert(result != RHI::ResultCode::Success);
+            assert(result == RHI::ResultCode::Success);
             // [todo] Remember to call the resolve on the frame executer.
 
             return result;
@@ -467,12 +541,17 @@ namespace CGE
             RHI::BufferInitRequest vertexBufferRequest;
             vertexBufferRequest.m_buffer = buffer.get();
             vertexBufferRequest.m_descriptor.m_byteCount = count * stride;
-            vertexBufferRequest.m_descriptor.m_bindFlags = RHI::BufferBindFlags::InputAssembly;
+            vertexBufferRequest.m_descriptor.m_bindFlags = RHI::BufferBindFlags::InputAssembly | RHI::BufferBindFlags::ShaderRead;
             vertexBufferRequest.m_initialData = data;
             result = staticInputAssemblyBufferPool->InitBuffer(vertexBufferRequest);
-            assert(result != RHI::ResultCode::Success);
+            assert(result == RHI::ResultCode::Success);
 
             return result;
+        }
+
+        void Model::Render(Pass::ForwardPass* pForwardPass, Camera& camera, RHI::CommandList* commandList) const
+        {
+            m_root->Render(pForwardPass, camera, commandList);
         }
 	}
 }

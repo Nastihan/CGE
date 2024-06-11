@@ -1,8 +1,21 @@
 #pragma once
+
 #include <GLFW/glfw3.h>
 #include <memory>
 #include <string>
+
+#define WIN32_LEAN_AND_MEAN
 #include <Windows.h>
+
+// The min/max macros conflict with like-named member functions.
+// Only use std::min and std::max defined in <algorithm>.
+#if defined(min)
+#undef min
+#endif
+
+#if defined(max)
+#undef max
+#endif
 
 namespace CGE
 {
@@ -21,6 +34,7 @@ namespace CGE
 		uint16_t GetHeight() const;
 		bool GetResizeFlag() const;
 		void ResetResizeFlag();
+		void InitImgui();
 
 		// [todo] handle full screen borderless window
 		static void FramebufferResizeCallback(GLFWwindow* window, int width, int height);

@@ -27,6 +27,10 @@ namespace CGE
         {
             return static_cast<ImageBindFlags>(static_cast<int>(a) | static_cast<int>(b));
         }
+        inline ImageBindFlags operator&(ImageBindFlags a, ImageBindFlags b)
+        {
+            return static_cast<ImageBindFlags>(static_cast<int>(a) & static_cast<int>(b));
+        }
 
         // [todo] Not sure what this is used for ?
         enum class ImageAspect : uint32_t

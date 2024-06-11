@@ -11,7 +11,15 @@ namespace CGE
             m_buffer{ &buffer }, 
             m_byteOffset{ byteOffset },
             m_byteCount{ byteCount },
-            m_byteStride{ byteStride } {}
+            m_byteStride{ byteStride } 
+        {
+            size_t seed = 0;
+            hash_combine(seed, m_buffer);
+            hash_combine(seed, m_byteOffset);
+            hash_combine(seed, m_byteCount);
+            hash_combine(seed, m_byteStride);
+            m_hash = static_cast<HashValue64>(seed);
+        }
 
         const Buffer* StreamBufferView::GetBuffer() const
         {
@@ -31,6 +39,11 @@ namespace CGE
         uint32_t StreamBufferView::GetByteStride() const
         {
             return m_byteStride;
+        }
+
+        HashValue64 StreamBufferView::GetHash() const
+        {
+            return m_hash;
         }
 	}
 }

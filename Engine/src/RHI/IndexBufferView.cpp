@@ -11,7 +11,10 @@ namespace CGE
             m_buffer{ &buffer }, 
             m_byteOffset{ byteOffset },
             m_byteCount{ byteCount },
-            m_format{ format } {}
+            m_format{ format } 
+        {
+            m_hash = TypeHash64(*this);
+        }
 
         const Buffer* IndexBufferView::GetBuffer() const
         {
@@ -31,6 +34,11 @@ namespace CGE
         IndexFormat IndexBufferView::GetIndexFormat() const
         {
             return m_format;
+        }
+
+        HashValue64 IndexBufferView::GetHash() const
+        {
+            return m_hash;
         }
     }
 }

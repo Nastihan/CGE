@@ -31,19 +31,6 @@ namespace CGE
 			// To guarantee alignment, we'll use _aligned_malloc to allocate memory for the material properties.
 			m_pProperties = (MaterialProperties*)_aligned_malloc(sizeof(MaterialProperties), 16);
 			*m_pProperties = MaterialProperties();
-
-			const auto& bufferPool = RHI::Graphics::GetBufferSystem().GetCommonBufferPool(RHI::CommonBufferPoolType::ReadOnly);
-			RHI::ResultCode result = RHI::ResultCode::Fail;
-
-			RHI::BufferInitRequest materialCBufferRequest;
-			materialCBufferRequest.m_buffer = m_materialPropertiesCBuff.get();
-			materialCBufferRequest.m_descriptor.m_byteCount = sizeof(MaterialProperties);
-			materialCBufferRequest.m_descriptor.m_bindFlags = RHI::BufferBindFlags::ShaderRead;
-			materialCBufferRequest.m_initialData = m_pProperties;
-			result = bufferPool->InitBuffer(materialCBufferRequest);
-			assert(result != RHI::ResultCode::Success);
-
-			// [todo] Buffer view (shader read)
 		}
 
 		Material::~Material()
@@ -154,20 +141,23 @@ namespace CGE
 			m_pProperties->m_BumpIntensity = bumpIntensity;
 		}
 
-		RHI::Ptr<RHI::Image> Material::GetTexture(TextureType type) const
+		std::pair<RHI::Ptr<RHI::Image>, RHI::Ptr<RHI::ImageView>> Material::GetTextureAndView(TextureType type) const
 		{
-			TextureMap::const_iterator itr = m_Textures.find(type);
-			if (itr != m_Textures.end())
+			auto itr = m_textures.find(type);
+			if (itr != m_textures.end())
 			{
-				return itr->second;
+				return { itr->second.first, itr->second.second };
 			}
 
-			return nullptr;
+			return { nullptr, nullptr };
 		}
 
-		void Material::SetTexture(TextureType type, RHI::Ptr<RHI::Image> texture)
+		void Material::SetTexture(TextureType type, RHI::Ptr<RHI::Image> texture, RHI::Ptr<RHI::ImageView> textureView)
 		{
-			m_Textures[type] = texture;
+			if (texture != nullptr)
+			{
+				m_textures.insert({ type, {texture, textureView} });
+			}
 
 			switch (type)
 			{
@@ -212,6 +202,32 @@ namespace CGE
 			}
 			break;
 			}
+		}
+
+		RHI::Ptr<RHI::BufferView> Material::GetMaterialCbuffView()
+		{
+			return m_materialPropertiesCBuffView;
+		}
+
+		void Material::InitMaterialCbuff()
+		{
+			const auto& constantBufferPool = RHI::Graphics::GetBufferSystem().GetCommonBufferPool(RHI::CommonBufferPoolType::Constant);
+			auto& rhiFactory = RHI::Graphics::GetFactory();
+			m_materialPropertiesCBuff = rhiFactory.CreateBuffer();
+			RHI::ResultCode result = RHI::ResultCode::Fail;
+
+			RHI::BufferInitRequest materialCBufferRequest;
+			materialCBufferRequest.m_buffer = m_materialPropertiesCBuff.get();
+			materialCBufferRequest.m_descriptor.m_byteCount = sizeof(MaterialProperties);
+			materialCBufferRequest.m_descriptor.m_bindFlags = RHI::BufferBindFlags::Constant;
+			materialCBufferRequest.m_initialData = m_pProperties;
+			result = constantBufferPool->InitBuffer(materialCBufferRequest);
+			assert(result == RHI::ResultCode::Success);
+
+			RHI::BufferViewDescriptor materialPropertiesBufferViewDescriptor;
+			m_materialPropertiesCBuffView = rhiFactory.CreateBufferView();
+			materialPropertiesBufferViewDescriptor.CreateStructured(0, 1, sizeof(MaterialProperties));
+			m_materialPropertiesCBuffView->Init(*m_materialPropertiesCBuff, materialPropertiesBufferViewDescriptor);
 		}
 	}
 }

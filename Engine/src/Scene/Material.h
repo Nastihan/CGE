@@ -3,6 +3,7 @@
 // RHI
 #include "../RHI/ShaderStageFunction.h"
 #include "../RHI/Image.h"
+#include "../RHI/ShaderResourceGroup.h"
 
 // std
 #include <filesystem>
@@ -59,8 +60,10 @@ namespace CGE
             float GetBumpIntensity() const;
             void SetBumpIntensity(float bumpIntensity);
 
-            RHI::Ptr<RHI::Image> GetTexture(TextureType ID) const;
-            void SetTexture(TextureType type, RHI::Ptr<RHI::Image> texture);
+            std::pair<RHI::Ptr<RHI::Image>, RHI::Ptr<RHI::ImageView>> GetTextureAndView(TextureType ID) const;
+            void SetTexture(TextureType type, RHI::Ptr<RHI::Image> texture, RHI::Ptr<RHI::ImageView> textureView);
+            RHI::Ptr<RHI::BufferView> GetMaterialCbuffView();
+            void InitMaterialCbuff();
 		private:
             __declspec(align(16)) struct MaterialProperties
             {
@@ -125,9 +128,10 @@ namespace CGE
 		private:
             MaterialProperties* m_pProperties;
             RHI::Ptr<RHI::Buffer> m_materialPropertiesCBuff;
+            RHI::Ptr<RHI::BufferView> m_materialPropertiesCBuffView;
 
-            typedef std::map<TextureType, RHI::Ptr<RHI::Image>> TextureMap;
-            TextureMap m_Textures;
+            typedef std::unordered_map<TextureType, std::pair<RHI::Ptr<RHI::Image>, RHI::Ptr<RHI::ImageView>>> TextureMap;
+            TextureMap m_textures;
 		};
 	}
 }

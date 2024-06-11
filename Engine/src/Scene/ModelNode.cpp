@@ -1,5 +1,14 @@
 
+// Scene
 #include "ModelNode.h"
+#include "Scene.h"
+#include "Mesh.h"
+
+// Pass
+#include "../Pass/ForwardPass.h"
+
+// RHI
+#include "../RHI/CommandList.h"
 
 namespace CGE
 {
@@ -149,6 +158,21 @@ namespace CGE
                 parentTransform = parent->GetWorldTransfom();
             }
             return parentTransform;
+        }
+
+        void ModelNode::Render(Pass::ForwardPass* pForwardPass, Camera& camera, RHI::CommandList* commandList) const
+        {
+            glm::mat4 nodeWorldTransform = GetWorldTransfom();
+            pForwardPass->UpdatePerObjectData(camera, nodeWorldTransform);
+
+            for (const auto& mesh : m_meshes)
+            {
+                mesh->Render(pForwardPass, commandList);
+            }
+            for (const auto& node : m_children)
+            {
+                node->Render(pForwardPass, camera, commandList);
+            }
         }
 	}
 }

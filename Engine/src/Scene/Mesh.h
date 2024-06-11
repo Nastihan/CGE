@@ -7,6 +7,7 @@
 #include "../RHI/DrawItem.h"
 #include "../RHI/InputStreamLayout.h"
 #include "../RHI/BufferView.h"
+#include "../RHI/ShaderResourceGroup.h"
 
 // std
 #include <optional>
@@ -17,6 +18,11 @@ struct aiMesh;
 
 namespace CGE
 {
+	namespace Pass
+	{
+		class ForwardPass;
+	}
+
 	namespace Scene
 	{
 		class Material;
@@ -31,22 +37,26 @@ namespace CGE
 
 			void AddVertexBuffer(RHI::Ptr<RHI::Buffer> vertexBuffer, RHI::StreamBufferView& streamBufferView);
 			void SetInputStreamLayout(RHI::InputStreamLayout& inputStreamLayout);
-			void SetIndexBufferAndView(RHI::Ptr<RHI::Buffer> indexBuffer, RHI::IndexBufferView& indexBufferView);
+			void SetIndexBufferAndView(RHI::Ptr<RHI::Buffer> indexBuffer, RHI::IndexBufferView& indexBufferView, uint32_t indexCount);
+			void BuildSrg(Pass::ForwardPass* pForwardPass);
 
-			void BuildDrawItem();
+			void Render(Pass::ForwardPass* pForwardPass, RHI::CommandList* commandList);
+			RHI::DrawItem* BuildAndGetDrawItem();
+		
 		private:
-			// Used to the meshesh tranformation matrix (constant buffer)
-			glm::mat4 m_transform;
-			RHI::Ptr<RHI::Buffer> m_transformCbuff;
-			RHI::Ptr<RHI::BufferView> m_transformCbuffView;
-
 			std::vector<RHI::Ptr<RHI::Buffer>> m_vertexBuffers;
 			std::vector<RHI::StreamBufferView> m_streamBufferViews;
 			RHI::InputStreamLayout m_inputStreamLayoutPacked;
+			
 			RHI::Ptr<RHI::Buffer> m_triangleIndexBuffer;
 			RHI::IndexBufferView m_triangleIndexBufferView;
+			uint32_t m_indexCount;
+			
 			std::shared_ptr<Material> m_material;
 
+			RHI::Ptr<RHI::ShaderResourceGroup> m_objectSrg;
+
+			RHI::DrawItem m_drawItem;
 		};
 	}
 }

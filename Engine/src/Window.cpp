@@ -1,9 +1,10 @@
+
 #include "Window.h"
 // [todo] have to check backend API
 #define GLFW_EXPOSE_NATIVE_WIN32
 #include <GLFW/glfw3native.h>
 
-#include "RHI/Graphics.h"
+#include "imgui/imgui_impl_glfw.h"
 
 namespace CGE
 {
@@ -25,13 +26,14 @@ namespace CGE
 		m_pWindow = glfwCreateWindow(width, height, title.c_str(), nullptr, nullptr);
 
         glfwSetWindowUserPointer(m_pWindow, this);
-
         glfwSetFramebufferSizeCallback(m_pWindow, &FramebufferResizeCallback);
+
         // [todo] remove for VK backend
         m_hwnd = glfwGetWin32Window(m_pWindow);
 	}
 	Window::~Window()
 	{
+        ImGui_ImplGlfw_Shutdown();
 		glfwDestroyWindow(m_pWindow);
 		glfwTerminate();
 	}
@@ -81,5 +83,11 @@ namespace CGE
     void Window::ResetResizeFlag()
     {
         m_resizeFlag = false;
+    }
+
+    void Window::InitImgui()
+    {
+        // init imgui glfw
+        ImGui_ImplGlfw_InitForOther(m_pWindow, true);
     }
 }

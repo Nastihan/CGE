@@ -3,6 +3,11 @@
 // Scene
 #include "Camera.h"
 #include "Light.h"
+#include "Model.h"
+
+// RHI
+#include "../RHI/Buffer.h"
+#include "../RHI/ShaderResourceGroup.h"
 
 // std
 #include <vector>
@@ -10,6 +15,15 @@
 
 namespace CGE
 {
+	namespace Pass
+	{
+		class ForwardPass;
+	}
+	namespace RHI
+	{
+		class CommandList;
+	}
+
 	namespace Scene
 	{
 		class Model;
@@ -19,11 +33,23 @@ namespace CGE
 		{
 		public:
 			Scene() = default;
-			void LoadModel(const std::string& pathString);
+			void Init(Pass::ForwardPass* pForwardPass);
+			void LoadModel(const std::string& pathString, Pass::ForwardPass* pForwardPass);
+			void AddLight(const Light& light);
+
+			void Render(Pass::ForwardPass* pForwardPass, RHI::CommandList* commandList);
+
 		private:
 			Camera m_camera;
 			std::vector<Model> m_models;
-			std::vector<Light> m_lights
+
+			// [todo] need to hookup to ImGui
+			// The scene will contain a fixed number of lights for now. (Same as NUM_LIGHTS in Forward shader)
+			std::vector<Light> m_lights;
+			RHI::Ptr<RHI::Buffer> m_lightBuffer;
+			RHI::Ptr<RHI::BufferView> m_lightBufferView;
+
+			RHI::Ptr<RHI::ShaderResourceGroup> m_sceneSrg;
 		};
 	}
 }

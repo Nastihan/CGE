@@ -23,7 +23,6 @@ namespace CGE
 		bool PipelineStateDescriptorForDraw::operator==(const PipelineStateDescriptorForDraw& rhs) const
 		{
 			return m_fragmentFunction == rhs.m_fragmentFunction &&
-				m_pipelineLayoutDescriptor == rhs.m_pipelineLayoutDescriptor &&
 				m_renderStates == rhs.m_renderStates &&
 				m_vertexFunction == rhs.m_vertexFunction &&
 				m_inputStreamLayout == rhs.m_inputStreamLayout;

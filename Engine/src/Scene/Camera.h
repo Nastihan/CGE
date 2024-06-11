@@ -2,6 +2,7 @@
 
 // RHI
 #include "../RHI/Viewport.h"
+#include "../RHI/Image.h"
 
 #include <glm/glm.hpp>
 #include <glm/gtx/euler_angles.hpp>

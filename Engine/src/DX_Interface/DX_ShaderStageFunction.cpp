@@ -9,22 +9,22 @@ namespace CGE
 {
 	namespace DX12
 	{
-		RHI::Ptr<DX_ShaderStageFunction> DX_ShaderStageFunction::Create(RHI::ShaderStage shaderStage)
+		RHI::Ptr<DX_ShaderStageFunction> DX_ShaderStageFunction::Create()
 		{
-			return new DX_ShaderStageFunction(shaderStage);
+			return new DX_ShaderStageFunction();
 		}
 
-		void DX_ShaderStageFunction::SetByteCode(std::string filePath)
-		{
-			DXAssertSuccess(D3DReadFileToBlob(s2ws(filePath).c_str(), &m_shaderBlob));
-		}
-
-		ID3DBlob* DX_ShaderStageFunction::GetByteCode() const
+		IDxcBlob* DX_ShaderStageFunction::GetByteCode() const
 		{
 			return m_shaderBlob.Get();
 		}
 
-		DX_ShaderStageFunction::DX_ShaderStageFunction(RHI::ShaderStage shaderStage) : RHI::ShaderStageFunction(shaderStage) {}
+		RHI::ResultCode DX_ShaderStageFunction::InitInternal(const RHI::ShaderFileInfo& fileInfo)
+		{
+			DX_DXShaderCompiler compiler{};
+			m_shaderBlob = compiler.Compile(fileInfo);
+			return (m_shaderBlob != nullptr) ? RHI::ResultCode::Success : RHI::ResultCode::Fail;
+		}
 
 		RHI::ResultCode DX_ShaderStageFunction::FinalizeInternal()
 		{

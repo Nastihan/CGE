@@ -2,6 +2,7 @@
 
 // RHI
 #include "RHI_Common.h"
+#include "TypeHash.h"
 
 namespace CGE
 {
@@ -19,8 +20,10 @@ namespace CGE
             uint32_t GetByteOffset() const;
             uint32_t GetByteCount() const;
             uint32_t GetByteStride() const;
+            HashValue64 GetHash() const;
 
         private:
+            HashValue64 m_hash = HashValue64{ 0 };
             const Buffer* m_buffer = nullptr;
             uint32_t m_byteOffset = 0;
             uint32_t m_byteCount = 0;

@@ -49,6 +49,103 @@ namespace CGE
 					}
 				}
 			}
+			CreateNullDescriptors();
+		}
+
+		DX_DescriptorTable DX_DescriptorContext::CreateDescriptorTable(D3D12_DESCRIPTOR_HEAP_TYPE descriptorHeapType, uint32_t descriptorCount)
+		{
+			return GetPool(descriptorHeapType, D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE).AllocateTable(descriptorCount);
+		}
+
+		void DX_DescriptorContext::UpdateDescriptorTableRange(DX_DescriptorTable gpuDestinationTable, const DX_DescriptorHandle* cpuSourceDescriptors, D3D12_DESCRIPTOR_HEAP_TYPE heapType)
+		{
+			const uint32_t descriptorCount = gpuDestinationTable.GetSize();
+			std::vector<D3D12_CPU_DESCRIPTOR_HANDLE> cpuSourceHandles;
+			cpuSourceHandles.reserve(descriptorCount);
+			for (uint32_t i = 0; i < descriptorCount; ++i)
+			{
+				cpuSourceHandles.push_back(GetCpuPlatformHandle(cpuSourceDescriptors[i]));
+			}
+
+			D3D12_CPU_DESCRIPTOR_HANDLE gpuDestinationHandle = GetCpuPlatformHandleForTable(gpuDestinationTable);
+
+			// An array of descriptor sizes for each range. We just want N ranges with 1 descriptor each. (check ID3D12Device::CopyDescriptors)
+			std::vector<uint32_t> rangeCounts(descriptorCount, 1);
+			m_device->CopyDescriptors(1, &gpuDestinationHandle, &descriptorCount, descriptorCount, cpuSourceHandles.data(), rangeCounts.data(), heapType);
+		}
+
+		void DX_DescriptorContext::ReleaseDescriptorTable(DX_DescriptorTable table)
+		{
+			GetPool(table.GetType(), table.GetFlags()).ReleaseTable(table);
+		}
+
+		DX_DescriptorHandle DX_DescriptorContext::GetNullHandleSRV(D3D12_SRV_DIMENSION dimension) const
+		{
+			auto iter = m_nullDescriptorsSRV.find(dimension);
+			if (iter != m_nullDescriptorsSRV.end())
+			{
+				return iter->second;
+			}
+			else
+			{
+				return DX_DescriptorHandle();
+			}
+		}
+
+		DX_DescriptorHandle DX_DescriptorContext::GetNullHandleUAV(D3D12_UAV_DIMENSION dimension) const
+		{
+			auto iter = m_nullDescriptorsUAV.find(dimension);
+			if (iter != m_nullDescriptorsUAV.end())
+			{
+				return iter->second;
+			}
+			else
+			{
+				return DX_DescriptorHandle();
+			}
+		}
+
+		DX_DescriptorHandle DX_DescriptorContext::GetNullHandleCBV() const
+		{
+			return m_nullDescriptorCBV;
+		}
+
+		DX_DescriptorHandle DX_DescriptorContext::GetNullHandleSampler() const
+		{
+			return m_nullSamplerDescriptor;
+		}
+
+		D3D12_CPU_DESCRIPTOR_HANDLE DX_DescriptorContext::GetCpuPlatformHandle(DX_DescriptorHandle handle) const
+		{
+			return GetPool(handle.m_type, handle.m_flags).GetCpuPlatformHandle(handle);
+		}
+
+		D3D12_GPU_DESCRIPTOR_HANDLE DX_DescriptorContext::GetGpuPlatformHandle(DX_DescriptorHandle handle) const
+		{
+			return GetPool(handle.m_type, handle.m_flags).GetGpuPlatformHandle(handle);
+		}
+
+		D3D12_CPU_DESCRIPTOR_HANDLE DX_DescriptorContext::GetCpuPlatformHandleForTable(DX_DescriptorTable descTable) const
+		{
+			return GetPool(descTable.GetOffset().m_type, descTable.GetOffset().m_flags).GetCpuPlatformHandleForTable(descTable);
+		}
+
+		D3D12_GPU_DESCRIPTOR_HANDLE DX_DescriptorContext::GetGpuPlatformHandleForTable(DX_DescriptorTable descTable) const
+		{
+			return GetPool(descTable.GetOffset().m_type, descTable.GetOffset().m_flags).GetGpuPlatformHandleForTable(descTable);
+		}
+
+		D3D12_GPU_DESCRIPTOR_HANDLE DX_DescriptorContext::GetBindlessGpuPlatformHandle() const
+		{
+			return m_staticPool.GetGpuPlatformHandleForTable(m_staticTable);
+		}
+
+		void DX_DescriptorContext::SetDescriptorHeaps(ID3D12GraphicsCommandList* commandList) const
+		{
+			ID3D12DescriptorHeap* heaps[2];
+			heaps[0] = GetPool(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV, D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE).GetPlatformHeap();
+			heaps[1] = GetPool(D3D12_DESCRIPTOR_HEAP_TYPE_SAMPLER, D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE).GetPlatformHeap();
+			commandList->SetDescriptorHeaps(2, heaps);
 		}
 
 		void DX_DescriptorContext::CopyDescriptor(DX_DescriptorHandle dst, DX_DescriptorHandle src)
@@ -101,11 +198,6 @@ namespace CGE
 		DX_DescriptorHandle DX_DescriptorContext::AllocateHandle(D3D12_DESCRIPTOR_HEAP_TYPE type, D3D12_DESCRIPTOR_HEAP_FLAGS flags, uint32_t count)
 		{
 			return GetPool(type, flags).AllocateHandle(count);
-		}
-
-		D3D12_CPU_DESCRIPTOR_HANDLE DX_DescriptorContext::GetCpuPlatformHandle(DX_DescriptorHandle handle) const
-		{
-			return GetPool(handle.m_type, handle.m_flags).GetCpuPlatformHandle(handle);
 		}
 
 		void DX_DescriptorContext::CreateRenderTargetView(ID3D12Resource* backBuffer, DX_DescriptorHandle& rtv)
@@ -331,6 +423,83 @@ namespace CGE
 			{
 				m_staticPool.ReleaseHandle(handle);
 			}
+		}
+
+		void DX_DescriptorContext::CreateNullDescriptors()
+		{
+			CreateNullDescriptorsSRV();
+			CreateNullDescriptorsUAV();
+			CreateNullDescriptorsCBV();
+			CreateNullDescriptorsSampler();
+		}
+
+		void DX_DescriptorContext::CreateNullDescriptorsSRV()
+		{
+			const std::array<D3D12_SRV_DIMENSION, 10> validSRVDimensions = { D3D12_SRV_DIMENSION_BUFFER,
+				D3D12_SRV_DIMENSION_TEXTURE1D,
+				D3D12_SRV_DIMENSION_TEXTURE1DARRAY,
+				D3D12_SRV_DIMENSION_TEXTURE2D,
+				D3D12_SRV_DIMENSION_TEXTURE2DARRAY,
+				D3D12_SRV_DIMENSION_TEXTURE2DMS,
+				D3D12_SRV_DIMENSION_TEXTURE2DMSARRAY,
+				D3D12_SRV_DIMENSION_TEXTURE3D,
+				D3D12_SRV_DIMENSION_TEXTURECUBE,
+				D3D12_SRV_DIMENSION_TEXTURECUBEARRAY };
+
+			for (D3D12_SRV_DIMENSION dimension : validSRVDimensions)
+			{
+				DX_DescriptorHandle srvDescriptorHandle = AllocateHandle(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV, D3D12_DESCRIPTOR_HEAP_FLAG_NONE, 1);
+				D3D12_SHADER_RESOURCE_VIEW_DESC desc = {};
+				desc.Format = DXGI_FORMAT_R32_UINT;
+				desc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
+				desc.ViewDimension = dimension;
+				m_device->CreateShaderResourceView(nullptr, &desc, GetCpuPlatformHandle(srvDescriptorHandle));
+				m_nullDescriptorsSRV[dimension] = srvDescriptorHandle;
+			}
+		}
+
+		void DX_DescriptorContext::CreateNullDescriptorsUAV()
+		{
+			const std::array<D3D12_UAV_DIMENSION, 6> UAVDimensions = { D3D12_UAV_DIMENSION_BUFFER,
+				D3D12_UAV_DIMENSION_TEXTURE1D,
+				D3D12_UAV_DIMENSION_TEXTURE1DARRAY,
+				D3D12_UAV_DIMENSION_TEXTURE2D,
+				D3D12_UAV_DIMENSION_TEXTURE2DARRAY,
+				D3D12_UAV_DIMENSION_TEXTURE3D };
+
+			for (D3D12_UAV_DIMENSION dimension : UAVDimensions)
+			{
+				DX_DescriptorHandle uavDescriptorHandle = AllocateHandle(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV, D3D12_DESCRIPTOR_HEAP_FLAG_NONE, 1);
+				D3D12_UNORDERED_ACCESS_VIEW_DESC desc = {};
+				desc.Format = DXGI_FORMAT_R32_UINT;
+				desc.ViewDimension = dimension;
+				m_device->CreateUnorderedAccessView(nullptr, nullptr, &desc, GetCpuPlatformHandle(uavDescriptorHandle));
+				m_nullDescriptorsUAV[dimension] = uavDescriptorHandle;
+			}
+		}
+
+		void DX_DescriptorContext::CreateNullDescriptorsCBV()
+		{
+			D3D12_CONSTANT_BUFFER_VIEW_DESC constantBufferDesc = {};
+			DX_DescriptorHandle cbvDescriptorHandle = AllocateHandle(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV, D3D12_DESCRIPTOR_HEAP_FLAG_NONE, 1);
+			m_device->CreateConstantBufferView(&constantBufferDesc, GetCpuPlatformHandle(cbvDescriptorHandle));
+			m_nullDescriptorCBV = cbvDescriptorHandle;
+		}
+
+		void DX_DescriptorContext::CreateNullDescriptorsSampler()
+		{
+			m_nullSamplerDescriptor = AllocateHandle(D3D12_DESCRIPTOR_HEAP_TYPE_SAMPLER, D3D12_DESCRIPTOR_HEAP_FLAG_NONE, 1);
+			D3D12_SAMPLER_DESC samplerDesc = {};
+			samplerDesc.Filter = D3D12_FILTER_MIN_MAG_MIP_LINEAR;
+			samplerDesc.AddressU = D3D12_TEXTURE_ADDRESS_MODE_WRAP;
+			samplerDesc.AddressV = D3D12_TEXTURE_ADDRESS_MODE_WRAP;
+			samplerDesc.AddressW = D3D12_TEXTURE_ADDRESS_MODE_WRAP;
+			samplerDesc.MinLOD = 0;
+			samplerDesc.MaxLOD = D3D12_FLOAT32_MAX;
+			samplerDesc.MipLODBias = 0.0f;
+			samplerDesc.MaxAnisotropy = 1;
+			samplerDesc.ComparisonFunc = D3D12_COMPARISON_FUNC_ALWAYS;
+			m_device->CreateSampler(&samplerDesc, GetCpuPlatformHandle(m_nullSamplerDescriptor));
 		}
 	}
 }

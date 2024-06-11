@@ -10,11 +10,21 @@
 #include "DX_ImageView.h"
 #include "DX_Image.h"
 #include "DX_ImagePool.h"
+#include "DX_PipelineLayoutDescriptor.h"
+#include "DX_PipelineLayout.h"
+#include "DX_ShaderStageFunction.h"
+#include "DX_PipelineState.h"
+#include "DX_ShaderResourceGroup.h"
 
 namespace CGE
 {
 	namespace DX12
 	{
+		DX_Factory::DX_Factory()
+		{
+			m_backendName = "DX12";
+		}
+
 		RHI::Ptr<RHI::PhysicalDevice> DX_Factory::CreatePhysicalDevice()
 		{
 			return DX_PhysicalDevice::Create();
@@ -63,6 +73,26 @@ namespace CGE
 		RHI::Ptr<RHI::ImagePool> DX_Factory::CreateImagePool()
 		{
 			return DX_ImagePool::Create();
+		}
+
+		RHI::Ptr<RHI::PipelineState> DX_Factory::CreatePipelineState()
+		{
+			return DX_PipelineState::Create();
+		}
+
+		RHI::Ptr<RHI::PipelineLayoutDescriptor> DX_Factory::CreatePipelineLayoutDescriptor()
+		{
+			return DX_PipelineLayoutDescriptor::Create();
+		}
+
+		RHI::Ptr<RHI::ShaderStageFunction> DX_Factory::CreateShaderStageFunction()
+		{
+			return DX_ShaderStageFunction::Create();
+		}
+
+		RHI::Ptr<RHI::ShaderResourceGroup> DX_Factory::CreateShaderResourceGroup()
+		{
+			return DX_ShaderResourceGroup::Create();
 		}
 	}
 }

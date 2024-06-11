@@ -2,6 +2,7 @@
 
 // DX12
 #include "DX_CommonHeaders.h"
+#include "DX_DXShaderCompiler.h"
 
 // RHI
 #include "../RHI/ShaderStageFunction.h"
@@ -13,17 +14,17 @@ namespace CGE
         class DX_ShaderStageFunction : public RHI::ShaderStageFunction
         {
         public:
-            static RHI::Ptr<DX_ShaderStageFunction> Create(RHI::ShaderStage shaderStage);
-
-            void SetByteCode(std::string filePath);
-            ID3DBlob* GetByteCode() const;
+            static RHI::Ptr<DX_ShaderStageFunction> Create();
+            IDxcBlob* GetByteCode() const;
 
         private:
             DX_ShaderStageFunction() = default;
-            DX_ShaderStageFunction(RHI::ShaderStage shaderStage);
+
+            // RHI::ShaderStageFunction
+            RHI::ResultCode InitInternal(const RHI::ShaderFileInfo& fileInfo) override;
             RHI::ResultCode FinalizeInternal() override;
 
-            wrl::ComPtr<ID3DBlob> m_shaderBlob;
+            wrl::ComPtr<IDxcBlob> m_shaderBlob;
         };
 	}
 }

@@ -218,6 +218,199 @@ namespace CGE
             }
         }
 
+        RHI::Format ConvertFormat(DXGI_FORMAT format)
+        {
+            switch (format)
+            {
+            case DXGI_FORMAT_UNKNOWN:
+                return RHI::Format::Unknown;
+            case DXGI_FORMAT_R32G32B32A32_FLOAT:
+                return RHI::Format::R32G32B32A32_FLOAT;
+            case DXGI_FORMAT_R32G32B32A32_UINT:
+                return RHI::Format::R32G32B32A32_UINT;
+            case DXGI_FORMAT_R32G32B32A32_SINT:
+                return RHI::Format::R32G32B32A32_SINT;
+            case DXGI_FORMAT_R32G32B32_FLOAT:
+                return RHI::Format::R32G32B32_FLOAT;
+            case DXGI_FORMAT_R32G32B32_UINT:
+                return RHI::Format::R32G32B32_UINT;
+            case DXGI_FORMAT_R32G32B32_SINT:
+                return RHI::Format::R32G32B32_SINT;
+            case DXGI_FORMAT_R16G16B16A16_FLOAT:
+                return RHI::Format::R16G16B16A16_FLOAT;
+            case DXGI_FORMAT_R16G16B16A16_UNORM:
+                return RHI::Format::R16G16B16A16_UNORM;
+            case DXGI_FORMAT_R16G16B16A16_UINT:
+                return RHI::Format::R16G16B16A16_UINT;
+            case DXGI_FORMAT_R16G16B16A16_SNORM:
+                return RHI::Format::R16G16B16A16_SNORM;
+            case DXGI_FORMAT_R16G16B16A16_SINT:
+                return RHI::Format::R16G16B16A16_SINT;
+            case DXGI_FORMAT_R32G32_FLOAT:
+                return RHI::Format::R32G32_FLOAT;
+            case DXGI_FORMAT_R32G32_UINT:
+                return RHI::Format::R32G32_UINT;
+            case DXGI_FORMAT_R32G32_SINT:
+                return RHI::Format::R32G32_SINT;
+            case DXGI_FORMAT_D32_FLOAT_S8X24_UINT:
+                return RHI::Format::D32_FLOAT_S8X24_UINT;
+            case DXGI_FORMAT_R10G10B10A2_UNORM:
+                return RHI::Format::R10G10B10A2_UNORM;
+            case DXGI_FORMAT_R10G10B10A2_UINT:
+                return RHI::Format::R10G10B10A2_UINT;
+            case DXGI_FORMAT_R11G11B10_FLOAT:
+                return RHI::Format::R11G11B10_FLOAT;
+            case DXGI_FORMAT_R8G8B8A8_UNORM:
+                return RHI::Format::R8G8B8A8_UNORM;
+            case DXGI_FORMAT_R8G8B8A8_UNORM_SRGB:
+                return RHI::Format::R8G8B8A8_UNORM_SRGB;
+            case DXGI_FORMAT_R8G8B8A8_UINT:
+                return RHI::Format::R8G8B8A8_UINT;
+            case DXGI_FORMAT_R8G8B8A8_SNORM:
+                return RHI::Format::R8G8B8A8_SNORM;
+            case DXGI_FORMAT_R8G8B8A8_SINT:
+                return RHI::Format::R8G8B8A8_SINT;
+            case DXGI_FORMAT_R16G16_FLOAT:
+                return RHI::Format::R16G16_FLOAT;
+            case DXGI_FORMAT_R16G16_UNORM:
+                return RHI::Format::R16G16_UNORM;
+            case DXGI_FORMAT_R16G16_UINT:
+                return RHI::Format::R16G16_UINT;
+            case DXGI_FORMAT_R16G16_SNORM:
+                return RHI::Format::R16G16_SNORM;
+            case DXGI_FORMAT_R16G16_SINT:
+                return RHI::Format::R16G16_SINT;
+            case DXGI_FORMAT_D32_FLOAT:
+                return RHI::Format::D32_FLOAT;
+            case DXGI_FORMAT_R32_FLOAT:
+                return RHI::Format::R32_FLOAT;
+            case DXGI_FORMAT_R32_UINT:
+                return RHI::Format::R32_UINT;
+            case DXGI_FORMAT_R32_SINT:
+                return RHI::Format::R32_SINT;
+            case DXGI_FORMAT_D24_UNORM_S8_UINT:
+                return RHI::Format::D24_UNORM_S8_UINT;
+            case DXGI_FORMAT_R8G8_UNORM:
+                return RHI::Format::R8G8_UNORM;
+            case DXGI_FORMAT_R8G8_UINT:
+                return RHI::Format::R8G8_UINT;
+            case DXGI_FORMAT_R8G8_SNORM:
+                return RHI::Format::R8G8_SNORM;
+            case DXGI_FORMAT_R8G8_SINT:
+                return RHI::Format::R8G8_SINT;
+            case DXGI_FORMAT_R16_FLOAT:
+                return RHI::Format::R16_FLOAT;
+            case DXGI_FORMAT_D16_UNORM:
+                return RHI::Format::D16_UNORM;
+            case DXGI_FORMAT_R16_UNORM:
+                return RHI::Format::R16_UNORM;
+            case DXGI_FORMAT_R16_UINT:
+                return RHI::Format::R16_UINT;
+            case DXGI_FORMAT_R16_SNORM:
+                return RHI::Format::R16_SNORM;
+            case DXGI_FORMAT_R16_SINT:
+                return RHI::Format::R16_SINT;
+            case DXGI_FORMAT_R8_UNORM:
+                return RHI::Format::R8_UNORM;
+            case DXGI_FORMAT_R8_UINT:
+                return RHI::Format::R8_UINT;
+            case DXGI_FORMAT_R8_SNORM:
+                return RHI::Format::R8_SNORM;
+            case DXGI_FORMAT_R8_SINT:
+                return RHI::Format::R8_SINT;
+            case DXGI_FORMAT_A8_UNORM:
+                return RHI::Format::A8_UNORM;
+            case DXGI_FORMAT_R1_UNORM:
+                return RHI::Format::R1_UNORM;
+            case DXGI_FORMAT_R9G9B9E5_SHAREDEXP:
+                return RHI::Format::R9G9B9E5_SHAREDEXP;
+            case DXGI_FORMAT_R8G8_B8G8_UNORM:
+                return RHI::Format::R8G8_B8G8_UNORM;
+            case DXGI_FORMAT_G8R8_G8B8_UNORM:
+                return RHI::Format::G8R8_G8B8_UNORM;
+            case DXGI_FORMAT_BC1_UNORM:
+                return RHI::Format::BC1_UNORM;
+            case DXGI_FORMAT_BC1_UNORM_SRGB:
+                return RHI::Format::BC1_UNORM_SRGB;
+            case DXGI_FORMAT_BC2_UNORM:
+                return RHI::Format::BC2_UNORM;
+            case DXGI_FORMAT_BC2_UNORM_SRGB:
+                return RHI::Format::BC2_UNORM_SRGB;
+            case DXGI_FORMAT_BC3_UNORM:
+                return RHI::Format::BC3_UNORM;
+            case DXGI_FORMAT_BC3_UNORM_SRGB:
+                return RHI::Format::BC3_UNORM_SRGB;
+            case DXGI_FORMAT_BC4_UNORM:
+                return RHI::Format::BC4_UNORM;
+            case DXGI_FORMAT_BC4_SNORM:
+                return RHI::Format::BC4_SNORM;
+            case DXGI_FORMAT_BC5_UNORM:
+                return RHI::Format::BC5_UNORM;
+            case DXGI_FORMAT_BC5_SNORM:
+                return RHI::Format::BC5_SNORM;
+            case DXGI_FORMAT_B5G6R5_UNORM:
+                return RHI::Format::B5G6R5_UNORM;
+            case DXGI_FORMAT_B5G5R5A1_UNORM:
+                return RHI::Format::B5G5R5A1_UNORM;
+            case DXGI_FORMAT_B8G8R8A8_UNORM:
+                return RHI::Format::B8G8R8A8_UNORM;
+            case DXGI_FORMAT_B8G8R8X8_UNORM:
+                return RHI::Format::B8G8R8X8_UNORM;
+            case DXGI_FORMAT_R10G10B10_XR_BIAS_A2_UNORM:
+                return RHI::Format::R10G10B10_XR_BIAS_A2_UNORM;
+            case DXGI_FORMAT_B8G8R8A8_UNORM_SRGB:
+                return RHI::Format::B8G8R8A8_UNORM_SRGB;
+            case DXGI_FORMAT_B8G8R8X8_UNORM_SRGB:
+                return RHI::Format::B8G8R8X8_UNORM_SRGB;
+            case DXGI_FORMAT_BC6H_UF16:
+                return RHI::Format::BC6H_UF16;
+            case DXGI_FORMAT_BC6H_SF16:
+                return RHI::Format::BC6H_SF16;
+            case DXGI_FORMAT_BC7_UNORM:
+                return RHI::Format::BC7_UNORM;
+            case DXGI_FORMAT_BC7_UNORM_SRGB:
+                return RHI::Format::BC7_UNORM_SRGB;
+            case DXGI_FORMAT_AYUV:
+                return RHI::Format::AYUV;
+            case DXGI_FORMAT_Y410:
+                return RHI::Format::Y410;
+            case DXGI_FORMAT_Y416:
+                return RHI::Format::Y416;
+            case DXGI_FORMAT_NV12:
+                return RHI::Format::NV12;
+            case DXGI_FORMAT_P010:
+                return RHI::Format::P010;
+            case DXGI_FORMAT_P016:
+                return RHI::Format::P016;
+            case DXGI_FORMAT_YUY2:
+                return RHI::Format::YUY2;
+            case DXGI_FORMAT_Y210:
+                return RHI::Format::Y210;
+            case DXGI_FORMAT_Y216:
+                return RHI::Format::Y216;
+            case DXGI_FORMAT_NV11:
+                return RHI::Format::NV11;
+            case DXGI_FORMAT_AI44:
+                return RHI::Format::AI44;
+            case DXGI_FORMAT_IA44:
+                return RHI::Format::IA44;
+            case DXGI_FORMAT_P8:
+                return RHI::Format::P8;
+            case DXGI_FORMAT_A8P8:
+                return RHI::Format::A8P8;
+            case DXGI_FORMAT_B4G4R4A4_UNORM:
+                return RHI::Format::B4G4R4A4_UNORM;
+            case DXGI_FORMAT_P208:
+                return RHI::Format::P208;
+            case DXGI_FORMAT_V208:
+                return RHI::Format::V208;
+            case DXGI_FORMAT_V408:
+                return RHI::Format::V408;
+            default:
+                return RHI::Format::Unknown;
+            }
+        }
+
         DXGI_SCALING ConvertScaling(RHI::Scaling scaling)
         {
             switch (scaling)
@@ -913,6 +1106,316 @@ namespace CGE
             staticSamplerDesc.ShaderRegister = shaderRegister;
             staticSamplerDesc.RegisterSpace = shaderRegisterSpace;
             staticSamplerDesc.ShaderVisibility = shaderVisibility;
+        }
+
+        D3D12_DESCRIPTOR_RANGE_TYPE ConvertShaderInputBufferAccess(RHI::ShaderInputBufferAccess access)
+        {
+            static const D3D12_DESCRIPTOR_RANGE_TYPE Table[] =
+            {
+                D3D12_DESCRIPTOR_RANGE_TYPE_CBV,
+                D3D12_DESCRIPTOR_RANGE_TYPE_SRV,
+                D3D12_DESCRIPTOR_RANGE_TYPE_UAV
+            };
+            return Table[static_cast<size_t>(access)];
+        }
+
+        D3D12_DESCRIPTOR_RANGE_TYPE ConvertShaderInputImageAccess(RHI::ShaderInputImageAccess access)
+        {
+            static const D3D12_DESCRIPTOR_RANGE_TYPE Table[] =
+            {
+                D3D12_DESCRIPTOR_RANGE_TYPE_SRV,
+                D3D12_DESCRIPTOR_RANGE_TYPE_UAV
+            };
+            return Table[static_cast<size_t>(access)];
+        }
+
+        D3D12_SRV_DIMENSION ConvertSRVDimension(RHI::ShaderInputImageType type)
+        {
+            switch (type)
+            {
+            case RHI::ShaderInputImageType::Image1D:
+                return D3D12_SRV_DIMENSION_TEXTURE1D;
+            case RHI::ShaderInputImageType::Image1DArray:
+                return D3D12_SRV_DIMENSION_TEXTURE1DARRAY;
+            case RHI::ShaderInputImageType::Image2D:
+                return D3D12_SRV_DIMENSION_TEXTURE2D;
+            case RHI::ShaderInputImageType::Image2DArray:
+                return D3D12_SRV_DIMENSION_TEXTURE2DARRAY;
+            case RHI::ShaderInputImageType::Image2DMultisample:
+                return D3D12_SRV_DIMENSION_TEXTURE2DMS;
+            case RHI::ShaderInputImageType::Image2DMultisampleArray:
+                return D3D12_SRV_DIMENSION_TEXTURE2DMSARRAY;
+            case RHI::ShaderInputImageType::Image3D:
+                return D3D12_SRV_DIMENSION_TEXTURE3D;
+            case RHI::ShaderInputImageType::ImageCube:
+                return D3D12_SRV_DIMENSION_TEXTURECUBE;
+            case RHI::ShaderInputImageType::ImageCubeArray:
+                return D3D12_SRV_DIMENSION_TEXTURECUBEARRAY;
+            case RHI::ShaderInputImageType::Unknown:
+                return D3D12_SRV_DIMENSION_UNKNOWN;
+            }
+
+            assert(false, "Unknown enum in ConvertSRVDimension");
+            return D3D12_SRV_DIMENSION_UNKNOWN;
+        }
+
+        D3D12_UAV_DIMENSION ConvertUAVDimension(RHI::ShaderInputImageType type)
+        {
+            switch (type)
+            {
+            case RHI::ShaderInputImageType::Image1D:
+                return D3D12_UAV_DIMENSION_TEXTURE1D;
+            case RHI::ShaderInputImageType::Image1DArray:
+                return D3D12_UAV_DIMENSION_TEXTURE1DARRAY;
+            case RHI::ShaderInputImageType::Image2D:
+                return D3D12_UAV_DIMENSION_TEXTURE2D;
+            case RHI::ShaderInputImageType::Image2DArray:
+                return D3D12_UAV_DIMENSION_TEXTURE2DARRAY;
+            case RHI::ShaderInputImageType::Image3D:
+                return D3D12_UAV_DIMENSION_TEXTURE3D;
+            case RHI::ShaderInputImageType::Unknown:
+                return D3D12_UAV_DIMENSION_UNKNOWN;
+            }
+
+            assert(false, "Unknown enum in ConvertUAVDimension");
+            return D3D12_UAV_DIMENSION_UNKNOWN;
+        }
+
+        D3D12_PRIMITIVE_TOPOLOGY ConvertTopology(RHI::PrimitiveTopology topology)
+        {
+            static const D3D12_PRIMITIVE_TOPOLOGY table[] =
+            {
+                D3D_PRIMITIVE_TOPOLOGY_UNDEFINED,
+                D3D_PRIMITIVE_TOPOLOGY_POINTLIST,
+                D3D_PRIMITIVE_TOPOLOGY_LINELIST,
+                D3D_PRIMITIVE_TOPOLOGY_LINELIST_ADJ,
+                D3D_PRIMITIVE_TOPOLOGY_LINESTRIP,
+                D3D_PRIMITIVE_TOPOLOGY_LINESTRIP_ADJ,
+                D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST,
+                D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST_ADJ,
+                D3D_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP,
+                D3D_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP_ADJ,
+            };
+            return table[(uint32_t)topology];
+        }
+
+        std::vector<D3D12_INPUT_ELEMENT_DESC> ConvertInputElements(const RHI::InputStreamLayout& layout)
+        {
+            std::vector<D3D12_INPUT_ELEMENT_DESC> result;
+            result.reserve(layout.GetStreamChannels().size());
+            for (size_t i = 0; i < layout.GetStreamChannels().size(); ++i)
+            {
+                const RHI::StreamChannelDescriptor& channel = layout.GetStreamChannels()[i];
+                const RHI::StreamBufferDescriptor& buffer = layout.GetStreamBuffers()[channel.m_bufferIndex];
+
+                result.emplace_back();
+                D3D12_INPUT_ELEMENT_DESC& desc = result.back();
+                desc.SemanticName = channel.m_semantic.m_name.c_str();
+                desc.SemanticIndex = channel.m_semantic.m_index;
+                desc.AlignedByteOffset = channel.m_byteOffset;
+                desc.InputSlot = channel.m_bufferIndex;
+                desc.InputSlotClass = (buffer.m_stepFunction == RHI::StreamStepFunction::PerVertex) ? D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA : D3D12_INPUT_CLASSIFICATION_PER_INSTANCE_DATA;
+                desc.InstanceDataStepRate = (buffer.m_stepFunction != RHI::StreamStepFunction::PerVertex) ? buffer.m_stepRate : 0;
+                desc.Format = ConvertFormat(channel.m_format);
+            }
+            return result;
+        }
+
+        D3D12_PRIMITIVE_TOPOLOGY_TYPE ConvertToTopologyType(RHI::PrimitiveTopology topology)
+        {
+            switch (topology)
+            {
+            case RHI::PrimitiveTopology::PointList:
+                return D3D12_PRIMITIVE_TOPOLOGY_TYPE_POINT;
+            case RHI::PrimitiveTopology::LineList:
+            case RHI::PrimitiveTopology::LineStrip:
+            case RHI::PrimitiveTopology::LineStripAdj:
+                return D3D12_PRIMITIVE_TOPOLOGY_TYPE_LINE;
+            case RHI::PrimitiveTopology::TriangleList:
+            case RHI::PrimitiveTopology::TriangleListAdj:
+            case RHI::PrimitiveTopology::TriangleStrip:
+            case RHI::PrimitiveTopology::TriangleStripAdj:
+                return D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;
+            case RHI::PrimitiveTopology::PatchList:
+                return D3D12_PRIMITIVE_TOPOLOGY_TYPE_PATCH;
+            case RHI::PrimitiveTopology::Undefined:
+            default:
+                return D3D12_PRIMITIVE_TOPOLOGY_TYPE_UNDEFINED;
+            }
+        }
+
+        D3D12_BLEND_DESC ConvertBlendState(const RHI::BlendState& blend)
+        {
+            D3D12_BLEND_DESC desc;
+            desc.AlphaToCoverageEnable = blend.m_alphaToCoverageEnable;
+            desc.IndependentBlendEnable = blend.m_independentBlendEnable;
+            for (uint32_t i = 0; i < 8; ++i)
+            {
+                const RHI::TargetBlendState& src = blend.m_targets[i];
+                D3D12_RENDER_TARGET_BLEND_DESC& dst = desc.RenderTarget[i];
+                dst.BlendEnable = src.m_enable;
+                dst.BlendOp = ConvertBlendOp(src.m_blendOp);
+                dst.BlendOpAlpha = ConvertBlendOp(src.m_blendAlphaOp);
+                dst.DestBlend = ConvertBlendFactor(src.m_blendDest);
+                dst.DestBlendAlpha = ConvertBlendFactor(src.m_blendAlphaDest);
+                dst.RenderTargetWriteMask = ConvertColorWriteMask(static_cast<uint8_t>(src.m_writeMask));
+                dst.SrcBlend = ConvertBlendFactor(src.m_blendSource);
+                dst.SrcBlendAlpha = ConvertBlendFactor(src.m_blendAlphaSource);
+                dst.LogicOp = D3D12_LOGIC_OP_CLEAR;
+                dst.LogicOpEnable = false;
+            }
+            return desc;
+        }
+
+        D3D12_BLEND_OP ConvertBlendOp(RHI::BlendOp op)
+        {
+            static const D3D12_BLEND_OP table[] =
+            {
+                D3D12_BLEND_OP_ADD,
+                D3D12_BLEND_OP_SUBTRACT,
+                D3D12_BLEND_OP_REV_SUBTRACT,
+                D3D12_BLEND_OP_MIN,
+                D3D12_BLEND_OP_MAX
+            };
+            return table[(uint32_t)op];
+        }
+
+        D3D12_BLEND ConvertBlendFactor(RHI::BlendFactor factor)
+        {
+            static const D3D12_BLEND table[] =
+            {
+                D3D12_BLEND_ZERO,
+                D3D12_BLEND_ONE,
+                D3D12_BLEND_SRC_COLOR,
+                D3D12_BLEND_INV_SRC_COLOR,
+                D3D12_BLEND_SRC_ALPHA,
+                D3D12_BLEND_INV_SRC_ALPHA,
+                D3D12_BLEND_DEST_ALPHA,
+                D3D12_BLEND_INV_DEST_ALPHA,
+                D3D12_BLEND_DEST_COLOR,
+                D3D12_BLEND_INV_DEST_COLOR,
+                D3D12_BLEND_SRC_ALPHA_SAT,
+                D3D12_BLEND_BLEND_FACTOR,
+                D3D12_BLEND_INV_BLEND_FACTOR,
+                D3D12_BLEND_SRC1_COLOR,
+                D3D12_BLEND_INV_SRC1_COLOR,
+                D3D12_BLEND_SRC1_ALPHA,
+                D3D12_BLEND_INV_SRC1_ALPHA
+            };
+            return table[(uint32_t)factor];
+        }
+
+        uint8_t ConvertColorWriteMask(uint8_t writeMask)
+        {
+            uint8_t dflags = 0;
+            if (writeMask == 0)
+            {
+                return dflags;
+            }
+            if (RHI::CheckBitsAll(writeMask, static_cast<uint8_t>(RHI::WriteChannelMask::ColorWriteMaskAll)))
+            {
+                return D3D12_COLOR_WRITE_ENABLE_ALL;
+            }
+            if (RHI::CheckBitsAny(writeMask, static_cast<uint8_t>(RHI::WriteChannelMask::ColorWriteMaskRed)))
+            {
+                dflags |= D3D12_COLOR_WRITE_ENABLE_RED;
+            }
+            if (RHI::CheckBitsAny(writeMask, static_cast<uint8_t>(RHI::WriteChannelMask::ColorWriteMaskGreen)))
+            {
+                dflags |= D3D12_COLOR_WRITE_ENABLE_GREEN;
+            }
+            if (RHI::CheckBitsAny(writeMask, static_cast<uint8_t>(RHI::WriteChannelMask::ColorWriteMaskBlue)))
+            {
+                dflags |= D3D12_COLOR_WRITE_ENABLE_BLUE;
+            }
+            if (RHI::CheckBitsAny(writeMask, static_cast<uint8_t>(RHI::WriteChannelMask::ColorWriteMaskAlpha)))
+            {
+                dflags |= D3D12_COLOR_WRITE_ENABLE_ALPHA;
+            }
+            return dflags;
+        }
+
+        D3D12_RASTERIZER_DESC ConvertRasterState(const RHI::RasterState& raster)
+        {
+            D3D12_RASTERIZER_DESC desc = {};
+            desc.FrontCounterClockwise = true;
+            desc.CullMode = ConvertCullMode(raster.m_cullMode);
+            desc.DepthBias = raster.m_depthBias;
+            desc.DepthBiasClamp = raster.m_depthBiasClamp;
+            desc.SlopeScaledDepthBias = raster.m_depthBiasSlopeScale;
+            desc.DepthClipEnable = raster.m_depthClipEnable;
+            desc.FillMode = ConvertFillMode(raster.m_fillMode);
+            desc.MultisampleEnable = raster.m_multisampleEnable;
+            desc.ConservativeRaster = raster.m_conservativeRasterEnable ? D3D12_CONSERVATIVE_RASTERIZATION_MODE_ON : D3D12_CONSERVATIVE_RASTERIZATION_MODE_OFF;
+            desc.ForcedSampleCount = raster.m_forcedSampleCount;
+            return desc;
+        }
+
+        D3D12_CULL_MODE ConvertCullMode(RHI::CullMode mode)
+        {
+            static const D3D12_CULL_MODE table[] =
+            {
+                D3D12_CULL_MODE_NONE,
+                D3D12_CULL_MODE_FRONT,
+                D3D12_CULL_MODE_BACK
+            };
+            return table[(uint32_t)mode];
+        }
+
+        D3D12_FILL_MODE ConvertFillMode(RHI::FillMode mode)
+        {
+            static const D3D12_FILL_MODE table[] =
+            {
+                D3D12_FILL_MODE_SOLID,
+                D3D12_FILL_MODE_WIREFRAME
+            };
+            return table[(uint32_t)mode];
+        }
+
+        D3D12_DEPTH_STENCIL_DESC ConvertDepthStencilState(const RHI::DepthStencilState& depthStencil)
+        {
+            D3D12_DEPTH_STENCIL_DESC desc;
+            desc.BackFace.StencilDepthFailOp = ConvertStencilOp(depthStencil.m_stencil.m_backFace.m_depthFailOp);
+            desc.BackFace.StencilFailOp = ConvertStencilOp(depthStencil.m_stencil.m_backFace.m_failOp);
+            desc.BackFace.StencilPassOp = ConvertStencilOp(depthStencil.m_stencil.m_backFace.m_passOp);
+            desc.BackFace.StencilFunc = ConvertComparisonFunc(depthStencil.m_stencil.m_backFace.m_func);
+            desc.FrontFace.StencilDepthFailOp = ConvertStencilOp(depthStencil.m_stencil.m_frontFace.m_depthFailOp);
+            desc.FrontFace.StencilFailOp = ConvertStencilOp(depthStencil.m_stencil.m_frontFace.m_failOp);
+            desc.FrontFace.StencilPassOp = ConvertStencilOp(depthStencil.m_stencil.m_frontFace.m_passOp);
+            desc.FrontFace.StencilFunc = ConvertComparisonFunc(depthStencil.m_stencil.m_frontFace.m_func);
+            desc.DepthEnable = depthStencil.m_depth.m_enable;
+            desc.DepthFunc = ConvertComparisonFunc(depthStencil.m_depth.m_func);
+            desc.DepthWriteMask = ConvertDepthWriteMask(depthStencil.m_depth.m_writeMask);
+            desc.StencilEnable = depthStencil.m_stencil.m_enable;
+            desc.StencilReadMask = static_cast<UINT8>(depthStencil.m_stencil.m_readMask);
+            desc.StencilWriteMask = static_cast<UINT8>(depthStencil.m_stencil.m_writeMask);
+            return desc;
+        }
+
+        D3D12_STENCIL_OP ConvertStencilOp(RHI::StencilOp op)
+        {
+            static const D3D12_STENCIL_OP table[] =
+            {
+                D3D12_STENCIL_OP_KEEP,
+                D3D12_STENCIL_OP_ZERO,
+                D3D12_STENCIL_OP_REPLACE,
+                D3D12_STENCIL_OP_INCR_SAT,
+                D3D12_STENCIL_OP_DECR_SAT,
+                D3D12_STENCIL_OP_INVERT,
+                D3D12_STENCIL_OP_INCR,
+                D3D12_STENCIL_OP_DECR
+            };
+            return table[(uint32_t)op];
+        }
+
+        D3D12_DEPTH_WRITE_MASK ConvertDepthWriteMask(RHI::DepthWriteMask mask)
+        {
+            static const D3D12_DEPTH_WRITE_MASK table[] =
+            {
+                D3D12_DEPTH_WRITE_MASK_ZERO,
+                D3D12_DEPTH_WRITE_MASK_ALL
+            };
+            return table[(uint32_t)mask];
         }
     }
 }

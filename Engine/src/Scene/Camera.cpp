@@ -5,6 +5,9 @@
 #include <glm/gtx/quaternion.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
+// RHI
+#include "../RHI/Graphics.h"
+
 namespace CGE
 {
 	namespace Scene

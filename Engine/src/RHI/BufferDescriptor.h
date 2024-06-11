@@ -29,6 +29,10 @@ namespace CGE
         {
             return static_cast<BufferBindFlags>(static_cast<int>(a) | static_cast<int>(b));
         }
+        inline BufferBindFlags operator&(BufferBindFlags a, BufferBindFlags b)
+        {
+            return static_cast<BufferBindFlags>(static_cast<int>(a) & static_cast<int>(b));
+        }
 
 		struct BufferDescriptor
 		{

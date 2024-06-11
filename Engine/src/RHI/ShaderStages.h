@@ -27,5 +27,12 @@ namespace CGE
             RayTracing = 1u << static_cast<uint32_t>(ShaderStage::RayTracing),
             All = Vertex | Fragment | Compute | RayTracing
         };
+
+        struct ShaderFileInfo
+        {
+            std::string m_fileName;
+            std::string m_function;
+            RHI::ShaderStage m_stage;
+        };
 	}
 }

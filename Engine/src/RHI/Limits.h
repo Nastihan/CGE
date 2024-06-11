@@ -1,5 +1,10 @@
 #pragma once
+
+// RHI
 #include "RHI_Common.h"
+
+// std
+#include <limits>
 
 namespace CGE
 {
@@ -11,8 +16,8 @@ namespace CGE
 			{
 				constexpr uint32_t FrameCountMax = 3;
 
-				constexpr uint32_t ClientWidth = 800;
-				constexpr uint32_t ClientHeight = 600;
+				constexpr uint32_t ClientWidth = 1920;
+				constexpr uint32_t ClientHeight = 1080;
 
 				// DX12 only supports flip model
 				constexpr uint32_t MinSwapChainImages = 2;
@@ -40,17 +45,23 @@ namespace CGE
 
 				// Max channels in each vertex buffer
 				constexpr uint32_t StreamChannelCountMax = 16;
+				// Max render targets we can bind to the pipeline
 				constexpr uint32_t AttachmentColorCountMax = 8;
+				// RenderAttachments + ResolveAttachments + DepthStencilAttachment +  ShadingRateAttachment
+				constexpr uint32_t RenderAttachmentCountMax = 2 * AttachmentColorCountMax + 2;
+				constexpr uint32_t SubpassCountMax = 10;
 				constexpr uint32_t MultiSampleCustomLocationsCountMax = 16;
 				constexpr uint32_t MultiSampleCustomLocationGridSize = 16;
 
-				constexpr uint32_t ShaderResourceGroupCountMax = 3;
+				constexpr uint32_t ShaderResourceGroupCountMax = 4;
 			}
 
 			namespace Image
 			{
 				constexpr uint32_t MipCountMax = 15;
 			}
+
+			constexpr uint32_t InvalidIndex = std::numeric_limits<uint32_t>::max();
 		}
 	}
 }

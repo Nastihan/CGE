@@ -1,6 +1,8 @@
 #pragma once
 #include "RHI/Graphics.h"
 #include "Window.h"
+#include "ImguiManager.h"
+#include "Scene/Scene.h"
 
 namespace CGE
 {
@@ -17,5 +19,6 @@ namespace CGE
 		Window window;
 		RHI::Graphics gfx;
 		uint64_t currentFrame = 0;
+		std::shared_ptr<Scene::Scene> m_scene;
 	};
 }
