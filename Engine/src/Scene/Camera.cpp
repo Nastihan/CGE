@@ -241,5 +241,42 @@ namespace CGE
 			UpdateViewMatrix();
 			m_viewProjectionInverse = glm::inverse(m_projectionMatrix * m_viewMatrix);
 		}
+
+		void Camera::OnKeyPressed(KeyEventArgs& keyArgs, UpdateEventArgs& updateArgs)
+		{
+			CameraMovement movement;
+			switch (keyArgs.m_key)
+			{
+			case GLFW_KEY_W:
+				movement.m_forward = 1.0f;
+				break;
+			case GLFW_KEY_A:
+				movement.m_left = 1.0f;
+				break;
+			case GLFW_KEY_S:
+				movement.m_back = 1.0f;
+				break;
+			case GLFW_KEY_D:
+				movement.m_right = 1.0f;
+				break;
+			case GLFW_KEY_Q:
+				movement.m_down = 1.0f;
+				break;
+			case GLFW_KEY_E:
+				movement.m_up = 1.0f;
+				break;
+			}
+
+			// [todo] Expose to user
+			float moveMultiplier = 2.0;
+			TranslateX((movement.m_right - movement.m_left) * updateArgs.m_elapsedTime * moveMultiplier);
+			TranslateY((movement.m_up - movement.m_down) * updateArgs.m_elapsedTime * moveMultiplier);
+			TranslateZ((movement.m_back - movement.m_forward) * updateArgs.m_elapsedTime * moveMultiplier);
+		}
+
+		boost::function<void(KeyEventArgs&, UpdateEventArgs&)> Camera::GetKeyPressedFunctionBindable()
+		{
+			return boost::bind(&Camera::OnKeyPressed, this, _1, _2);
+		}
 	}
 }

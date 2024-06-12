@@ -3,8 +3,6 @@
 #include "DX_Interface/DX_ImguiManager.h"
 #include "imgui/imgui.h"
 
-#include <boost/signals2.hpp>
-
 namespace CGE
 {
 	App::App() : window(RHI::Limits::Device::ClientWidth, RHI::Limits::Device::ClientHeight, "CGE"), gfx("DX12", window) 
@@ -14,6 +12,8 @@ namespace CGE
 		m_scene->Init(gfx.GetFrameGraphExecuter()->GetForwardPass());
 		m_scene->LoadModel("nano_textured\\nanosuit.obj", gfx.GetFrameGraphExecuter()->GetForwardPass());
 		gfx.GetFrameGraphExecuter()->GetForwardPass()->SetScenePtr(m_scene);
+		
+		RegisterKeyboardEventCallback(m_scene->GetCamera().GetKeyPressedFunctionBindable());
 	}
 	
 	App::~App() {}
@@ -27,8 +27,27 @@ namespace CGE
 			{
 				gfx.RecreateSwapChain();
 			}
-			// Update();
+			Update();
 			gfx.Render();
 		}
+	}
+
+	void App::Update()
+	{
+		float deltaTime = m_timer.Mark();
+		float applicationTime = m_timer.GetAppTime();
+		UpdateEventArgs updateEventArgs(deltaTime, applicationTime);
+		
+		std::vector<KeyEventArgs>& keyPresses = window.GetKeyPresses();
+		for (auto& keyPress : keyPresses)
+		{
+			m_keyPressed(keyPress, updateEventArgs);
+		}
+		keyPresses.clear();
+	}
+
+	void App::RegisterKeyboardEventCallback(boost::function<void(KeyEventArgs&, UpdateEventArgs&)> functionType)
+	{
+		m_keyPressed += functionType;
 	}
 }

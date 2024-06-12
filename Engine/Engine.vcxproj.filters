@@ -426,6 +426,9 @@
     <ClCompile Include="src\DX_Interface\DX_ImguiManager.cpp">
       <Filter>Source Files\DX</Filter>
     </ClCompile>
+    <ClCompile Include="src\Timer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\DX_Interface\DX_Device.h">
@@ -880,6 +883,15 @@
     </ClInclude>
     <ClInclude Include="src\DX_Interface\DX_ImguiManager.h">
       <Filter>Header Files\DX</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Events.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\KeyCodes.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Timer.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

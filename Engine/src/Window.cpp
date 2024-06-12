@@ -11,9 +11,23 @@ namespace CGE
     void Window::FramebufferResizeCallback(GLFWwindow* window, int width, int height) 
     {
         auto windowInstance = reinterpret_cast<Window*>(glfwGetWindowUserPointer(window));
+        
         windowInstance->m_width = width;
         windowInstance->m_height = height;
         windowInstance->m_resizeFlag = true;
+    }
+
+    void Window::KeyPressedCallback(GLFWwindow* window, int key, int scancode, int action, int mods)
+    {
+        auto windowInstance = reinterpret_cast<Window*>(glfwGetWindowUserPointer(window));
+
+        int keyCode = key;
+        KeyEventArgs::KeyState keyState = (action == GLFW_RELEASE) ? KeyEventArgs::KeyState::Released : KeyEventArgs::KeyState::Pressed;
+        bool isControlPressed = mods & GLFW_MOD_CONTROL;
+        bool isShiftPressed = mods & GLFW_MOD_SHIFT;
+        bool isAltPressed = mods & GLFW_MOD_ALT;
+        KeyEventArgs args(keyCode, keyState, isControlPressed, isShiftPressed, isAltPressed);
+        windowInstance->m_keyPresses.push_back(args);
     }
 
     Window::Window(uint16_t width, uint16_t height, std::string title) : m_width{ width }, m_height{ height }
@@ -27,6 +41,7 @@ namespace CGE
 
         glfwSetWindowUserPointer(m_pWindow, this);
         glfwSetFramebufferSizeCallback(m_pWindow, &FramebufferResizeCallback);
+        glfwSetKeyCallback(m_pWindow, &KeyPressedCallback);
 
         // [todo] remove for VK backend
         m_hwnd = glfwGetWin32Window(m_pWindow);
@@ -89,5 +104,10 @@ namespace CGE
     {
         // init imgui glfw
         ImGui_ImplGlfw_InitForOther(m_pWindow, true);
+    }
+
+    std::vector<KeyEventArgs>& Window::GetKeyPresses()
+    {
+        return m_keyPresses;
     }
 }

@@ -132,6 +132,7 @@
     <ClCompile Include="src\Scene\Model.cpp" />
     <ClCompile Include="src\Scene\ModelNode.cpp" />
     <ClCompile Include="src\Scene\Scene.cpp" />
+    <ClCompile Include="src\Timer.cpp" />
     <ClCompile Include="src\VK_Interface\VK_Device.cpp" />
     <ClCompile Include="src\Window.cpp" />
   </ItemGroup>
@@ -186,6 +187,7 @@
     <ClInclude Include="src\DX_Interface\DX_StagingMemoryAllocator.h" />
     <ClInclude Include="src\DX_Interface\DX_SwapChain.h" />
     <ClInclude Include="src\DX_Interface\DX_UploadQueue.h" />
+    <ClInclude Include="src\Events.h" />
     <ClInclude Include="src\ImguiManager.h" />
     <ClInclude Include="src\imgui\imconfig.h" />
     <ClInclude Include="src\imgui\imgui.h" />
@@ -195,6 +197,7 @@
     <ClInclude Include="src\imgui\imstb_rectpack.h" />
     <ClInclude Include="src\imgui\imstb_textedit.h" />
     <ClInclude Include="src\imgui\imstb_truetype.h" />
+    <ClInclude Include="src\KeyCodes.h" />
     <ClInclude Include="src\Pass\ForwardPass.h" />
     <ClInclude Include="src\RHI\Allocator.h" />
     <ClInclude Include="src\RHI\AttachmentEnums.h" />
@@ -285,6 +288,7 @@
     <ClInclude Include="src\Scene\Model.h" />
     <ClInclude Include="src\Scene\ModelNode.h" />
     <ClInclude Include="src\Scene\Scene.h" />
+    <ClInclude Include="src\Timer.h" />
     <ClInclude Include="src\VK_Interface\VK_Device.h" />
     <ClInclude Include="src\Window.h" />
   </ItemGroup>

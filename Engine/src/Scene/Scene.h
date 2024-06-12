@@ -36,6 +36,7 @@ namespace CGE
 			void Init(Pass::ForwardPass* pForwardPass);
 			void LoadModel(const std::string& pathString, Pass::ForwardPass* pForwardPass);
 			void AddLight(const Light& light);
+			Camera& GetCamera();
 
 			void Render(Pass::ForwardPass* pForwardPass, RHI::CommandList* commandList);
 

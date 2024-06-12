@@ -4,6 +4,8 @@
 #include "../RHI/Viewport.h"
 #include "../RHI/Image.h"
 
+#include "../Events.h"
+
 #include <glm/glm.hpp>
 #include <glm/gtx/euler_angles.hpp>
 
@@ -18,6 +20,36 @@ namespace CGE
 			{
 				Local,
 				World
+			};
+		private:
+			struct CameraMovement
+			{
+				// Translation movement
+				float m_forward, m_back, m_left, m_right, m_up, m_down;
+				// Rotation movement
+				float m_rollCW, m_rollCCW;
+				float m_pitch, m_yaw;
+				// Move in/out from pivot point.
+				float m_pivotTranslate;
+				// Do you want to go faster?
+				bool m_translateFaster;
+				bool m_rotateFaster;
+
+				CameraMovement()
+					: m_forward(0.0f)
+					, m_back(0.0f)
+					, m_left(0.0f)
+					, m_right(0.0f)
+					, m_up(0.0f)
+					, m_down(0.0f)
+					, m_rollCW(0.0f)
+					, m_rollCCW(0.0f)
+					, m_pitch(0.0f)
+					, m_yaw(0.0f)
+					, m_pivotTranslate(0.0f)
+					, m_translateFaster(false)
+					, m_rotateFaster(false)
+				{}
 			};
 		public:
 			Camera();
@@ -63,6 +95,9 @@ namespace CGE
 			glm::mat4 GetProjectionMatrix() const;
 
 			glm::mat4 GetViewProjectionInverseMatrix();
+
+			boost::function<void(KeyEventArgs&, UpdateEventArgs&)> GetKeyPressedFunctionBindable();
+			void OnKeyPressed(KeyEventArgs& keyArgs, UpdateEventArgs& updateArgs);
 
 		private:
 			void UpdateViewMatrix();

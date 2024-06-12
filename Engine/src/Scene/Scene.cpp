@@ -73,5 +73,10 @@ namespace CGE
 				model.Render(pForwardPass, m_camera, commandList);
 			}
 		}
+
+		Camera& Scene::GetCamera()
+		{
+			return m_camera;
+		}
 	}
 }
