@@ -391,7 +391,7 @@
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions);COMPILE_CITY_CC;USE_DX12;UNITTESTPRJ="$(ProjectDir)."</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpplatest</LanguageStandard>
-      <AdditionalIncludeDirectories>$(ProjectDir)Dependencies\glm;$(ProjectDir)Dependencies\DirectXTex\include;$(ProjectDir)Dependencies\assimp\include;$(ProjectDir)Dependencies\GLFW\include;$(ProjectDir)Dependencies\d3dx12;$(ProjectDir)Dependencies\CityHash;$(ProjectDir)Dependencies\DirectXShaderCompiler;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)Dependencies\glm;$(ProjectDir)Dependencies\DirectXTex\include;$(ProjectDir)Dependencies\assimp\include;$(ProjectDir)Dependencies\GLFW\include;$(ProjectDir)Dependencies\d3dx12;$(ProjectDir)Dependencies\CityHash;$(ProjectDir)Dependencies\DirectXShaderCompiler;$(ProjectDir)Dependencies\boost;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
       <FloatingPointModel>Fast</FloatingPointModel>
@@ -418,7 +418,7 @@ xcopy /Y /D "$(ProjectDir)Dependencies\DirectXShaderCompiler\DirectXShaderCompil
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions);COMPILE_CITY_CC;USE_DX12;UNITTESTPRJ="$(ProjectDir)."</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpplatest</LanguageStandard>
-      <AdditionalIncludeDirectories>$(ProjectDir)Dependencies\glm;$(ProjectDir)Dependencies\DirectXTex\include;$(ProjectDir)Dependencies\assimp\include;$(ProjectDir)Dependencies\GLFW\include;$(ProjectDir)Dependencies\d3dx12;$(ProjectDir)Dependencies\CityHash;$(ProjectDir)Dependencies\DirectXShaderCompiler;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)Dependencies\glm;$(ProjectDir)Dependencies\DirectXTex\include;$(ProjectDir)Dependencies\assimp\include;$(ProjectDir)Dependencies\GLFW\include;$(ProjectDir)Dependencies\d3dx12;$(ProjectDir)Dependencies\CityHash;$(ProjectDir)Dependencies\DirectXShaderCompiler;$(ProjectDir)Dependencies\boost;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
       <FloatingPointModel>Fast</FloatingPointModel>

@@ -3,6 +3,8 @@
 #include "DX_Interface/DX_ImguiManager.h"
 #include "imgui/imgui.h"
 
+#include <boost/signals2.hpp>
+
 namespace CGE
 {
 	App::App() : window(RHI::Limits::Device::ClientWidth, RHI::Limits::Device::ClientHeight, "CGE"), gfx("DX12", window) 
