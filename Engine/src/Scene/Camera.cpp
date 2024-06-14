@@ -231,7 +231,7 @@ namespace CGE
 
 		void Camera::UpdateViewMatrix()
 		{
-			glm::mat4 translateMatrix = glm::translate(glm::mat4{}, m_translation);
+			glm::mat4 translateMatrix = glm::translate(glm::mat4{1.0}, m_translation);
 			glm::mat4 rotationMatrix = glm::toMat4(m_rotation);
 			m_viewMatrix = glm::inverse(translateMatrix * rotationMatrix);
 		}
@@ -268,7 +268,7 @@ namespace CGE
 			}
 
 			// [todo] Expose to user
-			float moveMultiplier = 2.0;
+			float moveMultiplier = 100.0;
 			TranslateX((movement.m_right - movement.m_left) * updateArgs.m_elapsedTime * moveMultiplier);
 			TranslateY((movement.m_up - movement.m_down) * updateArgs.m_elapsedTime * moveMultiplier);
 			TranslateZ((movement.m_back - movement.m_forward) * updateArgs.m_elapsedTime * moveMultiplier);

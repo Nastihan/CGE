@@ -40,6 +40,9 @@ namespace CGE
         private:
             // DX_BufferPool will set this
             DX_BufferMemoryView m_memoryView;
+
+            // Tracking the resolve operations for this buffer.
+            std::atomic<uint32_t> m_pendingResolves = 0;
         };
 	}
 }

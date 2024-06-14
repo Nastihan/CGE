@@ -116,7 +116,8 @@ float4 main( VertexShaderOutput IN ) : SV_TARGET
         }
         specular *= lit.Specular;
     }
-
+	
+	// return float4( 0.0, 0.0, 0.0, 0.0 );
     return float4( ( ambient + emissive + diffuse + specular ).rgb, alpha * mat.Opacity );
 
 }

@@ -52,6 +52,12 @@ namespace CGE
 			sceneSrgData.SetBufferView(lightBufferInputIdx, m_lightBufferView.get(), 0);
 			m_sceneSrg->Init(m_lightBufferView->GetDevice(), sceneSrgData);
 			m_sceneSrg->Compile();
+
+
+			// m_camera.SetViewport(Viewport(0, 0, g_Config.WindowWidth, g_Config.WindowHeight));
+			m_camera.SetTranslation(glm::vec3(0.0, 0.0, 3.0));
+			m_camera.SetRotation(glm::quat(glm::vec3(0.0, 0.0, 0.0)));
+			m_camera.SetProjectionRH(90.0f, RHI::Limits::Device::ClientWidth / (float)RHI::Limits::Device::ClientHeight, 0.1f, 1000.0f);
 		}
 
 		void Scene::AddLight(const Light& light)

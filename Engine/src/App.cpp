@@ -10,7 +10,10 @@ namespace CGE
 		window.InitImgui();
 		m_scene = std::make_shared<Scene::Scene>();
 		m_scene->Init(gfx.GetFrameGraphExecuter()->GetForwardPass());
-		m_scene->LoadModel("nano_textured\\nanosuit.obj", gfx.GetFrameGraphExecuter()->GetForwardPass());
+		// m_scene->LoadModel("nano_textured\\nanosuit.obj", gfx.GetFrameGraphExecuter()->GetForwardPass());
+		// m_scene->LoadModel("suzanne\\suzanne.obj", gfx.GetFrameGraphExecuter()->GetForwardPass());
+		m_scene->LoadModel("lord_inquisitor_servo_skull_gltf\\scene.gltf", gfx.GetFrameGraphExecuter()->GetForwardPass());
+		// m_scene->LoadModel("knight_artorias_gltf\\scene.gltf", gfx.GetFrameGraphExecuter()->GetForwardPass());
 		gfx.GetFrameGraphExecuter()->GetForwardPass()->SetScenePtr(m_scene);
 		
 		RegisterKeyboardEventCallback(m_scene->GetCamera().GetKeyPressedFunctionBindable());

@@ -6,6 +6,7 @@
 #include "DX_CommandList.h"
 #include "DX_ImguiManager.h"
 #include "DX_ImageView.h"
+#include "DX_BufferPoolResolver.h"
 
 #include "../RHI/Graphics.h"
 
@@ -50,7 +51,23 @@ namespace CGE
 			ID3D12Resource* swapChainBackBuffer = dxSwapChain.GetBackBuffer();
 
 			D3D12_CPU_DESCRIPTOR_HANDLE renderTargetView = dxDevice.GetDescriptorContext().GetCpuPlatformHandle(dxSwapChain.GetBackBufferDescriptorHandle());
+			
+			const auto& dsv = static_cast<DX12::DX_ImageView&>(m_forwardPass->GetDSView()).GetDepthStencilDescriptor(RHI::ScopeAttachmentAccess::ReadWrite);
+			D3D12_CPU_DESCRIPTOR_HANDLE dsvCpuHandle = dxDevice.GetDescriptorContext().GetCpuPlatformHandle(dsv);
 
+			auto& bufferSystem = RHI::Graphics::GetBufferSystem();
+			const auto& inputAssemblyBufferPool = bufferSystem.GetCommonBufferPool(RHI::CommonBufferPoolType::StaticInputAssembly);
+			const auto& constantBufferPool = bufferSystem.GetCommonBufferPool(RHI::CommonBufferPoolType::Constant);
+			const auto& readOnlyBufferPool = bufferSystem.GetCommonBufferPool(RHI::CommonBufferPoolType::ReadOnly);
+			static_cast<DX_BufferPoolResolver*>(inputAssemblyBufferPool->GetResolver())->Compile();
+			static_cast<DX_BufferPoolResolver*>(inputAssemblyBufferPool->GetResolver())->Resolve(*commandList);
+			static_cast<DX_BufferPoolResolver*>(inputAssemblyBufferPool->GetResolver())->Deactivate();
+			static_cast<DX_BufferPoolResolver*>(constantBufferPool->GetResolver())->Compile();
+			static_cast<DX_BufferPoolResolver*>(constantBufferPool->GetResolver())->Resolve(*commandList);
+			static_cast<DX_BufferPoolResolver*>(constantBufferPool->GetResolver())->Deactivate();
+			static_cast<DX_BufferPoolResolver*>(constantBufferPool->GetResolver())->Compile();
+			static_cast<DX_BufferPoolResolver*>(readOnlyBufferPool->GetResolver())->Resolve(*commandList);
+			static_cast<DX_BufferPoolResolver*>(constantBufferPool->GetResolver())->Deactivate();
 
 			// Clear the render target
 			{
@@ -65,12 +82,11 @@ namespace CGE
 
 				FLOAT clearColor[] = { 0.4f, 0.6f, 0.9f, 1.0f };
 				dxCommandList->ClearRenderTargetView(renderTargetView, clearColor, 0, nullptr);
+				dxCommandList->ClearDepthStencilView(dsvCpuHandle, D3D12_CLEAR_FLAG_DEPTH, 1, 0, 0, nullptr);
 			}
 
 			// Set FrameBuffers
 			{
-				const auto& dsv = static_cast<DX12::DX_ImageView&>(m_forwardPass->GetDSView()).GetDepthStencilDescriptor(RHI::ScopeAttachmentAccess::ReadWrite);
-				D3D12_CPU_DESCRIPTOR_HANDLE dsvCpuHandle = dxDevice.GetDescriptorContext().GetCpuPlatformHandle(dsv);
 				CD3DX12_RECT scissorRect;
 				CD3DX12_VIEWPORT viewport;
 				scissorRect = CD3DX12_RECT{ 0, 0, LONG_MAX, LONG_MAX };

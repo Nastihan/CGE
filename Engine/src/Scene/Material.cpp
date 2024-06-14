@@ -224,9 +224,8 @@ namespace CGE
 			result = constantBufferPool->InitBuffer(materialCBufferRequest);
 			assert(result == RHI::ResultCode::Success);
 
-			RHI::BufferViewDescriptor materialPropertiesBufferViewDescriptor;
+			RHI::BufferViewDescriptor materialPropertiesBufferViewDescriptor = RHI::BufferViewDescriptor::CreateRaw(0, sizeof(MaterialProperties));
 			m_materialPropertiesCBuffView = rhiFactory.CreateBufferView();
-			materialPropertiesBufferViewDescriptor.CreateStructured(0, 1, sizeof(MaterialProperties));
 			m_materialPropertiesCBuffView->Init(*m_materialPropertiesCBuff, materialPropertiesBufferViewDescriptor);
 		}
 	}

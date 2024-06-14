@@ -96,6 +96,7 @@ namespace CGE
             m_allocator.DeAllocate(dxBuffer.m_memoryView);
             dxBuffer.m_memoryView = {};
             dxBuffer.m_initialAttachmentState = D3D12_RESOURCE_STATE_COMMON;
+            dxBuffer.m_pendingResolves = 0;
         }
 
         RHI::ResultCode DX_BufferPool::OrphanBufferInternal(RHI::Buffer& buffer)
@@ -136,6 +137,7 @@ namespace CGE
             {
                 // Does the staging transfer via the staging memory allocator
                 // The pointer returned is from the staging memory for cpu fast reads
+                // This also queues a upload packet which will be done at the begining of the frame.
                 mappedData = GetResolver()->MapBuffer(mapRequest);
                 if (!mappedData)
                 {

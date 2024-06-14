@@ -1,0 +1,11 @@
+Model Information:
+* title:	Lord Inquisitor: Servo Skull
+* source:	https://sketchfab.com/3d-models/lord-inquisitor-servo-skull-8fc2f297b1434e6b9491d60e3b23c719
+* author:	Erasmus (https://sketchfab.com/erasmus)
+
+Model License:
+* license type:	CC-BY-NC-4.0 (http://creativecommons.org/licenses/by-nc/4.0/)
+* requirements:	Author must be credited. No commercial use.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "Lord Inquisitor: Servo Skull" (https://sketchfab.com/3d-models/lord-inquisitor-servo-skull-8fc2f297b1434e6b9491d60e3b23c719) by Erasmus (https://sketchfab.com/erasmus) licensed under CC-BY-NC-4.0 (http://creativecommons.org/licenses/by-nc/4.0/)

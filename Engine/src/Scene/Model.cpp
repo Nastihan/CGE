@@ -331,7 +331,7 @@ namespace CGE
             {
                 RHI::Ptr<RHI::Buffer> positions = rhiFactory.CreateBuffer();
                 ConstructInputAssemblyBuffer(positions, &(mesh.mVertices[0].x), mesh.mNumVertices, sizeof(aiVector3D));
-                RHI::StreamBufferView positionBufferView(*positions, 0, mesh.mNumVertices, sizeof(aiVector3D));
+                RHI::StreamBufferView positionBufferView(*positions, 0, mesh.mNumVertices * sizeof(aiVector3D), sizeof(aiVector3D));
                 inputStreamLayoutPacked.SetTopology(RHI::PrimitiveTopology::TriangleList);
                 inputStreamLayoutPacked.AddStreamBuffer(RHI::StreamBufferDescriptor{ RHI::StreamStepFunction::PerVertex, 1, sizeof(aiVector3D) });
                 inputStreamLayoutPacked.AddStreamChannel(RHI::StreamChannelDescriptor{ RHI::ShaderSemantic{"POSITION", 0}, RHI::Format::R32G32B32_FLOAT, 0, streamBufferIdx });
@@ -343,7 +343,7 @@ namespace CGE
             {
                 RHI::Ptr<RHI::Buffer> normals = rhiFactory.CreateBuffer();
                 ConstructInputAssemblyBuffer(normals, &(mesh.mNormals[0].x), mesh.mNumVertices, sizeof(aiVector3D));
-                RHI::StreamBufferView normalBufferView(*normals, 0, mesh.mNumVertices, sizeof(aiVector3D));
+                RHI::StreamBufferView normalBufferView(*normals, 0, mesh.mNumVertices * sizeof(aiVector3D), sizeof(aiVector3D));
                 inputStreamLayoutPacked.SetTopology(RHI::PrimitiveTopology::TriangleList);
                 inputStreamLayoutPacked.AddStreamBuffer(RHI::StreamBufferDescriptor{ RHI::StreamStepFunction::PerVertex, 1, sizeof(aiVector3D) });
                 inputStreamLayoutPacked.AddStreamChannel(RHI::StreamChannelDescriptor{ RHI::ShaderSemantic{"NORMAL", 0}, RHI::Format::R32G32B32_FLOAT, 0, streamBufferIdx });
@@ -355,7 +355,7 @@ namespace CGE
             {
                 RHI::Ptr<RHI::Buffer> tangents = rhiFactory.CreateBuffer();
                 ConstructInputAssemblyBuffer(tangents, &(mesh.mTangents[0].x), mesh.mNumVertices, sizeof(aiVector3D));
-                RHI::StreamBufferView tangentBufferView(*tangents, 0, mesh.mNumVertices, sizeof(aiVector3D));
+                RHI::StreamBufferView tangentBufferView(*tangents, 0, mesh.mNumVertices * sizeof(aiVector3D), sizeof(aiVector3D));
                 inputStreamLayoutPacked.SetTopology(RHI::PrimitiveTopology::TriangleList);
                 inputStreamLayoutPacked.AddStreamBuffer(RHI::StreamBufferDescriptor{ RHI::StreamStepFunction::PerVertex, 1, sizeof(aiVector3D) });
                 inputStreamLayoutPacked.AddStreamChannel(RHI::StreamChannelDescriptor{ RHI::ShaderSemantic{"TANGENT", 0}, RHI::Format::R32G32B32_FLOAT, 0, streamBufferIdx });
@@ -364,7 +364,7 @@ namespace CGE
 
                 RHI::Ptr<RHI::Buffer> bitangents = rhiFactory.CreateBuffer();
                 ConstructInputAssemblyBuffer(bitangents, &(mesh.mBitangents[0].x), mesh.mNumVertices, sizeof(aiVector3D));
-                RHI::StreamBufferView bitangentBufferView(*bitangents, 0, mesh.mNumVertices, sizeof(aiVector3D));
+                RHI::StreamBufferView bitangentBufferView(*bitangents, 0, mesh.mNumVertices * sizeof(aiVector3D), sizeof(aiVector3D));
                 inputStreamLayoutPacked.SetTopology(RHI::PrimitiveTopology::TriangleList);
                 inputStreamLayoutPacked.AddStreamBuffer(RHI::StreamBufferDescriptor{ RHI::StreamStepFunction::PerVertex, 1, sizeof(aiVector3D) });
                 inputStreamLayoutPacked.AddStreamChannel(RHI::StreamChannelDescriptor{ RHI::ShaderSemantic{"BINORMAL", 0}, RHI::Format::R32G32B32_FLOAT, 0, streamBufferIdx });
@@ -434,7 +434,7 @@ namespace CGE
             // Extract the index buffer.
             if (mesh.HasFaces())
             {
-                std::vector<unsigned short> indices;
+                std::vector<unsigned int> indices;
                 indices.reserve(mesh.mNumFaces * 3);
                 for (unsigned int i = 0; i < mesh.mNumFaces; i++)
                 {
@@ -447,12 +447,12 @@ namespace CGE
                 if (indices.size() > 0)
                 {
                     RHI::Ptr<RHI::Buffer> indexBuffer = rhiFactory.CreateBuffer();
-                    ConstructInputAssemblyBuffer(indexBuffer, indices.data(), indices.size(), sizeof(unsigned short));
+                    ConstructInputAssemblyBuffer(indexBuffer, indices.data(), indices.size(), sizeof(unsigned int));
                     RHI::IndexBufferView indexBufferView = RHI::IndexBufferView{
                         *indexBuffer,
                         0,
-                        static_cast<uint32_t>(indices.size() * sizeof(unsigned short)),
-                        RHI::IndexFormat::Uint16 };
+                        static_cast<uint32_t>(indices.size() * sizeof(unsigned int)),
+                        RHI::IndexFormat::Uint32 };
 
                     pMesh->SetIndexBufferAndView(indexBuffer, indexBufferView, mesh.mNumFaces * 3);
                 }

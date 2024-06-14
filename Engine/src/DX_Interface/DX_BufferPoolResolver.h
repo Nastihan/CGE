@@ -25,7 +25,7 @@ namespace CGE
 
             // DX_ResourcePoolResolver
             // This functions at the begining of the frame
-            void Compile(DX_Scope& scope) override;
+            void Compile() override;
             void Resolve(DX_CommandList&) const override;
             void QueueEpilogueTransitionBarriers(DX_CommandList&) const override;
             void Deactivate() override;

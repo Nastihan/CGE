@@ -89,11 +89,15 @@ namespace CGE
 		}
 
         // [todo - FrameGraph]
-        void DX_ImagePoolResolver::Compile(DX_Scope& scope) {}
+        void DX_ImagePoolResolver::Compile() {}
 		void DX_ImagePoolResolver::OnResourceShutdown(const RHI::Resource& resource) {}
         void DX_ImagePoolResolver::QueuePrologueTransitionBarriers(DX_CommandList& commandList) {}
         void DX_ImagePoolResolver::QueueEpilogueTransitionBarriers(DX_CommandList& commandList) const {}
-        void DX_ImagePoolResolver::Deactivate() {}
+        
+        void DX_ImagePoolResolver::Deactivate()
+        {
+
+        }
 
         void DX_ImagePoolResolver::Resolve(DX_CommandList& commandList) const
         {

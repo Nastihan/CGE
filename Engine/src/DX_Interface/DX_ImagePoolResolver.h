@@ -20,7 +20,7 @@ namespace CGE
             RHI::ResultCode UpdateImage(const RHI::ImageUpdateRequest& request, size_t& bytesTransferred);
             
             // DX_ResourcePoolResolver
-            void Compile(DX_Scope& scope) override;
+            void Compile() override;
             void QueuePrologueTransitionBarriers(DX_CommandList& commandList) override;
             void Resolve(DX_CommandList& commandList) const override;
             void QueueEpilogueTransitionBarriers(DX_CommandList& commandList) const override;

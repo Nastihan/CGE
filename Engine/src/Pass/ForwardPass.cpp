@@ -7,6 +7,7 @@
 #include "../RHI/ShaderStages.h"
 
 #include "../Scene/Light.h"
+#include "../Scene/Material.h"
 
 #include <iostream>
 
@@ -21,12 +22,16 @@ namespace CGE
 			// Init the frame buffers the pass uses.
 			m_frameBuffers.m_depthBuffer = rhiFactory.CreateImage();
 			RHI::ImageInitRequest initRequest;
+			RHI::ClearValue clearValue = RHI::ClearValue::CreateDepthStencil(1.0, 0);
 			initRequest.m_image = m_frameBuffers.m_depthBuffer.get();
-			initRequest.m_descriptor = RHI::ImageDescriptor::Create2D(RHI::ImageBindFlags::Depth, RHI::Limits::Device::ClientWidth, RHI::Limits::Device::ClientHeight, RHI::Format::D32_FLOAT);
+			initRequest.m_descriptor = RHI::ImageDescriptor::Create2D(RHI::ImageBindFlags::DepthStencil, RHI::Limits::Device::ClientWidth, RHI::Limits::Device::ClientHeight, RHI::Format::D32_FLOAT);
+			initRequest.m_optimizedClearValue = &clearValue;
 			RHI::Graphics::GetImageSystem().GetSimpleImagePool()->InitImage(initRequest);
 
 			m_frameBuffers.m_depthBufferView = rhiFactory.CreateImageView();
-			m_frameBuffers.m_depthBufferView->Init(*m_frameBuffers.m_depthBuffer, {});
+			RHI::ImageDescriptor imageDesc = m_frameBuffers.m_depthBuffer->GetDescriptor();
+			RHI::ImageViewDescriptor imageViewDesc = RHI::ImageViewDescriptor::Create(imageDesc.m_format, 0, 0);
+			m_frameBuffers.m_depthBufferView->Init(*m_frameBuffers.m_depthBuffer, imageViewDesc);
 
 			for (size_t i = 0; i < RHI::Limits::Device::FrameCountMax; i++)
 			{
@@ -61,21 +66,21 @@ namespace CGE
 			sceneSrgLayout->SetBindingSlot(static_cast<uint32_t>(RHI::ShaderResourceGroupType::Scene));
 			RHI::ShaderInputBufferDescriptor lightBufferBindingDesc(
 				"LightBuffer", RHI::ShaderInputBufferAccess::Read, RHI::ShaderInputBufferType::Structured, 1, sizeof(Scene::Light), 8, 0);
-			RHI::ShaderInputBufferDescriptor cameraBufferBindingDesc(
-				"CameraBuffer", RHI::ShaderInputBufferAccess::Constant, RHI::ShaderInputBufferType::Constant, 1, 0, 3, 0);
+			//RHI::ShaderInputBufferDescriptor cameraBufferBindingDesc(
+				//"CameraBuffer", RHI::ShaderInputBufferAccess::Constant, RHI::ShaderInputBufferType::Constant, 1, 0, 3, 0);
 			sceneSrgLayout->AddShaderInput(lightBufferBindingDesc);
-			sceneSrgLayout->AddShaderInput(cameraBufferBindingDesc);
+			//sceneSrgLayout->AddShaderInput(cameraBufferBindingDesc);
 			sceneSrgLayout->SetName("FarwardPassSceneSrgLayout");
 			sceneSrgLayout->Finalize();
 			pipelineLayoutDescriptor->AddShaderResourceGroupLayoutInfo(*sceneSrgLayout, {});
 
 			RHI::Ptr<RHI::ShaderResourceGroupLayout> objectSrgLayout = RHI::ShaderResourceGroupLayout::Create();
 			objectSrgLayout->SetBindingSlot(static_cast<uint32_t>(RHI::ShaderResourceGroupType::Object));
-			RHI::ShaderInputConstantDescriptor objectTransformCbuffDesc("PreObjectTransform", 0, sizeof(PerObject) / 4, 0, 0);
+			RHI::ShaderInputConstantDescriptor objectTransformCbuffDesc("PreObjectTransform", 0, sizeof(PerObject), 0, 0);
 			RHI::ShaderInputImageDescriptor materialTexturesBindingDesc(
 				"MaterialTextures", RHI::ShaderInputImageAccess::Read, RHI::ShaderInputImageType::Image2D, 8, 0, 0);
 			RHI::ShaderInputBufferDescriptor materialBufferBindingDesc(
-				"MaterialBuffer", RHI::ShaderInputBufferAccess::Constant, RHI::ShaderInputBufferType::Constant, 1, 0, 2, 0);
+				"MaterialBuffer", RHI::ShaderInputBufferAccess::Constant, RHI::ShaderInputBufferType::Constant, 1, sizeof(Scene::Material::MaterialProperties), 2, 0);
 			RHI::ShaderInputStaticSamplerDescriptor linearRepeatStaticSamplerDesc(
 				"WrapSampler", RHI::SamplerState::Create(RHI::FilterMode::Linear, RHI::FilterMode::Linear, RHI::AddressMode::Wrap), 0, 0);
 			RHI::ShaderInputStaticSamplerDescriptor linearClampStaticSamplerDesc(

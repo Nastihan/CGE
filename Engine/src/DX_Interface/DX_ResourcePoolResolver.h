@@ -16,7 +16,7 @@ namespace CGE
             virtual ~DX_ResourcePoolResolver() = default;
 
             // Called during compilation of the frame, prior to execution.
-            virtual void Compile(DX_Scope& scope) {}
+            virtual void Compile() {}
 
             // Queues transition barriers at the beginning of a scope.
             virtual void QueuePrologueTransitionBarriers(DX_CommandList&) {}
@@ -27,7 +27,7 @@ namespace CGE
             // Queues transition barriers at the end of a scope.
             virtual void QueueEpilogueTransitionBarriers(DX_CommandList&) const {}
 
-            // Called at the end of the frame after execution.
+            // Called at the end of the frame after execution. (This function will empty the packet lists)
             virtual void Deactivate() {}
 
             // Called when a resource from the pool is being Shutdown

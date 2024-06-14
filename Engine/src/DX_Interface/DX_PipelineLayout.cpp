@@ -154,7 +154,7 @@ namespace CGE
 					parameter.ParameterType = D3D12_ROOT_PARAMETER_TYPE_32BIT_CONSTANTS;
 					// The number of constants that occupy a single shader slot (these constants appear like a single constant buffer).
 					// All constants occupy a single root signature bind slot.
-					parameter.Constants.Num32BitValues = groupLayout.GetShaderInputConstant()->m_constantByteCount;
+					parameter.Constants.Num32BitValues = groupLayout.GetShaderInputConstant()->m_constantByteCount / 4;
 					parameter.Constants.ShaderRegister = groupLayout.GetShaderInputConstant()->m_registerId;
 					parameter.Constants.RegisterSpace = groupLayout.GetShaderInputConstant()->m_spaceId;
 					parameter.ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;
