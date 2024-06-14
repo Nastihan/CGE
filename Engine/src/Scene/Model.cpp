@@ -386,7 +386,7 @@ namespace CGE
                     }
                     RHI::Ptr<RHI::Buffer> texcoords = rhiFactory.CreateBuffer();
                     ConstructInputAssemblyBuffer(texcoords, texcoods1D.data(), (unsigned int)texcoods1D.size(), sizeof(float));
-                    RHI::StreamBufferView texcoordBufferView(*texcoords, 0, (unsigned int)texcoods1D.size(), sizeof(float));
+                    RHI::StreamBufferView texcoordBufferView(*texcoords, 0, (unsigned int)texcoods1D.size() * sizeof(float), sizeof(float));
                     inputStreamLayoutPacked.SetTopology(RHI::PrimitiveTopology::TriangleList);
                     inputStreamLayoutPacked.AddStreamBuffer(RHI::StreamBufferDescriptor{ RHI::StreamStepFunction::PerVertex, 1, sizeof(float) });
                     inputStreamLayoutPacked.AddStreamChannel(RHI::StreamChannelDescriptor{ RHI::ShaderSemantic{"TEXCOORD", 0}, RHI::Format::R32_FLOAT, 0, streamBufferIdx });
@@ -403,7 +403,7 @@ namespace CGE
                     }
                     RHI::Ptr<RHI::Buffer> texcoords = rhiFactory.CreateBuffer();
                     ConstructInputAssemblyBuffer(texcoords, &(texcoods2D[0].x), (unsigned int)texcoods2D.size(), sizeof(aiVector2D));
-                    RHI::StreamBufferView texcoordBufferView(*texcoords, 0, (unsigned int)texcoods2D.size(), sizeof(aiVector2D));
+                    RHI::StreamBufferView texcoordBufferView(*texcoords, 0, (unsigned int)texcoods2D.size() * sizeof(aiVector2D), sizeof(aiVector2D));
                     inputStreamLayoutPacked.SetTopology(RHI::PrimitiveTopology::TriangleList);
                     inputStreamLayoutPacked.AddStreamBuffer(RHI::StreamBufferDescriptor{ RHI::StreamStepFunction::PerVertex, 1, sizeof(aiVector2D) });
                     inputStreamLayoutPacked.AddStreamChannel(RHI::StreamChannelDescriptor{ RHI::ShaderSemantic{"TEXCOORD", 0}, RHI::Format::R32G32_FLOAT, 0, streamBufferIdx });
@@ -420,7 +420,7 @@ namespace CGE
                     }
                     RHI::Ptr<RHI::Buffer> texcoords = rhiFactory.CreateBuffer();
                     ConstructInputAssemblyBuffer(texcoords, &(texcoods3D[0].x), (unsigned int)texcoods3D.size(), sizeof(aiVector3D));
-                    RHI::StreamBufferView texcoordBufferView(*texcoords, 0, (unsigned int)texcoods3D.size(), sizeof(aiVector3D));
+                    RHI::StreamBufferView texcoordBufferView(*texcoords, 0, (unsigned int)texcoods3D.size() * sizeof(aiVector3D), sizeof(aiVector3D));
                     inputStreamLayoutPacked.SetTopology(RHI::PrimitiveTopology::TriangleList);
                     inputStreamLayoutPacked.AddStreamBuffer(RHI::StreamBufferDescriptor{ RHI::StreamStepFunction::PerVertex, 1, sizeof(aiVector3D) });
                     inputStreamLayoutPacked.AddStreamChannel(RHI::StreamChannelDescriptor{ RHI::ShaderSemantic{"TEXCOORD", 0}, RHI::Format::R32G32B32_FLOAT, 0, streamBufferIdx });

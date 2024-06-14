@@ -17,9 +17,13 @@ namespace CGE
 	{
 		void Scene::Init(Pass::ForwardPass* pForwardPass)
 		{
-			for (size_t i = 0; i < 8; i++)
+			for (size_t i = 0; i < 1; i++)
 			{
-				m_lights.push_back(Light());
+				Light light;
+				light.m_Type = Light::LightType::Directional;
+				light.m_DirectionVS = glm::vec4(0.0, 0.0, -1.0, 0.0);
+				light.m_Intensity = 1.5;
+				m_lights.push_back(light);
 			}
 
 			auto& rhiFactory = RHI::Graphics::GetFactory();
