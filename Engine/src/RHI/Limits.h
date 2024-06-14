@@ -16,8 +16,8 @@ namespace CGE
 			{
 				constexpr uint32_t FrameCountMax = 3;
 
-				constexpr uint32_t ClientWidth = 1920;
-				constexpr uint32_t ClientHeight = 1080;
+				constexpr uint32_t ClientWidth = 2560;
+				constexpr uint32_t ClientHeight = 1440;
 
 				// DX12 only supports flip model
 				constexpr uint32_t MinSwapChainImages = 2;

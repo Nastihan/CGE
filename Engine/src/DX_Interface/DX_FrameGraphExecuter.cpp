@@ -7,6 +7,7 @@
 #include "DX_ImguiManager.h"
 #include "DX_ImageView.h"
 #include "DX_BufferPoolResolver.h"
+#include "DX_ImagePoolResolver.h"
 
 #include "../RHI/Graphics.h"
 
@@ -68,6 +69,11 @@ namespace CGE
 			static_cast<DX_BufferPoolResolver*>(constantBufferPool->GetResolver())->Compile();
 			static_cast<DX_BufferPoolResolver*>(readOnlyBufferPool->GetResolver())->Resolve(*commandList);
 			static_cast<DX_BufferPoolResolver*>(constantBufferPool->GetResolver())->Deactivate();
+
+			auto& imageSystem = RHI::Graphics::GetImageSystem();
+			static_cast<DX_ImagePoolResolver*>(imageSystem.GetSimpleImagePool()->GetResolver())->Resolve(*commandList);
+			static_cast<DX_ImagePoolResolver*>(imageSystem.GetSimpleImagePool()->GetResolver())->Deactivate();
+
 
 			// Clear the render target
 			{

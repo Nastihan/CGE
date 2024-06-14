@@ -88,7 +88,6 @@ namespace CGE
 			return RHI::ResultCode::Success;
 		}
 
-        // [todo - FrameGraph]
         void DX_ImagePoolResolver::Compile() {}
 		void DX_ImagePoolResolver::OnResourceShutdown(const RHI::Resource& resource) {}
         void DX_ImagePoolResolver::QueuePrologueTransitionBarriers(DX_CommandList& commandList) {}
@@ -96,11 +95,21 @@ namespace CGE
         
         void DX_ImagePoolResolver::Deactivate()
         {
-
+            m_imagePackets.clear();
+            m_imageSubresourcePackets.clear();
         }
 
         void DX_ImagePoolResolver::Resolve(DX_CommandList& commandList) const
         {
+            // Compile the resource barriers and set the final resource states.
+            for (const ImagePacket& imagePacket : m_imagePackets)
+            {
+                DX_Image& image = *imagePacket.m_image;
+
+                const auto barrier1 = CD3DX12_RESOURCE_BARRIER::Transition(imagePacket.m_imageMemory,
+                    D3D12_RESOURCE_STATE_NON_PIXEL_SHADER_RESOURCE | D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE, D3D12_RESOURCE_STATE_COPY_DEST);
+                commandList.GetCommandList()->ResourceBarrier(1, &barrier1);
+            }
             for (const ImageSubresourcePacket& imageSubresourcePacket : m_imageSubresourcePackets)
             {
                 commandList.GetCommandList()->CopyTextureRegion(
@@ -110,6 +119,15 @@ namespace CGE
                     imageSubresourcePacket.m_imageSubresourcePixelOffset.m_front,
                     &imageSubresourcePacket.m_stagingLocation,
                     nullptr);
+            }
+            // Compile the resource barriers and set the final resource states.
+            for (const ImagePacket& imagePacket : m_imagePackets)
+            {
+                DX_Image& image = *imagePacket.m_image;
+
+                const auto barrier1 = CD3DX12_RESOURCE_BARRIER::Transition(imagePacket.m_imageMemory,
+                    D3D12_RESOURCE_STATE_COPY_DEST, D3D12_RESOURCE_STATE_NON_PIXEL_SHADER_RESOURCE | D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE);
+                commandList.GetCommandList()->ResourceBarrier(1, &barrier1);
             }
         }
 	}

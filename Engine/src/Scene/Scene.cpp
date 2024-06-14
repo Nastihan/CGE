@@ -56,8 +56,8 @@ namespace CGE
 
 			// m_camera.SetViewport(Viewport(0, 0, g_Config.WindowWidth, g_Config.WindowHeight));
 			m_camera.SetTranslation(glm::vec3(0.0, 0.0, 3.0));
-			m_camera.SetRotation(glm::quat(glm::vec3(0.0, 0.0, 0.0)));
-			m_camera.SetProjectionRH(90.0f, RHI::Limits::Device::ClientWidth / (float)RHI::Limits::Device::ClientHeight, 0.1f, 1000.0f);
+			m_camera.SetRotation(glm::quat(glm::vec3(glm::radians(90.0), glm::radians(180.0), glm::radians(0.0))));
+			m_camera.SetProjectionRH(45.0f, RHI::Limits::Device::ClientWidth / (float)RHI::Limits::Device::ClientHeight, 0.1f, 1000.0f);
 		}
 
 		void Scene::AddLight(const Light& light)
