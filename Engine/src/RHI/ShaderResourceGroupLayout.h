@@ -17,19 +17,26 @@ namespace CGE
         namespace SrgBindingSlot
         {
             // Logical bind slots sorted by frequency of update.
-            static constexpr uint32_t Object = 0;
-            static constexpr uint32_t Pass = 1;
-            static constexpr uint32_t Scene = 2;
+            static constexpr uint32_t Draw = 0;
+            static constexpr uint32_t Object = 1;
+            static constexpr uint32_t Material = 2;
+            static constexpr uint32_t Pass = 3;
+            static constexpr uint32_t View = 4;
+            static constexpr uint32_t Scene = 5;
 
             // Bindless will be last since the table will be updated only once.
-            static constexpr uint32_t Bindless = 3;
+            static constexpr uint32_t Bindless = 6;
         };
 
         enum class ShaderResourceGroupType : uint16_t
         {
-            Object = 0,
+            Draw = 0,
+            Object,
+            Material,
             Pass,
+            View,
             Scene,
+            Bindless,
             Unknown
         };
 

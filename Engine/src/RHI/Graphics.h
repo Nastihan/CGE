@@ -1,6 +1,7 @@
 #pragma once
 
 // RHI
+#include "AssetProcessor.h"
 #include "Factory.h"
 #include "BufferSystem.h"
 #include "ImageSystem.h"
@@ -30,6 +31,7 @@ namespace CGE
 			static BufferSystem& GetBufferSystem();
 			static ImageSystem& GetImageSystem();
 			static ImguiManager& GetImguiManager();
+			static const AssetProcessor& GetAssetProcessor();
 
 			// [todo] remove
 			RHI::Ptr<RHI::FrameGraphExecuter> GetFrameGraphExecuter() const;
@@ -40,12 +42,12 @@ namespace CGE
 			static RHI::Ptr<BufferSystem> m_bufferSystem;
 			static RHI::Ptr<ImageSystem> m_imageSystem;
 			static RHI::Ptr<ImguiManager> m_imguiManager;
+			static std::unique_ptr<RHI::AssetProcessor> m_assetProcessor;
 		private:
 			RHI::Ptr<RHI::PhysicalDevice> m_physicalDevice;
 			RHI::Ptr<RHI::Device> m_device;
 			RHI::Ptr<RHI::SwapChain> m_swapChain;
 			RHI::Ptr<RHI::FrameGraphExecuter> m_frameGraphExecuter;
-			// RHI::Ptr<RHI::PipelineState> m_fowradPSO;
 
 			Window& m_window;
 		};

@@ -45,6 +45,7 @@ namespace CGE
 				m_frameBuffers.m_colorTagetView[i]->Init(*m_frameBuffers.m_colorTaget[i], {});
 			}
 
+			/*
 			RHI::InputStreamLayout inputStreamLayoutPacked = {};
 			uint32_t streamBufferIdx = 0;
 			inputStreamLayoutPacked.SetTopology(RHI::PrimitiveTopology::TriangleList);
@@ -114,6 +115,7 @@ namespace CGE
 
 			// Default initilize RenderStates
 			RHI::RenderStates renderState = {};
+			*/
 
 			RHI::RenderAttachmentConfiguration renderAttachmentConfiguration;
 			renderAttachmentConfiguration.m_subpassIndex = 0;
@@ -125,11 +127,14 @@ namespace CGE
 			renderAttachmentLayout.m_subpassLayouts[0].m_rendertargetDescriptors[0] = RHI::RenderAttachmentDescriptor{ 0, RHI::InvalidRenderAttachmentIndex, RHI::AttachmentLoadStoreAction() };
 			renderAttachmentLayout.m_subpassLayouts[0].m_depthStencilDescriptor = RHI::RenderAttachmentDescriptor{ 1, RHI::InvalidRenderAttachmentIndex, RHI::AttachmentLoadStoreAction() };
 
-			m_drawPipelineStateDescriptor.m_vertexFunction = vertexShader;
-			m_drawPipelineStateDescriptor.m_fragmentFunction = pixelShader;
-			m_drawPipelineStateDescriptor.m_pipelineLayoutDescriptor = pipelineLayoutDescriptor;
-			m_drawPipelineStateDescriptor.m_inputStreamLayout = inputStreamLayoutPacked;
-			m_drawPipelineStateDescriptor.m_renderStates = renderState;
+			const std::shared_ptr<const RHI::ShaderPermutation> defaultPBRForward_MaterialShader = RHI::Graphics::GetAssetProcessor().GetShaderPermutation("DefaultPBRForward_MaterialShader");
+
+			m_drawPipelineStateDescriptor.m_vertexFunction = defaultPBRForward_MaterialShader->m_vertexShader;
+			m_drawPipelineStateDescriptor.m_fragmentFunction = defaultPBRForward_MaterialShader->m_pixelShader;
+			m_drawPipelineStateDescriptor.m_pipelineLayoutDescriptor = defaultPBRForward_MaterialShader->m_pipelineLayoutDescriptor;
+			m_drawPipelineStateDescriptor.m_inputStreamLayout = defaultPBRForward_MaterialShader->m_inputStreamLayout;
+			m_drawPipelineStateDescriptor.m_renderStates = defaultPBRForward_MaterialShader->m_renderState;
+			// The pass should configure this. ([todo] later on json passes)
 			m_drawPipelineStateDescriptor.m_renderAttachmentConfiguration = renderAttachmentConfiguration;
 
 			m_pipelineState = rhiFactory.CreatePipelineState();

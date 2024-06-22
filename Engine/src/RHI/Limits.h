@@ -53,7 +53,7 @@ namespace CGE
 				constexpr uint32_t MultiSampleCustomLocationsCountMax = 16;
 				constexpr uint32_t MultiSampleCustomLocationGridSize = 16;
 
-				constexpr uint32_t ShaderResourceGroupCountMax = 4;
+				constexpr uint32_t ShaderResourceGroupCountMax = 7;
 			}
 
 			namespace Image

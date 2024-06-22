@@ -499,6 +499,8 @@ namespace CGE
                     return false;
                 }
             }
+            /*
+            * [todo] For now I will disable this check since I dont have a way to get the non-constant buffer size from the shader reflection api's DXC provides.
             else
             {
                 // For any other type the buffer view's element size should match the stride.
@@ -508,7 +510,7 @@ namespace CGE
                     return false;
                 }
             }
-
+            */
             bool isValidType = true;
             switch (shaderInputBuffer.m_type)
             {

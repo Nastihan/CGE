@@ -12,6 +12,9 @@ namespace CGE
 {
 	namespace DX12
 	{
+        class DX_Device;
+        class DX_PipelineStateCache;
+
         struct PipelineStateDrawData
         {
             RHI::MultisampleState m_multisampleState;
@@ -32,6 +35,7 @@ namespace CGE
 
         class DX_PipelineState final : public RHI::PipelineState
         {
+            friend class DX_PipelineStateCache;
         public:
             static RHI::Ptr<DX_PipelineState> Create();
             const DX_PipelineLayout* GetPipelineLayout() const;

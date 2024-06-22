@@ -15,7 +15,7 @@ namespace CGE
         public:
             virtual ~ShaderStageFunction() = default;
 
-            ResultCode Init(const ShaderFileInfo& fileInfo);
+            ResultCode Init(ShaderStage stage);
             ShaderStage GetShaderStage() const;
             HashValue64 GetHash() const;
             ResultCode Finalize();
@@ -26,7 +26,7 @@ namespace CGE
             void SetHash(HashValue64 hash);
 
         private:
-            virtual ResultCode InitInternal(const ShaderFileInfo& fileInfo) = 0;
+            virtual ResultCode InitInternal() = 0;
             virtual ResultCode FinalizeInternal() = 0;
 
             ShaderStage m_shaderStage = ShaderStage::Unknown;

@@ -12,7 +12,8 @@ namespace CGE
 			Graphics = 0,
 			Compute,
 			Copy,
-			Count
+			Count,
+            Unknown
 		};
 
 		enum class HardwareQueueClassMask : uint32_t

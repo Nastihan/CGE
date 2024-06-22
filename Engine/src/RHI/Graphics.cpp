@@ -20,6 +20,7 @@ namespace CGE
 		RHI::Ptr<BufferSystem> Graphics::m_bufferSystem = nullptr;
 		RHI::Ptr<ImageSystem> Graphics::m_imageSystem = nullptr;
 		RHI::Ptr<ImguiManager> Graphics::m_imguiManager = nullptr;
+		std::unique_ptr<AssetProcessor> Graphics::m_assetProcessor = std::make_unique<AssetProcessor>();
 
 		Graphics::Graphics(std::string backendAPI, Window& window) : m_backendAPI(std::move(backendAPI)), m_window{ window }
 		{
@@ -64,6 +65,9 @@ namespace CGE
 
 			m_bufferSystem->Init(*m_device);
 			m_imageSystem->Init(*m_device);
+			
+			m_assetProcessor->InitShaderCompiler();
+			m_assetProcessor->BuildShaderPermutations();
 
 			m_frameGraphExecuter = m_factory->CreateFrameGraphExecuter();
 			m_frameGraphExecuter->Init(*m_device);
@@ -114,6 +118,11 @@ namespace CGE
 		RHI::Ptr<RHI::FrameGraphExecuter> Graphics::GetFrameGraphExecuter() const
 		{
 			return m_frameGraphExecuter;
+		}
+
+		const AssetProcessor& Graphics::GetAssetProcessor()
+		{
+			return *m_assetProcessor;
 		}
 	}
 }

@@ -29,6 +29,8 @@ namespace CGE
 			RHI::Ptr<RHI::PipelineLayoutDescriptor> CreatePipelineLayoutDescriptor() override;
 			RHI::Ptr<RHI::ShaderStageFunction> CreateShaderStageFunction() override;
 			RHI::Ptr<RHI::ShaderResourceGroup> CreateShaderResourceGroup() override;
+
+			RHI::Ptr<RHI::ShaderCompiler> CreateShaderCompiler() override;
 		};
 	}
 }

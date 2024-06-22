@@ -393,7 +393,7 @@
     <ClCompile Include="src\RHI\AttachmentLoadStoreAction.cpp">
       <Filter>Source Files\RHI</Filter>
     </ClCompile>
-    <ClCompile Include="src\DX_Interface\DX_DXShaderCompiler.cpp">
+    <ClCompile Include="src\DX_Interface\DX_ShaderCompiler.cpp">
       <Filter>Source Files\DX</Filter>
     </ClCompile>
     <ClCompile Include="src\imgui\imgui.cpp">
@@ -428,6 +428,12 @@
     </ClCompile>
     <ClCompile Include="src\Timer.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\RHI\AssetProcessor.cpp">
+      <Filter>Source Files\RHI</Filter>
+    </ClCompile>
+    <ClCompile Include="src\RHI\ShaderCompiler.cpp">
+      <Filter>Source Files\RHI</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -851,7 +857,7 @@
     <ClInclude Include="src\RHI\AttachmentLoadStoreAction.h">
       <Filter>Header Files\RHI</Filter>
     </ClInclude>
-    <ClInclude Include="src\DX_Interface\DX_DXShaderCompiler.h">
+    <ClInclude Include="src\DX_Interface\DX_ShaderCompiler.h">
       <Filter>Header Files\DX</Filter>
     </ClInclude>
     <ClInclude Include="src\imgui\imconfig.h">
@@ -892,6 +898,12 @@
     </ClInclude>
     <ClInclude Include="src\Timer.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\RHI\AssetProcessor.h">
+      <Filter>Header Files\RHI</Filter>
+    </ClInclude>
+    <ClInclude Include="src\RHI\ShaderCompiler.h">
+      <Filter>Header Files\RHI</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

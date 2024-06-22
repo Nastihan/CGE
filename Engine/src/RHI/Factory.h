@@ -21,6 +21,7 @@ namespace CGE
 		class ShaderStageFunction;
 		class PipelineState;
 		class ShaderResourceGroup;
+		class ShaderCompiler;
 
 		class Factory : public Object
 		{
@@ -49,6 +50,8 @@ namespace CGE
 			virtual Ptr<PipelineLayoutDescriptor> CreatePipelineLayoutDescriptor() = 0;
 			virtual Ptr<ShaderStageFunction> CreateShaderStageFunction() = 0;
 			virtual Ptr<ShaderResourceGroup> CreateShaderResourceGroup() = 0;
+
+			virtual Ptr<ShaderCompiler> CreateShaderCompiler() = 0;
 
 		protected:
 			std::string m_backendName;

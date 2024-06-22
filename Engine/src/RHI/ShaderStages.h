@@ -28,6 +28,25 @@ namespace CGE
             All = Vertex | Fragment | Compute | RayTracing
         };
 
+        inline RHI::ShaderStageMask operator|(RHI::ShaderStageMask a, RHI::ShaderStageMask b)
+        {
+            return static_cast<RHI::ShaderStageMask>(static_cast<int>(a) | static_cast<int>(b));
+        }
+        inline RHI::ShaderStageMask operator&(RHI::ShaderStageMask a, RHI::ShaderStageMask b)
+        {
+            return static_cast<RHI::ShaderStageMask>(static_cast<int>(a) & static_cast<int>(b));
+        }
+        inline RHI::ShaderStageMask& operator|=(RHI::ShaderStageMask& a, RHI::ShaderStageMask b)
+        {
+            a = a | b;
+            return a;
+        }
+        inline RHI::ShaderStageMask& operator&=(RHI::ShaderStageMask& a, RHI::ShaderStageMask b)
+        {
+            a = a & b;
+            return a;
+        }
+
         struct ShaderFileInfo
         {
             std::string m_fileName;

@@ -39,7 +39,7 @@
     <ClCompile Include="src\DX_Interface\DX_DescriptorContext.cpp" />
     <ClCompile Include="src\DX_Interface\DX_DescriptorPool.cpp" />
     <ClCompile Include="src\DX_Interface\DX_Device.cpp" />
-    <ClCompile Include="src\DX_Interface\DX_DXShaderCompiler.cpp" />
+    <ClCompile Include="src\DX_Interface\DX_ShaderCompiler.cpp" />
     <ClCompile Include="src\DX_Interface\DX_Exception.cpp" />
     <ClCompile Include="src\DX_Interface\DX_Factory.cpp" />
     <ClCompile Include="src\DX_Interface\DX_Fence.cpp" />
@@ -72,6 +72,7 @@
     <ClCompile Include="src\imgui\imgui_widgets.cpp" />
     <ClCompile Include="src\Pass\ForwardPass.cpp" />
     <ClCompile Include="src\RHI\Allocator.cpp" />
+    <ClCompile Include="src\RHI\AssetProcessor.cpp" />
     <ClCompile Include="src\RHI\AttachmentLoadStoreAction.cpp" />
     <ClCompile Include="src\RHI\Buffer.cpp" />
     <ClCompile Include="src\RHI\BufferDescriptor.cpp" />
@@ -117,6 +118,7 @@
     <ClCompile Include="src\RHI\ResourceView.cpp" />
     <ClCompile Include="src\RHI\SamplerState.cpp" />
     <ClCompile Include="src\RHI\Scissor.cpp" />
+    <ClCompile Include="src\RHI\ShaderCompiler.cpp" />
     <ClCompile Include="src\RHI\ShaderResourceGroup.cpp" />
     <ClCompile Include="src\RHI\ShaderResourceGroupData.cpp" />
     <ClCompile Include="src\RHI\ShaderResourceGroupLayout.cpp" />
@@ -160,7 +162,7 @@
     <ClInclude Include="src\DX_Interface\DX_DescriptorContext.h" />
     <ClInclude Include="src\DX_Interface\DX_DescriptorPool.h" />
     <ClInclude Include="src\DX_Interface\DX_Device.h" />
-    <ClInclude Include="src\DX_Interface\DX_DXShaderCompiler.h" />
+    <ClInclude Include="src\DX_Interface\DX_ShaderCompiler.h" />
     <ClInclude Include="src\DX_Interface\DX_Exception.h" />
     <ClInclude Include="src\DX_Interface\DX_Factory.h" />
     <ClInclude Include="src\DX_Interface\DX_Fence.h" />
@@ -200,6 +202,7 @@
     <ClInclude Include="src\KeyCodes.h" />
     <ClInclude Include="src\Pass\ForwardPass.h" />
     <ClInclude Include="src\RHI\Allocator.h" />
+    <ClInclude Include="src\RHI\AssetProcessor.h" />
     <ClInclude Include="src\RHI\AttachmentEnums.h" />
     <ClInclude Include="src\RHI\AttachmentLoadStoreAction.h" />
     <ClInclude Include="src\RHI\BindlessSrgDescriptor.h" />
@@ -270,6 +273,7 @@
     <ClInclude Include="src\RHI\RHI_Common.h" />
     <ClInclude Include="src\RHI\SamplerState.h" />
     <ClInclude Include="src\RHI\Scissor.h" />
+    <ClInclude Include="src\RHI\ShaderCompiler.h" />
     <ClInclude Include="src\RHI\ShaderResourceGroup.h" />
     <ClInclude Include="src\RHI\ShaderResourceGroupData.h" />
     <ClInclude Include="src\RHI\ShaderResourceGroupLayout.h" />
@@ -395,7 +399,7 @@
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions);COMPILE_CITY_CC;USE_DX12;UNITTESTPRJ="$(ProjectDir)."</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpplatest</LanguageStandard>
-      <AdditionalIncludeDirectories>$(ProjectDir)Dependencies\glm;$(ProjectDir)Dependencies\DirectXTex\include;$(ProjectDir)Dependencies\assimp\include;$(ProjectDir)Dependencies\GLFW\include;$(ProjectDir)Dependencies\d3dx12;$(ProjectDir)Dependencies\CityHash;$(ProjectDir)Dependencies\DirectXShaderCompiler;$(ProjectDir)Dependencies\boost;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)Dependencies\glm;$(ProjectDir)Dependencies\DirectXTex\include;$(ProjectDir)Dependencies\assimp\include;$(ProjectDir)Dependencies\GLFW\include;$(ProjectDir)Dependencies\d3dx12;$(ProjectDir)Dependencies\CityHash;$(ProjectDir)Dependencies\DirectXShaderCompiler;$(ProjectDir)Dependencies\boost;$(ProjectDir)Dependencies\nlohmann;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
       <FloatingPointModel>Fast</FloatingPointModel>
@@ -422,7 +426,7 @@ xcopy /Y /D "$(ProjectDir)Dependencies\DirectXShaderCompiler\DirectXShaderCompil
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions);COMPILE_CITY_CC;USE_DX12;UNITTESTPRJ="$(ProjectDir)."</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpplatest</LanguageStandard>
-      <AdditionalIncludeDirectories>$(ProjectDir)Dependencies\glm;$(ProjectDir)Dependencies\DirectXTex\include;$(ProjectDir)Dependencies\assimp\include;$(ProjectDir)Dependencies\GLFW\include;$(ProjectDir)Dependencies\d3dx12;$(ProjectDir)Dependencies\CityHash;$(ProjectDir)Dependencies\DirectXShaderCompiler;$(ProjectDir)Dependencies\boost;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)Dependencies\glm;$(ProjectDir)Dependencies\DirectXTex\include;$(ProjectDir)Dependencies\assimp\include;$(ProjectDir)Dependencies\GLFW\include;$(ProjectDir)Dependencies\d3dx12;$(ProjectDir)Dependencies\CityHash;$(ProjectDir)Dependencies\DirectXShaderCompiler;$(ProjectDir)Dependencies\boost;$(ProjectDir)Dependencies\nlohmann;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
       <FloatingPointModel>Fast</FloatingPointModel>

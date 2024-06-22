@@ -15,6 +15,7 @@
 #include "DX_ShaderStageFunction.h"
 #include "DX_PipelineState.h"
 #include "DX_ShaderResourceGroup.h"
+#include "DX_ShaderCompiler.h"
 
 namespace CGE
 {
@@ -93,6 +94,11 @@ namespace CGE
 		RHI::Ptr<RHI::ShaderResourceGroup> DX_Factory::CreateShaderResourceGroup()
 		{
 			return DX_ShaderResourceGroup::Create();
+		}
+
+		RHI::Ptr<RHI::ShaderCompiler> DX_Factory::CreateShaderCompiler()
+		{
+			return DX_ShaderCompiler::Create();
 		}
 	}
 }

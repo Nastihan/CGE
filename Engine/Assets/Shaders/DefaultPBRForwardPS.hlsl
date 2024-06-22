@@ -1,7 +1,8 @@
 
 #include "CommonInclude.hlsli"
+#include "SamplersCommon.hlsli"
 
-float4 main( VertexShaderOutput IN ) : SV_TARGET
+float4 MainPS( VertexShaderOutput IN ) : SV_TARGET
 {
     // Everything is in view space.
     float4 eyePos = { 0, 0, 0, 1 };
@@ -10,7 +11,7 @@ float4 main( VertexShaderOutput IN ) : SV_TARGET
     float4 diffuse = mat.DiffuseColor;
     if ( mat.HasDiffuseTexture )
     {
-        float4 diffuseTex = DiffuseTexture.Sample( LinearRepeatSampler, IN.texCoord );
+        float4 diffuseTex = PerMaterial_DiffuseTexture.Sample( PerScene_LinearRepeatSampler, IN.texCoord );
         if ( any( diffuse.rgb ) )
         {
             diffuse *= diffuseTex;
@@ -26,13 +27,13 @@ float4 main( VertexShaderOutput IN ) : SV_TARGET
     if ( mat.HasOpacityTexture )
     {
         // If the material has an opacity texture, use that to override the diffuse alpha.
-        alpha = OpacityTexture.Sample( LinearRepeatSampler, IN.texCoord ).r;
+        alpha = PerMaterial_OpacityTexture.Sample( PerScene_LinearRepeatSampler, IN.texCoord ).r;
     }
 
     float4 ambient = mat.AmbientColor;
     if ( mat.HasAmbientTexture )
     {
-        float4 ambientTex = AmbientTexture.Sample( LinearRepeatSampler, IN.texCoord );
+        float4 ambientTex = PerMaterial_AmbientTexture.Sample( PerScene_LinearRepeatSampler, IN.texCoord );
         if ( any( ambient.rgb ) )
         {
             ambient *= ambientTex;
@@ -48,7 +49,7 @@ float4 main( VertexShaderOutput IN ) : SV_TARGET
     float4 emissive = mat.EmissiveColor;
     if ( mat.HasEmissiveTexture )
     {
-        float4 emissiveTex = EmissiveTexture.Sample( LinearRepeatSampler, IN.texCoord );
+        float4 emissiveTex = PerMaterial_EmissiveTexture.Sample( PerScene_LinearRepeatSampler, IN.texCoord );
         if ( any( emissive.rgb ) )
         {
             emissive *= emissiveTex;
@@ -61,7 +62,7 @@ float4 main( VertexShaderOutput IN ) : SV_TARGET
 
     if ( mat.HasSpecularPowerTexture )
     {
-        mat.SpecularPower = SpecularPowerTexture.Sample( LinearRepeatSampler, IN.texCoord ).r * mat.SpecularScale;
+        mat.SpecularPower = PerMaterial_SpecularPowerTexture.Sample( PerScene_LinearRepeatSampler, IN.texCoord ).r * mat.SpecularScale;
     }
 
     float4 N;
@@ -74,7 +75,7 @@ float4 main( VertexShaderOutput IN ) : SV_TARGET
                                  normalize( IN.binormalVS ),
                                  normalize( IN.normalVS ) );
 
-        N = DoNormalMapping( TBN, NormalTexture, LinearRepeatSampler, IN.texCoord );
+        N = DoNormalMapping( TBN, PerMaterial_NormalTexture, PerScene_LinearRepeatSampler, IN.texCoord );
     }
     // Bump mapping
     else if ( mat.HasBumpTexture )
@@ -84,7 +85,7 @@ float4 main( VertexShaderOutput IN ) : SV_TARGET
                                  normalize( -IN.binormalVS ), 
                                  normalize( IN.normalVS ) );
 
-        N = DoBumpMapping( TBN, BumpTexture, LinearRepeatSampler, IN.texCoord, mat.BumpIntensity );
+        N = DoBumpMapping( TBN, PerMaterial_BumpTexture, PerScene_LinearRepeatSampler, IN.texCoord, mat.BumpIntensity );
     }
     // Just use the normal from the model.
     else
@@ -94,7 +95,7 @@ float4 main( VertexShaderOutput IN ) : SV_TARGET
 
     float4 P = float4( IN.positionVS, 1 );
 
-    LightingResult lit = DoLighting( Lights, mat, eyePos, P, N );
+    LightingResult lit = DoLighting( PerScene_Lights, mat, eyePos, P, N );
 
     diffuse *= float4( lit.Diffuse.rgb, 1.0f ); // Discard the alpha value from the lighting calculations.
 
@@ -104,7 +105,7 @@ float4 main( VertexShaderOutput IN ) : SV_TARGET
         specular = mat.SpecularColor;
         if ( mat.HasSpecularTexture )
         {
-            float4 specularTex = SpecularTexture.Sample( LinearRepeatSampler, IN.texCoord );
+            float4 specularTex = PerMaterial_SpecularTexture.Sample( PerScene_LinearRepeatSampler, IN.texCoord );
             if ( any( specular.rgb ) )
             {
                 specular *= specularTex;

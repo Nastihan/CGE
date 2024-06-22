@@ -96,7 +96,7 @@ namespace CGE
 
             FillMode m_fillMode = FillMode::Solid;
             CullMode m_cullMode = CullMode::Back;
-            int32_t m_depthBias = 0;
+            int32_t m_depthBias = 0; 
             float m_depthBiasClamp = 0.0f;
             float m_depthBiasSlopeScale = 0.0f;
             uint32_t m_multisampleEnable = 0;

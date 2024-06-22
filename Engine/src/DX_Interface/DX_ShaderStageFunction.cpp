@@ -19,10 +19,13 @@ namespace CGE
 			return m_shaderBlob.Get();
 		}
 
-		RHI::ResultCode DX_ShaderStageFunction::InitInternal(const RHI::ShaderFileInfo& fileInfo)
+		void DX_ShaderStageFunction::SetByteCode(IDxcBlob* shaderBlob)
 		{
-			DX_DXShaderCompiler compiler{};
-			m_shaderBlob = compiler.Compile(fileInfo);
+			m_shaderBlob = shaderBlob;
+		}
+
+		RHI::ResultCode DX_ShaderStageFunction::InitInternal()
+		{
 			return (m_shaderBlob != nullptr) ? RHI::ResultCode::Success : RHI::ResultCode::Fail;
 		}
 

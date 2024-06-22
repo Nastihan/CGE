@@ -17,6 +17,7 @@ namespace CGE
             Image,
             Sampler,
             Constant,
+            Unknown,
             Count
         };
         static const uint32_t ShaderInputTypeCount = static_cast<uint32_t>(ShaderInputType::Count);
@@ -25,7 +26,8 @@ namespace CGE
         {
             Constant = 0,
             Read,
-            ReadWrite // RW types in hlsl
+            ReadWrite, // RW types in hlsl
+            Unknown
         };
 
         inline ShaderInputBufferAccess operator|(ShaderInputBufferAccess a, ShaderInputBufferAccess b)
@@ -79,7 +81,8 @@ namespace CGE
         enum class ShaderInputImageAccess : uint32_t
         {
             Read = 0,
-            ReadWrite // RW types in hlsl
+            ReadWrite, // RW types in hlsl
+            Unknown
         };
 
         inline ShaderInputImageAccess operator|(ShaderInputImageAccess a, ShaderInputImageAccess b)
