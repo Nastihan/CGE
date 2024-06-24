@@ -8,11 +8,46 @@
 // RHI
 #include "../RHI/Graphics.h"
 
+#include "../imgui/imgui.h"
+#include "../imgui/imgui_impl_glfw.h"
+
 namespace CGE
 {
 	namespace Scene
 	{
-		Camera::Camera() : m_translation(0) {}
+		Camera::Camera() 
+			: m_translation(0.0f, 0.0f, 0.0f)
+			, m_rotation(0.0f, 0.0f, 0.0f, 0.0f)
+			, m_vFOV(45.0f)
+			, m_aspect(RHI::Limits::Device::ClientWidth / (float)RHI::Limits::Device::ClientHeight)
+			, m_near(0.1f)
+			, m_far(1000.0f)
+		{
+			UpdateViewMatrix();
+			SetProjectionRH(m_vFOV, m_aspect, m_near, m_far);
+			m_perViewData = (PerViewData*)_aligned_malloc(sizeof(PerViewData), 16);
+			m_perViewData->m_view = GetViewMatrix();
+			m_perViewData->m_viewInv = glm::inverse(GetViewMatrix());
+			m_perViewData->m_projection = GetProjectionMatrix();
+			m_perViewData->m_projectionInv = glm::inverse(GetProjectionMatrix());
+
+			const auto& constantBufferPool = RHI::Graphics::GetBufferSystem().GetCommonBufferPool(RHI::CommonBufferPoolType::Constant);
+			auto& rhiFactory = RHI::Graphics::GetFactory();
+			m_cameraCbuffer = rhiFactory.CreateBuffer();
+			RHI::ResultCode result = RHI::ResultCode::Fail;
+
+			RHI::BufferInitRequest cameraCbufferRequest;
+			cameraCbufferRequest.m_buffer = m_cameraCbuffer.get();
+			cameraCbufferRequest.m_descriptor.m_byteCount = sizeof(PerViewData);
+			cameraCbufferRequest.m_descriptor.m_bindFlags = RHI::BufferBindFlags::Constant;
+			cameraCbufferRequest.m_initialData = m_perViewData;
+			result = constantBufferPool->InitBuffer(cameraCbufferRequest);
+			assert(result == RHI::ResultCode::Success);
+
+			RHI::BufferViewDescriptor cameraBufferViewDescriptor = RHI::BufferViewDescriptor::CreateRaw(0, sizeof(PerViewData));
+			m_cameraCbufferView = rhiFactory.CreateBufferView();
+			m_cameraCbufferView->Init(*m_cameraCbuffer, cameraBufferViewDescriptor);
+		}
 
 		void Camera::SetViewport(const RHI::Viewport& viewport)
 		{
@@ -75,6 +110,7 @@ namespace CGE
 			case Space::World:
 				m_rotation = glm::angleAxis(glm::radians(fPitch), glm::vec3(1, 0, 0)) * m_rotation;
 			}
+			m_dirty = true;
 		}
 
 		void Camera::AddYaw(float fYaw, Space space)
@@ -88,6 +124,7 @@ namespace CGE
 				m_rotation = glm::angleAxis(glm::radians(fYaw), glm::vec3(0, 1, 0)) * m_rotation;
 				break;
 			}
+			m_dirty = true;
 		}
 
 		void Camera::AddRoll(float fRoll, Space space)
@@ -101,16 +138,19 @@ namespace CGE
 				m_rotation = glm::angleAxis(glm::radians(fRoll), glm::vec3(0, 0, 1)) * m_rotation;
 				break;
 			}
+			m_dirty = true;
 		}
 
 		void Camera::SetEulerAngles(const glm::vec3& eulerAngles)
 		{
 			m_rotation = glm::quat(glm::radians(eulerAngles));
+			m_dirty = true;
 		}
 
 		void Camera::AddRotation(const glm::quat& deltaRot)
 		{
 			m_rotation = m_rotation * deltaRot;
+			m_dirty = true;
 		}
 
 		void Camera::TranslateX(float x, Space space)
@@ -124,6 +164,7 @@ namespace CGE
 				m_translation += glm::vec3(x, 0, 0);
 				break;
 			}
+			m_dirty = true;
 		}
 
 		void Camera::TranslateY(float y, Space space)
@@ -137,6 +178,7 @@ namespace CGE
 				m_translation += glm::vec3(0, y, 0);
 				break;
 			}
+			m_dirty = true;
 		}
 
 		void Camera::TranslateZ(float z, Space space)
@@ -150,26 +192,31 @@ namespace CGE
 				m_translation += glm::vec3(0, 0, z);
 				break;
 			}
+			m_dirty = true;
 		}
 
 		void Camera::SetTranslation(const glm::vec3& translation)
 		{
 			m_translation = translation;
+			m_dirty = true;
 		}
 
 		void Camera::SetRotation(float pitch, float yaw, float roll)
 		{
 			SetRotation(glm::vec3(pitch, yaw, roll));
+			m_dirty = true;
 		}
 
 		void Camera::SetRotation(const glm::vec3& rotation)
 		{
 			SetRotation(glm::quat(glm::radians(rotation)));
+			m_dirty = true;
 		}
 
 		void Camera::SetRotation(const glm::quat& rot)
 		{
 			m_rotation = rot;
+			m_dirty = true;
 		}
 
 		glm::vec3 Camera::GetTranslation() const
@@ -205,17 +252,18 @@ namespace CGE
 			// the unit quaternion.
 			tmp = tmp * invScale;
 			m_rotation = glm::toQuat(tmp);
+			m_dirty = true;
 		}
 
 		glm::mat4 Camera::GetViewMatrix()
 		{
-			UpdateViewMatrix();
 			return m_viewMatrix;
 		}
 
 		void Camera::SetProjectionMatrix(const glm::mat4& projectionMatrix)
 		{
 			m_projectionMatrix = projectionMatrix;
+			m_dirty = true;
 		}
 
 		glm::mat4 Camera::GetProjectionMatrix() const
@@ -234,6 +282,11 @@ namespace CGE
 			glm::mat4 translateMatrix = glm::translate(glm::mat4{1.0}, m_translation);
 			glm::mat4 rotationMatrix = glm::toMat4(m_rotation);
 			m_viewMatrix = glm::inverse(translateMatrix * rotationMatrix);
+		}
+
+		void Camera::UpdateProjectionMatrix()
+		{
+			m_projectionMatrix = glm::perspective(glm::radians(m_vFOV), m_aspect, m_near, m_far);
 		}
 
 		void Camera::UpdateViewProjectionInverse()
@@ -277,6 +330,65 @@ namespace CGE
 		boost::function<void(KeyEventArgs&, UpdateEventArgs&)> Camera::GetKeyPressedFunctionBindable()
 		{
 			return boost::bind(&Camera::OnKeyPressed, this, _1, _2);
+		}
+
+		void Camera::SpawnImGuiWindow()
+		{
+			const auto updateChange = [this](bool check) {m_dirty = check || m_dirty; };
+			if (ImGui::Begin("Camera"))
+			{
+				ImGui::Text("Position");
+				updateChange(ImGui::SliderFloat("X", &m_translation.x, -80.0f, 80.0f, "%.1f"));
+				updateChange(ImGui::SliderFloat("Y", &m_translation.y, -80.0f, 80.0f, "%.1f"));
+				updateChange(ImGui::SliderFloat("Z", &m_translation.z, -80.0f, 80.0f, "%.1f"));
+
+				ImGui::Text("Orientation");
+				updateChange(ImGui::SliderAngle("X", &m_rotation.x, 0.995f * -90.0f, 0.995f * 90.0f));
+				updateChange(ImGui::SliderAngle("Y", &m_rotation.y, 0.995f * -90.0f, 0.995f * 90.0f));
+				updateChange(ImGui::SliderAngle("Z", &m_rotation.z, 0.995f * -90.0f, 0.995f * 90.0f));
+
+				ImGui::Text("Projection");
+				updateChange(ImGui::SliderFloat("FOV", &m_vFOV, 45.0f, 120.0f, "%.1f"));
+				updateChange(ImGui::SliderFloat("Near Z", &m_near, 0.01f, m_far - 0.01f, "%.2f", 4.0f));
+				updateChange(ImGui::SliderFloat("Far Z", &m_far, m_near + 0.01f, 400.0f, "%.2f", 4.0f));
+			}
+			ImGui::End();
+		}
+
+		RHI::ResultCode Camera::UpdateCameraBuffer()
+		{
+			m_perViewData->m_projection = GetProjectionMatrix();
+			m_perViewData->m_projectionInv = glm::inverse(GetProjectionMatrix());
+			m_perViewData->m_view = GetViewMatrix();
+			m_perViewData->m_viewInv = glm::inverse(GetViewMatrix());
+
+			const auto& constantBufferPool = RHI::Graphics::GetBufferSystem().GetCommonBufferPool(RHI::CommonBufferPoolType::Constant);
+
+			RHI::BufferMapRequest mapRequest{};
+			mapRequest.m_buffer = m_cameraCbuffer.get();
+			mapRequest.m_byteCount = sizeof(PerViewData);
+			mapRequest.m_byteOffset = 0;
+
+			RHI::BufferMapResponse mapResponse{};
+
+			RHI::ResultCode mapSuccess = constantBufferPool->MapBuffer(mapRequest, mapResponse);
+			if (mapSuccess == RHI::ResultCode::Success)
+			{
+				memcpy(mapResponse.m_data, m_perViewData, sizeof(PerViewData));
+				constantBufferPool->UnmapBuffer(*m_cameraCbuffer);
+			}
+			return mapSuccess;
+		}
+
+		void Camera::Update()
+		{
+			if (m_dirty)
+			{
+				UpdateViewMatrix();
+				UpdateProjectionMatrix();
+				UpdateCameraBuffer();
+			}
+			m_dirty = false;
 		}
 	}
 }

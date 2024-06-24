@@ -3,6 +3,8 @@
 // RHI
 #include "../RHI/Viewport.h"
 #include "../RHI/Image.h"
+#include "../RHI/Buffer.h"
+#include "../RHI/ShaderResourceGroup.h"
 
 #include "../Events.h"
 
@@ -99,9 +101,23 @@ namespace CGE
 			boost::function<void(KeyEventArgs&, UpdateEventArgs&)> GetKeyPressedFunctionBindable();
 			void OnKeyPressed(KeyEventArgs& keyArgs, UpdateEventArgs& updateArgs);
 
+			void SpawnImGuiWindow();
+			void Update();
+
 		private:
 			void UpdateViewMatrix();
+			void UpdateProjectionMatrix();
 			void UpdateViewProjectionInverse();
+			RHI::ResultCode UpdateCameraBuffer();
+
+		private:
+			__declspec(align(16)) struct PerViewData
+			{
+				glm::mat4 m_view;
+				glm::mat4 m_viewInv;
+				glm::mat4 m_projection;
+				glm::mat4 m_projectionInv;
+			};
 
 		private:
 			RHI::Viewport m_viewport;
@@ -120,6 +136,14 @@ namespace CGE
 			glm::mat4 m_viewMatrix;
 			glm::mat4 m_projectionMatrix;
 			glm::mat4 m_viewProjectionInverse;
+
+			bool m_dirty = false;
+
+			PerViewData* m_perViewData;
+			RHI::Ptr<RHI::Buffer> m_cameraCbuffer;
+			RHI::Ptr<RHI::BufferView> m_cameraCbufferView;
+
+			RHI::Ptr<RHI::ShaderResourceGroup> m_viewSrg;
 		};
 	}
 }
