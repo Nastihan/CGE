@@ -6,6 +6,11 @@ namespace CGE
 {
 	namespace RHI
 	{
+        PipelineLayoutDescriptor::PipelineLayoutDescriptor()
+        {
+            m_bindingSlotToIndex.fill(RHI::Limits::Pipeline::ShaderResourceGroupCountMax);
+        }
+
         HashValue64 ResourceBindingInfo::GetHash() const
         {
             HashValue64 hash = TypeHash64(static_cast<uint32_t>(m_shaderStageMask));
@@ -78,6 +83,12 @@ namespace CGE
         {
             assert(IsFinalized(), "Accessor called on a non-finalized pipeline layout. This is not permitted.");
             return m_shaderResourceGroupLayoutsInfo[index].first.get();
+        }
+
+        const ShaderResourceGroupLayout* PipelineLayoutDescriptor::GetShaderResourceGroupLayout(ShaderResourceGroupType srgType) const
+        {
+            assert(IsFinalized(), "Accessor called on a non-finalized pipeline layout. This is not permitted.");
+            return m_shaderResourceGroupLayoutsInfo[GetShaderResourceGroupIndexFromBindingSlot(static_cast<uint32_t>(srgType))].first.get();
         }
 
         const ShaderResourceGroupBindingInfo& PipelineLayoutDescriptor::GetShaderResourceGroupBindingInfo(size_t index) const

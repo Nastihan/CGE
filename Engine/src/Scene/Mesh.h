@@ -38,10 +38,9 @@ namespace CGE
 			void AddVertexBuffer(RHI::Ptr<RHI::Buffer> vertexBuffer, RHI::StreamBufferView& streamBufferView);
 			void SetInputStreamLayout(RHI::InputStreamLayout& inputStreamLayout);
 			void SetIndexBufferAndView(RHI::Ptr<RHI::Buffer> indexBuffer, RHI::IndexBufferView& indexBufferView, uint32_t indexCount);
-			void BuildSrg(Pass::ForwardPass* pForwardPass);
-
-			void Render(Pass::ForwardPass* pForwardPass, RHI::CommandList* commandList);
 			RHI::DrawItem* BuildAndGetDrawItem();
+			void SetSrgsToBind(const std::vector<RHI::ShaderResourceGroup*>& srgsToBind);
+			const RHI::ShaderResourceGroup* const* GetSrgsToBind() const;
 		
 		private:
 			std::vector<RHI::Ptr<RHI::Buffer>> m_vertexBuffers;
@@ -53,10 +52,9 @@ namespace CGE
 			uint32_t m_indexCount;
 			
 			std::shared_ptr<Material> m_material;
-
-			RHI::Ptr<RHI::ShaderResourceGroup> m_objectSrg;
-
 			RHI::DrawItem m_drawItem;
+
+			std::vector<RHI::ShaderResourceGroup*> m_srgsToBind;
 		};
 	}
 }

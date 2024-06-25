@@ -138,7 +138,7 @@ struct Frustum
     Plane planes[4];   // left, right, top, bottom frustum planes.
 };
 
-cbuffer PerMaterial_Material : register( b2 )
+cbuffer PerMaterial_MaterialProperties : register( b2 )
 {
     Material Mat;
 };
@@ -147,8 +147,8 @@ Texture2D PerMaterial_AmbientTexture        : register( t0 );
 Texture2D PerMaterial_EmissiveTexture       : register( t1 );
 Texture2D PerMaterial_DiffuseTexture        : register( t2 );
 Texture2D PerMaterial_SpecularTexture       : register( t3 );
-Texture2D PerMaterial_SpecularPowerTexture  : register( t4 );
 Texture2D PerMaterial_NormalTexture         : register( t5 );
+Texture2D PerMaterial_SpecularPowerTexture  : register( t4 );
 Texture2D PerMaterial_BumpTexture           : register( t6 );
 Texture2D PerMaterial_OpacityTexture        : register( t7 );
 

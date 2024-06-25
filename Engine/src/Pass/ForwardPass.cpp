@@ -139,31 +139,18 @@ namespace CGE
 
 			m_pipelineState = rhiFactory.CreatePipelineState();
 			m_pipelineState->Init(device, m_drawPipelineStateDescriptor);
-
-			m_perObjectData = (PerObject*)_aligned_malloc(sizeof(PerObject), 16);
 		}
 
 		void ForwardPass::Render(RHI::CommandList* commandList)
 		{
 			m_drawItems.clear();
-			m_srgsToBind.clear();
+			m_drawItems = m_scene->BuildDrawList();
 
-			m_scene->Render(this, commandList);
-
-			// for (size_t i = 0; i < m_drawItems.size(); i++)
-			// {
-				// commandList->Submit(*m_drawItems[i]);
-			// }
-		}
-
-		void ForwardPass::PushSrg(RHI::ShaderResourceGroup* srg)
-		{
-			m_srgsToBind.push_back(srg);
-		}
-
-		void ForwardPass::PopSrg()
-		{
-			m_srgsToBind.pop_back();
+			for (size_t i = 0; i < m_drawItems.size(); i++)
+			{
+				m_drawItems[i].m_pipelineState = m_pipelineState.get();
+				commandList->Submit(m_drawItems[i]);
+			}
 		}
 
 		const RHI::PipelineStateDescriptorForDraw& ForwardPass::GetPipelineStateDescriptorForDraw()
@@ -174,23 +161,6 @@ namespace CGE
 		const RHI::PipelineState& ForwardPass::GetPipelineState()
 		{
 			return *m_pipelineState;
-		}
-
-		void ForwardPass::UpdatePerObjectData(Scene::Camera& camera, glm::mat4& nodeWorldTransform)
-		{
-			glm::mat4 viewMatrix = camera.GetViewMatrix();
-			m_perObjectData->m_modelView = viewMatrix * nodeWorldTransform;
-			m_perObjectData->m_modelViewProjection = camera.GetProjectionMatrix() * m_perObjectData->m_modelView;
-		}
-
-		void ForwardPass::AddDrawItem(RHI::DrawItem* drawItem)
-		{
-			m_drawItems.push_back(drawItem);
-		}
-
-		ForwardPass::PerObject* ForwardPass::GetPerObjectDataPtr()
-		{
-			return m_perObjectData;
 		}
 
 		void ForwardPass::SetScenePtr(std::shared_ptr<Scene::Scene> scene)

@@ -46,29 +46,6 @@ namespace CGE
 			m_indexCount = indexCount;
 		}
 
-		void Mesh::BuildSrg(Pass::ForwardPass* pForwardPass)
-		{
-			const RHI::ShaderResourceGroupLayout* objectSrgLayout = pForwardPass->GetPipelineStateDescriptorForDraw().m_pipelineLayoutDescriptor->GetShaderResourceGroupLayout(1);
-			auto& rhiFactory = RHI::Graphics::GetFactory();
-			m_objectSrg = rhiFactory.CreateShaderResourceGroup();
-			RHI::ShaderResourceGroupData objectSrgData(objectSrgLayout);
-			
-			objectSrgData.SetConstantPointer(reinterpret_cast<uint8_t*>(pForwardPass->GetPerObjectDataPtr()));
-			RHI::ShaderInputImageIndex materialTexturesInputIdx(0);
-			for (size_t arrayIdx = 0; arrayIdx < 8; arrayIdx++)
-			{
-				auto viewPtr = m_material->GetTextureAndView(static_cast<Material::TextureType>(arrayIdx)).second;
-				if (viewPtr)
-				{
-					objectSrgData.SetImageView(materialTexturesInputIdx, viewPtr.get(), arrayIdx);
-				}
-			}
-			RHI::ShaderInputBufferIndex materialCbuffInputIdx(0);
-			objectSrgData.SetBufferView(materialCbuffInputIdx, m_material->GetMaterialCbuffView().get(), 0);
-			m_objectSrg->Init(m_triangleIndexBufferView.GetBuffer()->GetDevice(), objectSrgData);
-			m_objectSrg->Compile();
-		}
-
 		RHI::DrawItem* Mesh::BuildAndGetDrawItem()
 		{
 			// Set the vertex buffer
@@ -90,15 +67,14 @@ namespace CGE
 			return &m_drawItem;
 		}
 
-		void Mesh::Render(Pass::ForwardPass* pForwardPass, RHI::CommandList* commandList)
+		void Mesh::SetSrgsToBind(const std::vector<RHI::ShaderResourceGroup*>& srgsToBind)
 		{
-			pForwardPass->PushSrg(m_objectSrg.get());
-			BuildAndGetDrawItem();
-			m_drawItem.m_pipelineState = &pForwardPass->GetPipelineState();
-			m_drawItem.m_shaderResourceGroupCount = pForwardPass->GetSrgsToBind().size();
-			m_drawItem.m_shaderResourceGroups = pForwardPass->GetSrgsToBind().data();
-			commandList->Submit(m_drawItem);
-			pForwardPass->PopSrg();
+			m_srgsToBind = srgsToBind;
+		}
+
+		const RHI::ShaderResourceGroup* const* Mesh::GetSrgsToBind() const
+		{
+			return m_srgsToBind.data();
 		}
 	}
 }

@@ -43,7 +43,6 @@ namespace CGE
 			// imgui frame begin
 			RHI::Graphics::GetImguiManager().FrameBegin();
 
-
 			auto& dxDevice = static_cast<DX_Device&>(GetDevice());
 			DX_CommandList* commandList = dxDevice.AcquireCommandList(RHI::HardwareQueueClass::Graphics);
 			ID3D12GraphicsCommandList* dxCommandList = commandList->GetCommandList();

@@ -41,13 +41,13 @@ namespace CGE
 			}
 
 			// Build buffer group
-			if (!FinalizeShaderInputGroup<ShaderInputBufferDescriptor, ShaderInputBufferIndex>(m_inputsForBuffers, m_intervalsForBuffers, m_groupSizeForBuffers))
+			if (!FinalizeShaderInputGroup<ShaderInputBufferDescriptor, ShaderInputBufferIndex>(m_inputsForBuffers, m_intervalsForBuffers, m_groupSizeForBuffers, m_nameToIdxReflectionForBuffers))
 			{
 				return false;
 			}
 
 			// Build image group
-			if (!FinalizeShaderInputGroup<ShaderInputImageDescriptor, ShaderInputImageIndex>(m_inputsForImages, m_intervalsForImages, m_groupSizeForImages))
+			if (!FinalizeShaderInputGroup<ShaderInputImageDescriptor, ShaderInputImageIndex>(m_inputsForImages, m_intervalsForImages, m_groupSizeForImages, m_nameToIdxReflectionForImages))
 			{
 				return false;
 			}
@@ -65,7 +65,7 @@ namespace CGE
 			}
 
 			// Build sampler group
-			if (!FinalizeShaderInputGroup<ShaderInputSamplerDescriptor, ShaderInputSamplerIndex>(m_inputsForSamplers, m_intervalsForSamplers, m_groupSizeForSamplers))
+			if (!FinalizeShaderInputGroup<ShaderInputSamplerDescriptor, ShaderInputSamplerIndex>(m_inputsForSamplers, m_intervalsForSamplers, m_groupSizeForSamplers, m_nameToIdxReflectionForSamplers))
 			{
 				return false;
 			}
@@ -292,15 +292,22 @@ namespace CGE
 		}
 
 		template<typename ShaderInputDescriptorT, typename ShaderInputIndexT>
-		bool ShaderResourceGroupLayout::FinalizeShaderInputGroup(const std::vector<ShaderInputDescriptorT>& shaderInputDescriptors, std::vector<Interval>& intervals, uint32_t& groupSize)
+		bool ShaderResourceGroupLayout::FinalizeShaderInputGroup(const std::vector<ShaderInputDescriptorT>& shaderInputDescriptors, std::vector<Interval>& intervals, uint32_t& groupSize
+		, std::unordered_map<std::string, ShaderInputIndexT>& reflectionMap)
 		{
 			intervals.reserve(shaderInputDescriptors.size());
+			reflectionMap.reserve(shaderInputDescriptors.size());
 
 			uint32_t currentGroupSize = 0;
 			uint32_t shaderInputIndex = 0;
 			for (const ShaderInputDescriptorT& shaderInput : shaderInputDescriptors)
 			{
 				const ShaderInputIndexT inputIndex(shaderInputIndex);
+
+				// [todo] I have to change this so names will be processed to be unique
+				auto insertedResult = reflectionMap.insert({ shaderInput.m_name, inputIndex });
+				assert(insertedResult.second, "Make sure to use unique names.");
+
 				intervals.emplace_back(currentGroupSize, currentGroupSize + shaderInput.m_count);
 				currentGroupSize += shaderInput.m_count;
 				++shaderInputIndex;
@@ -361,6 +368,16 @@ namespace CGE
 		uint32_t ShaderResourceGroupLayout::GetGroupSizeForSamplers() const
 		{
 			return m_groupSizeForSamplers;
+		}
+
+		ShaderInputBufferIndex ShaderResourceGroupLayout::FindShaderInputBufferIndex(const std::string& name) const
+		{
+			return m_nameToIdxReflectionForBuffers.find(name)->second;
+		}
+
+		ShaderInputImageIndex ShaderResourceGroupLayout::FindShaderInputImageIndex(const std::string& name) const
+		{
+			return m_nameToIdxReflectionForImages.find(name)->second;
 		}
 	}
 }

@@ -57,12 +57,13 @@ namespace CGE
 
             size_t GetShaderResourceGroupLayoutCount() const;
             const ShaderResourceGroupLayout* GetShaderResourceGroupLayout(size_t index) const;
+            const ShaderResourceGroupLayout* GetShaderResourceGroupLayout(ShaderResourceGroupType srgType) const;
             const ShaderResourceGroupBindingInfo& GetShaderResourceGroupBindingInfo(size_t index) const;
             HashValue64 GetHash() const;
             uint32_t GetShaderResourceGroupIndexFromBindingSlot(uint32_t bindingSlot) const;
 
         protected:
-            PipelineLayoutDescriptor() = default;
+            PipelineLayoutDescriptor();
 
         private:
             virtual void ResetInternal();
@@ -76,7 +77,7 @@ namespace CGE
 
             // Each srg gets one. The should be sorted based on frequency on update.
             std::vector<ShaderResourceGroupLayoutInfo> m_shaderResourceGroupLayoutsInfo;
-            std::array<uint32_t, RHI::Limits::Pipeline::ShaderResourceGroupCountMax> m_bindingSlotToIndex = {};
+            std::array<uint32_t, RHI::Limits::Pipeline::ShaderResourceGroupCountMax> m_bindingSlotToIndex{};
             HashValue64 m_hash = InvalidHash;
 
             std::string m_name;

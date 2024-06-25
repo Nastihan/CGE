@@ -101,8 +101,10 @@ namespace CGE
 			boost::function<void(KeyEventArgs&, UpdateEventArgs&)> GetKeyPressedFunctionBindable();
 			void OnKeyPressed(KeyEventArgs& keyArgs, UpdateEventArgs& updateArgs);
 
-			void SpawnImGuiWindow();
+			void SpawnCameraImGuiWindow();
 			void Update();
+
+			RHI::ShaderResourceGroup* GetCameraSrg() const;
 
 		private:
 			void UpdateViewMatrix();

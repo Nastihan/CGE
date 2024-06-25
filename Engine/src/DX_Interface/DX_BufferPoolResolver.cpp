@@ -48,6 +48,9 @@ namespace CGE
 
             uploadRequest.m_buffer = buffer;
             uploadRequest.m_memory = buffer->GetMemoryView().GetMemory();
+            // buffer->GetMemoryView().GetOffset() is for our buffer page system.
+            // request.m_byteOffset is the user requested offset
+            // check how I'm updating the light structured buffer list in Scene.cpp
             uploadRequest.m_memoryByteOffset = buffer->GetMemoryView().GetOffset() + request.m_byteOffset;
             uploadRequest.m_sourceMemory = stagingMemory;
 

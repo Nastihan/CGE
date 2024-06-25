@@ -228,5 +228,41 @@ namespace CGE
 			m_materialPropertiesCBuffView = rhiFactory.CreateBufferView();
 			m_materialPropertiesCBuffView->Init(*m_materialPropertiesCBuff, materialPropertiesBufferViewDescriptor);
 		}
+
+		void Material::InitMaterialSrg()
+		{
+			const RHI::ShaderPermutation& defaultPBRForward_MaterialShader = *RHI::Graphics::GetAssetProcessor().GetShaderPermutation("DefaultPBRForward_MaterialShader");
+			const RHI::ShaderResourceGroupLayout* materialSrgLayout = defaultPBRForward_MaterialShader.m_pipelineLayoutDescriptor->GetShaderResourceGroupLayout(RHI::ShaderResourceGroupType::Material);
+			m_materialSrg = RHI::Graphics::GetFactory().CreateShaderResourceGroup();
+			RHI::ShaderResourceGroupData materialSrgData(materialSrgLayout);
+
+			std::vector<RHI::ShaderInputImageIndex> materialTextureIndicies;
+			materialTextureIndicies.push_back(materialSrgLayout->FindShaderInputImageIndex("PerMaterial_AmbientTexture"));
+			materialTextureIndicies.push_back(materialSrgLayout->FindShaderInputImageIndex("PerMaterial_EmissiveTexture"));
+			materialTextureIndicies.push_back(materialSrgLayout->FindShaderInputImageIndex("PerMaterial_DiffuseTexture"));
+			materialTextureIndicies.push_back(materialSrgLayout->FindShaderInputImageIndex("PerMaterial_SpecularTexture"));
+			materialTextureIndicies.push_back(materialSrgLayout->FindShaderInputImageIndex("PerMaterial_NormalTexture"));
+			materialTextureIndicies.push_back(materialSrgLayout->FindShaderInputImageIndex("PerMaterial_SpecularPowerTexture"));
+			materialTextureIndicies.push_back(materialSrgLayout->FindShaderInputImageIndex("PerMaterial_BumpTexture"));
+			materialTextureIndicies.push_back(materialSrgLayout->FindShaderInputImageIndex("PerMaterial_OpacityTexture"));
+			for (size_t arrayIdx = 0; arrayIdx < materialTextureIndicies.size(); arrayIdx++)
+			{
+				auto viewPtr = GetTextureAndView(static_cast<Material::TextureType>(arrayIdx)).second;
+				if (viewPtr)
+				{
+					materialSrgData.SetImageView(materialTextureIndicies[arrayIdx], viewPtr.get(), 0);
+				}
+			}
+
+			RHI::ShaderInputBufferIndex materialPropertiesBufferIdx = materialSrgLayout->FindShaderInputBufferIndex("PerMaterial_MaterialProperties");
+			materialSrgData.SetBufferView(materialPropertiesBufferIdx, GetMaterialCbuffView().get(), 0);
+			m_materialSrg->Init(m_materialPropertiesCBuff->GetDevice(), materialSrgData);
+			m_materialSrg->Compile();
+		}
+
+		RHI::ShaderResourceGroup* Material::GetMaterialSrg() const
+		{
+			return m_materialSrg.get();
+		}
 	}
 }

@@ -9,6 +9,7 @@
 #include <glm/glm.hpp>
 
 #include "../RHI/ShaderResourceGroup.h"
+#include "../RHI/DrawItem.h"
 
 namespace CGE
 {
@@ -56,10 +57,17 @@ namespace CGE
 			void AddMesh(std::shared_ptr<Mesh> mesh);
 			void RemoveMesh(std::shared_ptr<Mesh> mesh);
 
-			void Render(Pass::ForwardPass* pForwardPass, Camera& camera, RHI::CommandList* commandList) const;
+			void BuildDrawList(std::vector<RHI::DrawItem>& drawList, std::array<RHI::ShaderResourceGroup*, RHI::Limits::Pipeline::ShaderResourceGroupCountMax>& srgsToBind);
+			RHI::ResultCode BuildModelMatrix();
 
 		private:
 			glm::mat4 GetParentWorldTransform() const;
+
+		private:
+			__declspec(align(16)) struct PerObjectData
+			{
+				glm::mat4 m_modelTransform;
+			};
 
 		private:
 			typedef std::vector<std::shared_ptr<ModelNode>> NodeList;
@@ -76,6 +84,11 @@ namespace CGE
 			NodeList m_children;
 			MeshList m_meshes;
 			NodeNameMap m_childrenByName;
+
+			PerObjectData* m_perObjectData;
+			RHI::Ptr<RHI::Buffer> m_modelTransformCbuff;
+			RHI::Ptr<RHI::BufferView> m_modelTransformBufferView;
+			RHI::Ptr<RHI::ShaderResourceGroup> m_objectSrg;
 		};
 	}
 }

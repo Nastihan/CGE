@@ -53,7 +53,7 @@ namespace CGE
             std::string projPath = EXPAND(UNITTESTPRJ);
             projPath.erase(0, 1);
             projPath.erase(projPath.size() - 2);
-            std::filesystem::path fullFilePath = projPath + "Models\\" + pathString;
+            std::filesystem::path fullFilePath = projPath + "Assets\\Models\\" + pathString;
             std::filesystem::path rootModelPath = fullFilePath.parent_path();
 
             Assimp::Importer imp;
@@ -314,6 +314,7 @@ namespace CGE
                 pMaterial->SetTexture(Material::TextureType::Bump, image, imageView);
             }
             pMaterial->InitMaterialCbuff();
+            pMaterial->InitMaterialSrg();
             m_materials.push_back(pMaterial);
 		}
 
@@ -458,7 +459,6 @@ namespace CGE
                 }
             }
             pMesh->SetInputStreamLayout(inputStreamLayoutPacked);
-            pMesh->BuildSrg(pForwardPass);
             m_meshes.push_back(pMesh);
 		}
 
@@ -480,6 +480,7 @@ namespace CGE
 
             std::shared_ptr<ModelNode> pNode = std::make_shared<ModelNode>(localTransform);
             pNode->SetParent(parent);
+            pNode->BuildModelMatrix();
 
             std::string nodeName(aiNode->mName.C_Str());
             if (!nodeName.empty())
@@ -549,9 +550,9 @@ namespace CGE
             return result;
         }
 
-        void Model::Render(Pass::ForwardPass* pForwardPass, Camera& camera, RHI::CommandList* commandList) const
+        void Model::BuildDrawList(std::vector<RHI::DrawItem>& drawItems, std::array<RHI::ShaderResourceGroup*, RHI::Limits::Pipeline::ShaderResourceGroupCountMax>& srgsToBind) const
         {
-            m_root->Render(pForwardPass, camera, commandList);
+            m_root->BuildDrawList(drawItems, srgsToBind);
         }
 	}
 }

@@ -31,4 +31,9 @@ namespace CGE
 	{
 		BuildCommandListInternal(commandList);
 	}
+
+	void ImguiManager::PushSpawnableWindow(std::function<void()> spawnableWindow)
+	{
+		m_spawnableWindows.push_back(spawnableWindow);
+	}
 }

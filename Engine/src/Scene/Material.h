@@ -64,6 +64,8 @@ namespace CGE
             void SetTexture(TextureType type, RHI::Ptr<RHI::Image> texture, RHI::Ptr<RHI::ImageView> textureView);
             RHI::Ptr<RHI::BufferView> GetMaterialCbuffView();
             void InitMaterialCbuff();
+            void InitMaterialSrg();
+            RHI::ShaderResourceGroup* GetMaterialSrg() const;
 		public:
             __declspec(align(16)) struct MaterialProperties
             {
@@ -129,6 +131,9 @@ namespace CGE
             MaterialProperties* m_pProperties;
             RHI::Ptr<RHI::Buffer> m_materialPropertiesCBuff;
             RHI::Ptr<RHI::BufferView> m_materialPropertiesCBuffView;
+
+            // [todo] I need to setup proper json for the material srg and also its layout.
+            RHI::Ptr<RHI::ShaderResourceGroup> m_materialSrg;
 
             typedef std::unordered_map<TextureType, std::pair<RHI::Ptr<RHI::Image>, RHI::Ptr<RHI::ImageView>>> TextureMap;
             TextureMap m_textures;

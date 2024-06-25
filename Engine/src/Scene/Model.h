@@ -9,6 +9,7 @@
 // RHI
 #include "../RHI/RHI_Common.h"
 #include "../RHI/ShaderResourceGroup.h"
+#include "../RHI/DrawItem.h"
 
 struct aiMaterial;
 struct aiMesh;
@@ -48,7 +49,7 @@ namespace CGE
 			~Model();
 
 			bool LoadFromFile(const std::string& fileName, Pass::ForwardPass* pForwardPass);
-			void Render(Pass::ForwardPass* pForwardPass, Camera& camera, RHI::CommandList* commandList) const;
+			void BuildDrawList(std::vector<RHI::DrawItem>& drawItems, std::array<RHI::ShaderResourceGroup*, RHI::Limits::Pipeline::ShaderResourceGroupCountMax>& srgsToBind) const;
 
 		private:
 			void ImportMaterial(const aiMaterial& material, const std::string& parentPath);

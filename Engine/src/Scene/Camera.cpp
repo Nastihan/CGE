@@ -11,13 +11,15 @@
 #include "../imgui/imgui.h"
 #include "../imgui/imgui_impl_glfw.h"
 
+#include <iostream>
+
 namespace CGE
 {
 	namespace Scene
 	{
 		Camera::Camera() 
 			: m_translation(0.0f, 0.0f, 0.0f)
-			, m_rotation(0.0f, 0.0f, 0.0f, 0.0f)
+			, m_rotation(glm::quat(glm::vec3(glm::radians(0.0), glm::radians(0.0), glm::radians(0.0))))
 			, m_vFOV(45.0f)
 			, m_aspect(RHI::Limits::Device::ClientWidth / (float)RHI::Limits::Device::ClientHeight)
 			, m_near(0.1f)
@@ -47,6 +49,16 @@ namespace CGE
 			RHI::BufferViewDescriptor cameraBufferViewDescriptor = RHI::BufferViewDescriptor::CreateRaw(0, sizeof(PerViewData));
 			m_cameraCbufferView = rhiFactory.CreateBufferView();
 			m_cameraCbufferView->Init(*m_cameraCbuffer, cameraBufferViewDescriptor);
+
+			const RHI::ShaderPermutation& defaultPBRForward_MaterialShader = *RHI::Graphics::GetAssetProcessor().GetShaderPermutation("DefaultPBRForward_MaterialShader");
+			const RHI::ShaderResourceGroupLayout* viewSrgLayout = defaultPBRForward_MaterialShader.m_pipelineLayoutDescriptor->GetShaderResourceGroupLayout(RHI::ShaderResourceGroupType::View);
+			m_viewSrg = rhiFactory.CreateShaderResourceGroup();
+			RHI::ShaderResourceGroupData viewSrgData(viewSrgLayout);
+
+			RHI::ShaderInputBufferIndex cameraBufferIdx = viewSrgLayout->FindShaderInputBufferIndex("PerView_CameraMatrix");
+			viewSrgData.SetBufferView(cameraBufferIdx, m_cameraCbufferView.get(), 0);
+			m_viewSrg->Init(m_cameraCbuffer->GetDevice(), viewSrgData);
+			m_viewSrg->Compile();
 		}
 
 		void Camera::SetViewport(const RHI::Viewport& viewport)
@@ -67,6 +79,8 @@ namespace CGE
 			m_far = zFar;
 
 			m_projectionMatrix = glm::perspective(glm::radians(vFOV), aspect, zNear, zFar);
+
+			m_dirty = true;
 		}
 
 		void Camera::SetProjectionLH(float vFOV, float aspect, float zNear, float zFar)
@@ -83,11 +97,14 @@ namespace CGE
 				0.0f, 0.0f, -1.0f, 1.0f);
 
 			m_projectionMatrix = fix * glm::perspective(glm::radians(vFOV), aspect, zNear, zFar);
+
+			m_dirty = true;
 		}
 
 		void Camera::SetOrthographic(float left, float right, float top, float bottom)
 		{
 			m_projectionMatrix = glm::ortho(left, right, bottom, top);
+			m_dirty = true;
 		}
 
 		float Camera::GetNearClipPlane() const
@@ -279,7 +296,7 @@ namespace CGE
 
 		void Camera::UpdateViewMatrix()
 		{
-			glm::mat4 translateMatrix = glm::translate(glm::mat4{1.0}, m_translation);
+			glm::mat4 translateMatrix = glm::translate(glm::mat4{ 1.0 }, m_translation);
 			glm::mat4 rotationMatrix = glm::toMat4(m_rotation);
 			m_viewMatrix = glm::inverse(translateMatrix * rotationMatrix);
 		}
@@ -332,27 +349,27 @@ namespace CGE
 			return boost::bind(&Camera::OnKeyPressed, this, _1, _2);
 		}
 
-		void Camera::SpawnImGuiWindow()
+		void Camera::SpawnCameraImGuiWindow()
 		{
 			const auto updateChange = [this](bool check) {m_dirty = check || m_dirty; };
 			if (ImGui::Begin("Camera"))
 			{
 				ImGui::Text("Position");
-				updateChange(ImGui::SliderFloat("X", &m_translation.x, -80.0f, 80.0f, "%.1f"));
-				updateChange(ImGui::SliderFloat("Y", &m_translation.y, -80.0f, 80.0f, "%.1f"));
-				updateChange(ImGui::SliderFloat("Z", &m_translation.z, -80.0f, 80.0f, "%.1f"));
+				updateChange(ImGui::SliderFloat("Pos X", &m_translation.x, -80.0f, 80.0f, "%.1f"));
+				updateChange(ImGui::SliderFloat("Pos Y", &m_translation.y, -80.0f, 80.0f, "%.1f"));
+				updateChange(ImGui::SliderFloat("Pos Z", &m_translation.z, -80.0f, 80.0f, "%.1f"));
 
 				ImGui::Text("Orientation");
-				updateChange(ImGui::SliderAngle("X", &m_rotation.x, 0.995f * -90.0f, 0.995f * 90.0f));
-				updateChange(ImGui::SliderAngle("Y", &m_rotation.y, 0.995f * -90.0f, 0.995f * 90.0f));
-				updateChange(ImGui::SliderAngle("Z", &m_rotation.z, 0.995f * -90.0f, 0.995f * 90.0f));
+				updateChange(ImGui::SliderAngle("Rot X", &m_rotation.x, 0.995f * -90.0f, 0.995f * 90.0f));
+				updateChange(ImGui::SliderAngle("Rot Y", &m_rotation.y, 0.995f * -90.0f, 0.995f * 90.0f));
+				updateChange(ImGui::SliderAngle("Rot Z", &m_rotation.z, 0.995f * -90.0f, 0.995f * 90.0f));
 
 				ImGui::Text("Projection");
 				updateChange(ImGui::SliderFloat("FOV", &m_vFOV, 45.0f, 120.0f, "%.1f"));
-				updateChange(ImGui::SliderFloat("Near Z", &m_near, 0.01f, m_far - 0.01f, "%.2f", 4.0f));
-				updateChange(ImGui::SliderFloat("Far Z", &m_far, m_near + 0.01f, 400.0f, "%.2f", 4.0f));
+				updateChange(ImGui::SliderFloat("Near Z", &m_near, 0.01f, m_far - 0.01f, "%.2f"));
+				updateChange(ImGui::SliderFloat("Far Z", &m_far, m_near + 0.01f, 1000.0f, "%.2f"));
+				ImGui::End();
 			}
-			ImGui::End();
 		}
 
 		RHI::ResultCode Camera::UpdateCameraBuffer()
@@ -389,6 +406,11 @@ namespace CGE
 				UpdateCameraBuffer();
 			}
 			m_dirty = false;
+		}
+
+		RHI::ShaderResourceGroup* Camera::GetCameraSrg() const
+		{
+			return m_viewSrg.get();
 		}
 	}
 }

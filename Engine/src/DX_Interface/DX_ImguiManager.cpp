@@ -33,6 +33,14 @@ namespace CGE
 			ImGui_ImplDX12_NewFrame();
 			ImGui_ImplGlfw_NewFrame();
 			ImGui::NewFrame();
+
+			{
+				for (auto& spawnable : m_spawnableWindows)
+				{
+					spawnable();
+				}
+			}
+
 			// 2. Show a simple window that we create ourselves. We use a Begin/End pair to create a named window.
 			{
 				static float f = 0.0f;

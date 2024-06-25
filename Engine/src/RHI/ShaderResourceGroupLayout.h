@@ -99,6 +99,9 @@ namespace CGE
             const ShaderInputBufferUnboundedArrayDescriptor& GetShaderInput(ShaderInputBufferUnboundedArrayIndex index) const;
             const ShaderInputImageUnboundedArrayDescriptor& GetShaderInput(ShaderInputImageUnboundedArrayIndex index) const;
 
+            ShaderInputBufferIndex FindShaderInputBufferIndex(const std::string& name) const;
+            ShaderInputImageIndex FindShaderInputImageIndex(const std::string& name) const;
+
             bool ValidateAccess(RHI::ShaderInputBufferIndex inputIndex, uint32_t arrayIndexEnd) const;
             bool ValidateAccess(RHI::ShaderInputImageIndex inputIndex, uint32_t arrayIndexEnd) const;
             bool ValidateAccess(RHI::ShaderInputSamplerIndex inputIndex, uint32_t arrayIndexEnd) const;
@@ -116,7 +119,8 @@ namespace CGE
             bool ValidateAccess(IndexType inputIndex, size_t inputIndexLimit, const char* inputArrayTypeName) const;
 
             template<typename ShaderInputDescriptorT, typename ShaderInputIndexT>
-            bool FinalizeShaderInputGroup(const std::vector<ShaderInputDescriptorT>& shaderInputDescriptors, std::vector<Interval>& intervals, uint32_t& groupSize);
+            bool FinalizeShaderInputGroup(const std::vector<ShaderInputDescriptorT>& shaderInputDescriptors, std::vector<Interval>& intervals, uint32_t& groupSize
+            , std::unordered_map<std::string, ShaderInputIndexT>& reflectionMap);
 
             template<typename ShaderInputDescriptorT, typename ShaderInputIndexT>
             bool FinalizeUnboundedArrayShaderInputGroup(const std::vector<ShaderInputDescriptorT>& shaderInputDescriptors, uint32_t& groupSize);
@@ -151,6 +155,10 @@ namespace CGE
             std::vector<Interval> m_intervalsForBuffers;
             std::vector<Interval> m_intervalsForImages;
             std::vector<Interval> m_intervalsForSamplers;
+
+            std::unordered_map<std::string, ShaderInputBufferIndex> m_nameToIdxReflectionForBuffers;
+            std::unordered_map<std::string, ShaderInputImageIndex> m_nameToIdxReflectionForImages;
+            std::unordered_map<std::string, ShaderInputSamplerIndex> m_nameToIdxReflectionForSamplers;
         };
     }
 }

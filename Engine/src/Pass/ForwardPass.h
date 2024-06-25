@@ -27,15 +27,11 @@ namespace CGE
 			};
 		public:
 			ForwardPass() = default;
+			~ForwardPass() = default;
 			void Init(RHI::Device& device);
 			void SetScenePtr(std::shared_ptr<Scene::Scene> scene);
 			void Render(RHI::CommandList* commandList);
-			void PushSrg(RHI::ShaderResourceGroup* srg);
-			void PopSrg();
-			void UpdatePerObjectData(Scene::Camera& camera, glm::mat4& nodeWorldTransform);
-			void AddDrawItem(RHI::DrawItem* drawItem);
 			RHI::ImageView& GetDSView();
-			PerObject* GetPerObjectDataPtr();
 			std::vector<RHI::ShaderResourceGroup*>& GetSrgsToBind();
 
 			// [todo] remove
@@ -48,10 +44,8 @@ namespace CGE
 			// Each DrawItem needs to have or share its own version. For now let the pass own this layout.
 			RHI::Ptr<RHI::PipelineState> m_pipelineState;
 			RHI::PipelineStateDescriptorForDraw m_drawPipelineStateDescriptor;
-			std::vector<RHI::DrawItem*> m_drawItems;
+			std::vector<RHI::DrawItem> m_drawItems;
 			std::vector<RHI::ShaderResourceGroup*> m_srgsToBind;
-
-			PerObject* m_perObjectData;
 
 			// Scene to render
 			std::shared_ptr<Scene::Scene> m_scene;
