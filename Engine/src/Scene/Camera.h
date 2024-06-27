@@ -134,6 +134,10 @@ namespace CGE
 			glm::vec3 m_translation;
 			glm::quat m_rotation;
 
+			// Using this to compute the delta in ImGui (In euler angles degrees)
+			glm::vec3 m_previousRotation{};
+			glm::vec3 m_currentRotation{};
+
 			// View and projection matricies
 			glm::mat4 m_viewMatrix;
 			glm::mat4 m_projectionMatrix;

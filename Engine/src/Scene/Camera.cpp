@@ -19,7 +19,9 @@ namespace CGE
 	{
 		Camera::Camera() 
 			: m_translation(0.0f, 0.0f, 0.0f)
-			, m_rotation(glm::quat(glm::vec3(glm::radians(0.0), glm::radians(0.0), glm::radians(0.0))))
+			, m_rotation(glm::quat(glm::vec3(glm::radians(0.0f), glm::radians(0.0f), glm::radians(0.0f))))
+			, m_currentRotation(glm::degrees(glm::eulerAngles(m_rotation)))
+			, m_previousRotation(glm::degrees(glm::eulerAngles(m_rotation)))
 			, m_vFOV(45.0f)
 			, m_aspect(RHI::Limits::Device::ClientWidth / (float)RHI::Limits::Device::ClientHeight)
 			, m_near(0.1f)
@@ -97,7 +99,6 @@ namespace CGE
 				0.0f, 0.0f, -1.0f, 1.0f);
 
 			m_projectionMatrix = fix * glm::perspective(glm::radians(vFOV), aspect, zNear, zFar);
-
 			m_dirty = true;
 		}
 
@@ -303,7 +304,7 @@ namespace CGE
 
 		void Camera::UpdateProjectionMatrix()
 		{
-			m_projectionMatrix = glm::perspective(glm::radians(m_vFOV), m_aspect, m_near, m_far);
+			SetProjectionRH(m_vFOV, m_aspect, m_near, m_far);
 		}
 
 		void Camera::UpdateViewProjectionInverse()
@@ -338,7 +339,7 @@ namespace CGE
 			}
 
 			// [todo] Expose to user
-			float moveMultiplier = 100.0;
+			float moveMultiplier = 1.0;
 			TranslateX((movement.m_right - movement.m_left) * updateArgs.m_elapsedTime * moveMultiplier);
 			TranslateY((movement.m_up - movement.m_down) * updateArgs.m_elapsedTime * moveMultiplier);
 			TranslateZ((movement.m_back - movement.m_forward) * updateArgs.m_elapsedTime * moveMultiplier);
@@ -360,9 +361,23 @@ namespace CGE
 				updateChange(ImGui::SliderFloat("Pos Z", &m_translation.z, -80.0f, 80.0f, "%.1f"));
 
 				ImGui::Text("Orientation");
-				updateChange(ImGui::SliderAngle("Rot X", &m_rotation.x, 0.995f * -90.0f, 0.995f * 90.0f));
-				updateChange(ImGui::SliderAngle("Rot Y", &m_rotation.y, 0.995f * -90.0f, 0.995f * 90.0f));
-				updateChange(ImGui::SliderAngle("Rot Z", &m_rotation.z, 0.995f * -90.0f, 0.995f * 90.0f));
+				updateChange(ImGui::SliderFloat("Roll", &m_currentRotation.z, 0.995f * -180.0f, 0.995f * 180.0f));
+				updateChange(ImGui::SliderFloat("Pitch", &m_currentRotation.x, 0.995f * -180.0f, 0.995f * 180.0f));
+				updateChange(ImGui::SliderFloat("Yaw", &m_currentRotation.y, 0.995f * -180.0f, 0.995f * 180.0f));
+				glm::vec3 delta = m_previousRotation - m_currentRotation;
+				if (delta.x > glm::epsilon<float>() || delta.x < glm::epsilon<float>())
+				{
+					AddPitch(delta.x);
+				}
+				if (delta.y > glm::epsilon<float>() || delta.y < glm::epsilon<float>())
+				{
+					AddYaw(delta.y);
+				}
+				if (delta.z > glm::epsilon<float>() || delta.z < glm::epsilon<float>())
+				{
+					AddRoll(delta.z);
+				}
+				m_previousRotation = m_currentRotation;
 
 				ImGui::Text("Projection");
 				updateChange(ImGui::SliderFloat("FOV", &m_vFOV, 45.0f, 120.0f, "%.1f"));

@@ -23,9 +23,10 @@ namespace CGE
 			for (size_t i = 0; i < 1; i++)
 			{
 				Light light;
-				light.m_Type = Light::LightType::Directional;
-				light.m_DirectionVS = glm::vec4(0.0, 0.0, -1.0, 0.0);
-				light.m_Intensity = 1.5;
+				light.m_Type = Light::LightType::Point;
+				light.m_PositionWS = glm::vec4(-10.0f, 1.7f, 0.6f, 1.0f);
+				light.m_Color = glm::vec4(1.0f, 1.0f, 0.0f, 0.0f);
+				light.m_Intensity = 3.5;
 				m_lights.push_back(light);
 			}
 
