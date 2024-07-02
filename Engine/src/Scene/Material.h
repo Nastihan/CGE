@@ -66,71 +66,75 @@ namespace CGE
             void InitMaterialCbuff();
             void InitMaterialSrg();
             RHI::ShaderResourceGroup* GetMaterialSrg() const;
+            void SpawnImGuiWindow();
+            RHI::ResultCode UpdateMaterialBuffer();
+
 		public:
             __declspec(align(16)) struct MaterialProperties
             {
                 MaterialProperties()
-                    : m_GlobalAmbient(0.1f, 0.1f, 0.15f, 1)
-                    , m_AmbientColor(0, 0, 0, 1)
-                    , m_EmissiveColor(0, 0, 0, 1)
-                    , m_DiffuseColor(1, 1, 1, 1)
-                    , m_SpecularColor(0, 0, 0, 1)
-                    , m_Reflectance(0, 0, 0, 0)
-                    , m_Opacity(1.0f)
-                    , m_SpecularPower(-1.0f)
-                    , m_IndexOfRefraction(-1.0f)
-                    , m_HasAmbientTexture(false)
-                    , m_HasEmissiveTexture(false)
-                    , m_HasDiffuseTexture(false)
-                    , m_HasSpecularTexture(false)
-                    , m_HasSpecularPowerTexture(false)
-                    , m_HasNormalTexture(false)
-                    , m_HasBumpTexture(false)
-                    , m_HasOpacityTexture(false)
-                    , m_BumpIntensity(5.0f)
-                    , m_SpecularScale(128.0f)
-                    , m_AlphaThreshold(0.1f) {}
+                    : m_globalAmbient(0.1f, 0.1f, 0.15f, 1)
+                    , m_ambientColor(0, 0, 0, 1)
+                    , m_emissiveColor(0, 0, 0, 1)
+                    , m_diffuseColor(1, 1, 1, 1)
+                    , m_specularColor(0, 0, 0, 1)
+                    , m_reflectance(0, 0, 0, 0)
+                    , m_opacity(1.0f)
+                    , m_specularPower(-1.0f)
+                    , m_indexOfRefraction(-1.0f)
+                    , m_hasAmbientTexture(false)
+                    , m_hasEmissiveTexture(false)
+                    , m_hasDiffuseTexture(false)
+                    , m_hasSpecularTexture(false)
+                    , m_hasSpecularPowerTexture(false)
+                    , m_hasNormalTexture(false)
+                    , m_hasBumpTexture(false)
+                    , m_hasOpacityTexture(false)
+                    , m_bumpIntensity(5.0f)
+                    , m_specularScale(128.0f)
+                    , m_alphaThreshold(0.1f) {}
 
-                glm::vec4   m_GlobalAmbient;
+                glm::vec4   m_globalAmbient;
                 //-------------------------- ( 16 bytes )
-                glm::vec4   m_AmbientColor;
+                glm::vec4   m_ambientColor;
                 //-------------------------- ( 16 bytes )
-                glm::vec4   m_EmissiveColor;
+                glm::vec4   m_emissiveColor;
                 //-------------------------- ( 16 bytes )
-                glm::vec4   m_DiffuseColor;
+                glm::vec4   m_diffuseColor;
                 //-------------------------- ( 16 bytes )
-                glm::vec4   m_SpecularColor;
+                glm::vec4   m_specularColor;
                 //-------------------------- ( 16 bytes )
-                glm::vec4   m_Reflectance;
+                glm::vec4   m_reflectance;
                 //-------------------------- ( 16 bytes )
                 // If Opacity < 1, then the material is transparent.
-                float       m_Opacity;
-                float       m_SpecularPower;
+                float       m_opacity;
+                float       m_specularPower;
                 // For transparent materials, IOR > 0.
-                float       m_IndexOfRefraction;
-                uint32_t    m_HasAmbientTexture;
+                float       m_indexOfRefraction;
+                uint32_t    m_hasAmbientTexture;
                 //-------------------------- ( 16 bytes )
-                uint32_t    m_HasEmissiveTexture;
-                uint32_t    m_HasDiffuseTexture;
-                uint32_t    m_HasSpecularTexture;
-                uint32_t    m_HasSpecularPowerTexture;
+                uint32_t    m_hasEmissiveTexture;
+                uint32_t    m_hasDiffuseTexture;
+                uint32_t    m_hasSpecularTexture;
+                uint32_t    m_hasSpecularPowerTexture;
                 //-------------------------- ( 16 bytes )
-                uint32_t    m_HasNormalTexture;
-                uint32_t    m_HasBumpTexture;
-                uint32_t    m_HasOpacityTexture;
-                float       m_BumpIntensity;    // When using bump textures (heightmaps) we need 
+                uint32_t    m_hasNormalTexture;
+                uint32_t    m_hasBumpTexture;
+                uint32_t    m_hasOpacityTexture;
+                float       m_bumpIntensity;    // When using bump textures (heightmaps) we need 
                                                 // to scale the height values so the normals are visible.
                 //-------------------------- ( 16 bytes )
-                float       m_SpecularScale;    // When reading specular power from a texture, 
+                float       m_specularScale;    // When reading specular power from a texture, 
                                                 // we need to scale it into the correct range.
-                float       m_AlphaThreshold;   // Pixels with alpha < m_AlphaThreshold will be discarded.
-                glm::vec2   m_Padding;          // Pad to 16 byte boundary.
+                float       m_alphaThreshold;   // Pixels with alpha < m_AlphaThreshold will be discarded.
+                glm::vec2   m_padding;          // Pad to 16 byte boundary.
                 //-------------------------- ( 16 bytes )
             };  //--------------------------- ( 16 * 10 = 160 bytes )
 		private:
             MaterialProperties* m_pProperties;
             RHI::Ptr<RHI::Buffer> m_materialPropertiesCBuff;
             RHI::Ptr<RHI::BufferView> m_materialPropertiesCBuffView;
+            bool m_dirty = false;
 
             // [todo] I need to setup proper json for the material srg and also its layout.
             RHI::Ptr<RHI::ShaderResourceGroup> m_materialSrg;

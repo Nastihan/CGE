@@ -19,72 +19,61 @@ namespace CGE
             /**
             * Position for point and spot lights (World space).
             */
-            glm::vec4 m_PositionWS;
+            glm::vec4 m_positionWS;
             //--------------------------------------------------------------( 16 bytes )
             /**
             * Direction for spot and directional lights (World space).
             */
-            glm::vec4 m_DirectionWS;
+            glm::vec4 m_directionWS;
             //--------------------------------------------------------------( 16 bytes )
             /**
             * Position for point and spot lights (View space).
             */
-            glm::vec4 m_PositionVS;
+            glm::vec4 m_positionVS;
             //--------------------------------------------------------------( 16 bytes )
             /**
             * Direction for spot and directional lights (View space).
             */
-            glm::vec4 m_DirectionVS;
+            glm::vec4 m_directionVS;
             //--------------------------------------------------------------( 16 bytes )
             /**
              * Color of the light. Diffuse and specular colors are not separated.
              */
-            glm::vec4 m_Color;
+            glm::vec4 m_color;
             //--------------------------------------------------------------( 16 bytes )
             /**
              * The half angle of the spotlight cone.
              */
-            float m_SpotlightAngle;
+            float m_spotlightAngle;
             /**
              * The range of the light.
              */
-            float m_Range;
+            float m_range;
 
             /**
              * The intensity of the light.
              */
-            float m_Intensity;
+            float m_intensity;
 
             /**
              * Disable or enable the light.
              */
-            uint32_t m_Enabled;
+            uint32_t m_enabled;
             //--------------------------------------------------------------(16 bytes )
 
             /**
              * True if the light is selected in the editor.
              */
-            uint32_t m_Selected;
+            uint32_t m_selected;
             /**
              * The type of the light.
              */
-            LightType m_Type;
+            LightType m_type;
 
-            glm::vec2 m_Padding;
+            glm::vec2 m_padding;
             //--------------------------------------------------------------(16 bytes )
             //--------------------------------------------------------------( 16 * 7 = 112 bytes )
-            Light()
-                : m_PositionWS(0, 0, 0, 1)
-                , m_DirectionWS(0, 0, -1, 0)
-                , m_PositionVS(0, 0, 0, 1)
-                , m_DirectionVS(0, 0, 1, 0)
-                , m_Color(1, 1, 1, 1)
-                , m_SpotlightAngle(45.0f)
-                , m_Range(100.0f)
-                , m_Intensity(1.0f)
-                , m_Enabled(true)
-                , m_Selected(false)
-                , m_Type(LightType::Point) {}
+            Light();
         };
     }
 }

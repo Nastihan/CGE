@@ -12,13 +12,15 @@
 #include "../RHI/CommandList.h"
 #include "../RHI/Graphics.h"
 
+#include "../imgui/imgui.h"
+#include "../imgui/imgui_impl_glfw.h"
+
 namespace CGE
 {
 	namespace Scene
 	{
 		ModelNode::ModelNode(const glm::mat4& localTransform) : m_localTransform(localTransform), m_name("SceneNode")
 		{
-            m_perObjectData = (PerObjectData*)_aligned_malloc(sizeof(PerObjectData), 16);
 			m_inverseTransform = glm::inverse(m_localTransform);
 		}
 
@@ -165,9 +167,9 @@ namespace CGE
 
         void ModelNode::BuildDrawList(std::vector<RHI::DrawItem>& drawList, std::array<RHI::ShaderResourceGroup*, RHI::Limits::Pipeline::ShaderResourceGroupCountMax>& srgsToBind)
         {
-            srgsToBind[RHI::SrgBindingSlot::Object] = m_objectSrg.get();
             for (const auto& mesh : m_meshes)
             {
+                srgsToBind[RHI::SrgBindingSlot::Object] = mesh->GetObjectSrg();
                 srgsToBind[RHI::SrgBindingSlot::Material] = mesh->GetMaterial()->GetMaterialSrg();
 
                 drawList.push_back(*mesh->BuildAndGetDrawItem());
@@ -192,38 +194,32 @@ namespace CGE
             }
         }
 
-        RHI::ResultCode ModelNode::BuildModelMatrix()
+        void ModelNode::SpawnImGuiWindow()
         {
-            m_perObjectData->m_modelTransform = GetParentWorldTransform() * m_localTransform;
+            if (ImGui::TreeNode(m_name.c_str()))
+            {
+                for (const auto& mesh : m_meshes)
+                {
+                    mesh->SpawnImGuiWindow();
+                }
+                ImGui::TreePop();
+            }
+            for (const auto& child : m_children)
+            {
+                child->SpawnImGuiWindow();
+            }
+        }
 
-            const auto& constantBufferPool = RHI::Graphics::GetBufferSystem().GetCommonBufferPool(RHI::CommonBufferPoolType::Constant);
-            auto& rhiFactory = RHI::Graphics::GetFactory();
-            m_modelTransformCbuff = rhiFactory.CreateBuffer();
-            RHI::ResultCode result = RHI::ResultCode::Fail;
-
-            RHI::BufferInitRequest modelCbufferRequest;
-            modelCbufferRequest.m_buffer = m_modelTransformCbuff.get();
-            modelCbufferRequest.m_descriptor.m_byteCount = sizeof(PerObjectData);
-            modelCbufferRequest.m_descriptor.m_bindFlags = RHI::BufferBindFlags::Constant;
-            modelCbufferRequest.m_initialData = m_perObjectData;
-            result = constantBufferPool->InitBuffer(modelCbufferRequest);
-            assert(result == RHI::ResultCode::Success);
-
-            RHI::BufferViewDescriptor modelBufferViewDescriptor = RHI::BufferViewDescriptor::CreateRaw(0, sizeof(PerObjectData));
-            m_modelTransformBufferView = rhiFactory.CreateBufferView();
-            m_modelTransformBufferView->Init(*m_modelTransformCbuff, modelBufferViewDescriptor);
-
-            const RHI::ShaderPermutation& defaultPBRForward_MaterialShader = *RHI::Graphics::GetAssetProcessor().GetShaderPermutation("DefaultPBRForward_MaterialShader");
-            const RHI::ShaderResourceGroupLayout* objectSrgLayout = defaultPBRForward_MaterialShader.m_pipelineLayoutDescriptor->GetShaderResourceGroupLayout(RHI::ShaderResourceGroupType::Object);
-            m_objectSrg = rhiFactory.CreateShaderResourceGroup();
-            RHI::ShaderResourceGroupData objectSrgData(objectSrgLayout);
-
-            RHI::ShaderInputBufferIndex modelTransformBufferIdx = objectSrgLayout->FindShaderInputBufferIndex("PerObject_Model");
-            objectSrgData.SetBufferView(modelTransformBufferIdx, m_modelTransformBufferView.get(), 0);
-            m_objectSrg->Init(m_modelTransformCbuff->GetDevice(), objectSrgData);
-            m_objectSrg->Compile();
-
-            return result;
+        void ModelNode::Update()
+        {
+            for (const auto& mesh : m_meshes)
+            {
+                mesh->Update();
+            }
+            for (const auto& child : m_children)
+            {
+                child->Update();
+            }
         }
 	}
 }

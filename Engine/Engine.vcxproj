@@ -129,6 +129,7 @@
     <ClCompile Include="src\RHI\TypeHash.cpp" />
     <ClCompile Include="src\RHI\Viewport.cpp" />
     <ClCompile Include="src\Scene\Camera.cpp" />
+    <ClCompile Include="src\Scene\Light.cpp" />
     <ClCompile Include="src\Scene\Material.cpp" />
     <ClCompile Include="src\Scene\Mesh.cpp" />
     <ClCompile Include="src\Scene\Model.cpp" />

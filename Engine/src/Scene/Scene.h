@@ -33,20 +33,23 @@ namespace CGE
 		{
 		public:
 			Scene() = default;
-			void Init(Pass::ForwardPass* pForwardPass);
-			void LoadModel(const std::string& pathString, Pass::ForwardPass* pForwardPass);
+			void Init();
+			void LoadModel(const std::string& pathString, const std::string& modelName);
 			void AddLight(const Light& light);
 			Camera& GetCamera();
-			void SpawnLightImGuiWindow();
+			void SpawnImGuiWindow();
 			void Update();
 			std::vector<RHI::DrawItem> BuildDrawList();
 
 		private:
+			void SpawnLightImGuiWindow();
+			void SpawnModelsImGuiWindow();
 			RHI::ResultCode UpdateLightBuffer();
 
 		private:
 			Camera m_camera;
 			std::vector<Model> m_models;
+			int m_currentSelectedModel = 0;
 
 			// [todo] need to hookup to ImGui
 			// The scene will contain a fixed number of lights for now. (Same as NUM_LIGHTS in Forward shader)

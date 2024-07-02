@@ -58,16 +58,12 @@ namespace CGE
 			void RemoveMesh(std::shared_ptr<Mesh> mesh);
 
 			void BuildDrawList(std::vector<RHI::DrawItem>& drawList, std::array<RHI::ShaderResourceGroup*, RHI::Limits::Pipeline::ShaderResourceGroupCountMax>& srgsToBind);
-			RHI::ResultCode BuildModelMatrix();
+
+			void SpawnImGuiWindow();
+			void Update();
 
 		private:
 			glm::mat4 GetParentWorldTransform() const;
-
-		private:
-			__declspec(align(16)) struct PerObjectData
-			{
-				glm::mat4 m_modelTransform;
-			};
 
 		private:
 			typedef std::vector<std::shared_ptr<ModelNode>> NodeList;
@@ -77,6 +73,7 @@ namespace CGE
 			std::string m_name;
 
 			// Transforms node from parent's space to world space for rendering.
+			// This local transform is relative to its parent.
 			glm::mat4 m_localTransform;
 			glm::mat4 m_inverseTransform;
 
@@ -84,11 +81,6 @@ namespace CGE
 			NodeList m_children;
 			MeshList m_meshes;
 			NodeNameMap m_childrenByName;
-
-			PerObjectData* m_perObjectData;
-			RHI::Ptr<RHI::Buffer> m_modelTransformCbuff;
-			RHI::Ptr<RHI::BufferView> m_modelTransformBufferView;
-			RHI::Ptr<RHI::ShaderResourceGroup> m_objectSrg;
 		};
 	}
 }

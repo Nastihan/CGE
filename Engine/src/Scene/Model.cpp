@@ -34,6 +34,9 @@
 #include "../DX_Interface/DX_CommonHeaders.h"
 #include "../DX_Interface/DX_Conversions.h"
 
+#include "../imgui/imgui.h"
+#include "../imgui/imgui_impl_glfw.h"
+
 #define STRINGIFY(x) #x
 #define EXPAND(x) STRINGIFY(x)
 
@@ -44,11 +47,11 @@ namespace CGE
 	namespace Scene
 	{
 
-		Model::Model() : m_root{ nullptr } {}
+        Model::Model(const std::string& name) : m_root{ nullptr }, m_modelName{ name } {}
 
 		Model::~Model() {}
 
-		bool Model::LoadFromFile(const std::string& pathString, Pass::ForwardPass* pForwardPass)
+        bool Model::LoadFromFile(const std::string& pathString, const std::string modelName)
 		{
             std::string projPath = EXPAND(UNITTESTPRJ);
             projPath.erase(0, 1);
@@ -87,7 +90,7 @@ namespace CGE
             // Import meshes
             for (unsigned int i = 0; i < pScene->mNumMeshes; ++i)
             {
-                ImportMesh(*pScene->mMeshes[i], pForwardPass);
+                ImportMesh(*pScene->mMeshes[i]);
             }
 
             m_root = ImportSceneNode(m_root, pScene->mRootNode);
@@ -95,6 +98,11 @@ namespace CGE
 
             return true;
 		}
+
+        const std::string& Model::GetName()
+        {
+            return m_modelName;
+        }
 
 		void Model::ImportMaterial(const aiMaterial& material, const std::string& parentPath)
 		{
@@ -318,11 +326,11 @@ namespace CGE
             m_materials.push_back(pMaterial);
 		}
 
-		void Model::ImportMesh(const aiMesh& mesh, Pass::ForwardPass* pForwardPass)
+		void Model::ImportMesh(const aiMesh& mesh)
 		{
             auto& rhiFactory = RHI::Graphics::GetFactory();
 
-			std::shared_ptr<Mesh> pMesh = std::make_shared<Mesh>();
+			std::shared_ptr<Mesh> pMesh = std::make_shared<Mesh>(mesh.mName.C_Str());
 			assert(mesh.mMaterialIndex < m_materials.size());
             pMesh->SetMaterial(m_materials[mesh.mMaterialIndex]);
 
@@ -480,7 +488,6 @@ namespace CGE
 
             std::shared_ptr<ModelNode> pNode = std::make_shared<ModelNode>(localTransform);
             pNode->SetParent(parent);
-            pNode->BuildModelMatrix();
 
             std::string nodeName(aiNode->mName.C_Str());
             if (!nodeName.empty())
@@ -488,12 +495,13 @@ namespace CGE
                 pNode->SetName(nodeName);
             }
 
-            // Add meshes to scene node
+            // Add meshes to scene node also set the node reference to the mesh
             for (unsigned int i = 0; i < aiNode->mNumMeshes; ++i)
             {
                 assert(aiNode->mMeshes[i] < m_meshes.size());
                 std::shared_ptr<Mesh> pMesh = m_meshes[aiNode->mMeshes[i]];
                 pNode->AddMesh(pMesh);
+                pMesh->SetModelNode(pNode);
             }
 
             // Recursively Import children
@@ -553,6 +561,16 @@ namespace CGE
         void Model::BuildDrawList(std::vector<RHI::DrawItem>& drawItems, std::array<RHI::ShaderResourceGroup*, RHI::Limits::Pipeline::ShaderResourceGroupCountMax>& srgsToBind) const
         {
             m_root->BuildDrawList(drawItems, srgsToBind);
+        }
+
+        void Model::SpawnImGuiWindow()
+        {
+            m_root->SpawnImGuiWindow();
+        }
+
+        void Model::Update()
+        {
+            m_root->Update();
         }
 	}
 }

@@ -28,7 +28,7 @@ namespace CGE
 			, m_far(1000.0f)
 		{
 			UpdateViewMatrix();
-			SetProjectionRH(m_vFOV, m_aspect, m_near, m_far);
+			SetProjectionLH(m_vFOV, m_aspect, m_near, m_far);
 			m_perViewData = (PerViewData*)_aligned_malloc(sizeof(PerViewData), 16);
 			m_perViewData->m_view = GetViewMatrix();
 			m_perViewData->m_viewInv = glm::inverse(GetViewMatrix());
@@ -92,13 +92,10 @@ namespace CGE
 			m_near = zNear;
 			m_far = zFar;
 
-			glm::mat4 fix(
-				1.0f, 0.0f, 0.0f, 0.0f,
-				0.0f, 1.0f, 0.0f, 0.0f,
-				0.0f, 0.0f, 2.0f, 0.0f,
-				0.0f, 0.0f, -1.0f, 1.0f);
-
-			m_projectionMatrix = fix * glm::perspective(glm::radians(vFOV), aspect, zNear, zFar);
+#ifdef USE_DX12
+#define GLM_FORCE_DEPTH_ZERO_TO_ONE
+#endif // USE_DX12
+			m_projectionMatrix = glm::perspectiveLH(glm::radians(vFOV), aspect, zNear, zFar);
 			m_dirty = true;
 		}
 
@@ -304,7 +301,7 @@ namespace CGE
 
 		void Camera::UpdateProjectionMatrix()
 		{
-			SetProjectionRH(m_vFOV, m_aspect, m_near, m_far);
+			SetProjectionLH(m_vFOV, m_aspect, m_near, m_far);
 		}
 
 		void Camera::UpdateViewProjectionInverse()
@@ -342,7 +339,7 @@ namespace CGE
 			float moveMultiplier = 1.0;
 			TranslateX((movement.m_right - movement.m_left) * updateArgs.m_elapsedTime * moveMultiplier);
 			TranslateY((movement.m_up - movement.m_down) * updateArgs.m_elapsedTime * moveMultiplier);
-			TranslateZ((movement.m_back - movement.m_forward) * updateArgs.m_elapsedTime * moveMultiplier);
+			TranslateZ((movement.m_forward - movement.m_back) * updateArgs.m_elapsedTime * moveMultiplier);
 		}
 
 		boost::function<void(KeyEventArgs&, UpdateEventArgs&)> Camera::GetKeyPressedFunctionBindable()
@@ -364,6 +361,7 @@ namespace CGE
 				updateChange(ImGui::SliderFloat("Roll", &m_currentRotation.z, 0.995f * -180.0f, 0.995f * 180.0f));
 				updateChange(ImGui::SliderFloat("Pitch", &m_currentRotation.x, 0.995f * -180.0f, 0.995f * 180.0f));
 				updateChange(ImGui::SliderFloat("Yaw", &m_currentRotation.y, 0.995f * -180.0f, 0.995f * 180.0f));
+				/*
 				glm::vec3 delta = m_previousRotation - m_currentRotation;
 				if (delta.x > glm::epsilon<float>() || delta.x < glm::epsilon<float>())
 				{
@@ -378,13 +376,14 @@ namespace CGE
 					AddRoll(delta.z);
 				}
 				m_previousRotation = m_currentRotation;
-
+				*/
 				ImGui::Text("Projection");
 				updateChange(ImGui::SliderFloat("FOV", &m_vFOV, 45.0f, 120.0f, "%.1f"));
 				updateChange(ImGui::SliderFloat("Near Z", &m_near, 0.01f, m_far - 0.01f, "%.2f"));
 				updateChange(ImGui::SliderFloat("Far Z", &m_far, m_near + 0.01f, 1000.0f, "%.2f"));
-				ImGui::End();
+
 			}
+			ImGui::End();
 		}
 
 		RHI::ResultCode Camera::UpdateCameraBuffer()
@@ -416,6 +415,21 @@ namespace CGE
 		{
 			if (m_dirty)
 			{
+				glm::vec3 delta = m_previousRotation - m_currentRotation;
+				if (delta.x > glm::epsilon<float>() || delta.x < glm::epsilon<float>())
+				{
+					AddPitch(delta.x);
+				}
+				if (delta.y > glm::epsilon<float>() || delta.y < glm::epsilon<float>())
+				{
+					AddYaw(delta.y);
+				}
+				if (delta.z > glm::epsilon<float>() || delta.z < glm::epsilon<float>())
+				{
+					AddRoll(delta.z);
+				}
+				m_previousRotation = m_currentRotation;
+
 				UpdateViewMatrix();
 				UpdateProjectionMatrix();
 				UpdateCameraBuffer();

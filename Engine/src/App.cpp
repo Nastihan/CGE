@@ -9,15 +9,15 @@ namespace CGE
 	{
 		window.InitImgui();
 		m_scene = std::make_shared<Scene::Scene>();
-		m_scene->Init(gfx.GetFrameGraphExecuter()->GetForwardPass());
+		m_scene->Init();
 		// m_scene->LoadModel("nano_textured\\nanosuit.obj", gfx.GetFrameGraphExecuter()->GetForwardPass());
 		// m_scene->LoadModel("suzanne\\suzanne.obj", gfx.GetFrameGraphExecuter()->GetForwardPass());
 		// m_scene->LoadModel("lord_inquisitor_servo_skull_gltf\\scene.gltf", gfx.GetFrameGraphExecuter()->GetForwardPass());
 		// m_scene->LoadModel("demon_skull_ring_gltf\\scene.gltf", gfx.GetFrameGraphExecuter()->GetForwardPass());
-		m_scene->LoadModel("Sponza\\glTF\\Sponza.gltf", gfx.GetFrameGraphExecuter()->GetForwardPass());
+		m_scene->LoadModel("Sponza\\glTF\\Sponza.gltf", "Sponza");
 		gfx.GetFrameGraphExecuter()->GetForwardPass()->SetScenePtr(m_scene);
 		RegisterKeyboardEventCallback(m_scene->GetCamera().GetKeyPressedFunctionBindable());
-		RHI::Graphics::GetImguiManager().PushSpawnableWindow(std::bind(&Scene::Camera::SpawnCameraImGuiWindow, &m_scene->GetCamera()));
+		// RHI::Graphics::GetImguiManager().PushSpawnableWindow(std::bind(&Scene::Camera::SpawnCameraImGuiWindow, &m_scene->GetCamera()));
 	}
 	
 	App::~App() {}
@@ -49,7 +49,7 @@ namespace CGE
 		}
 		keyPresses.clear();
 
-		m_scene->GetCamera().Update();
+		m_scene->Update();
 	}
 
 	void App::RegisterKeyboardEventCallback(boost::function<void(KeyEventArgs&, UpdateEventArgs&)> functionType)

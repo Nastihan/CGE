@@ -18,15 +18,15 @@ namespace CGE
 {
 	namespace Scene
 	{
-		void Scene::Init(Pass::ForwardPass* pForwardPass)
+		void Scene::Init()
 		{
 			for (size_t i = 0; i < 1; i++)
 			{
 				Light light;
-				light.m_Type = Light::LightType::Point;
-				light.m_PositionWS = glm::vec4(-10.0f, 1.7f, 0.6f, 1.0f);
-				light.m_Color = glm::vec4(1.0f, 1.0f, 0.0f, 0.0f);
-				light.m_Intensity = 3.5;
+				light.m_type = Light::LightType::Point;
+				light.m_positionWS = glm::vec4(-10.0f, 1.7f, 0.6f, 1.0f);
+				light.m_color = glm::vec4(1.0f, 1.0f, 0.0f, 0.0f);
+				light.m_intensity = 3.5;
 				m_lights.push_back(light);
 			}
 
@@ -61,6 +61,8 @@ namespace CGE
 			m_sceneSrg->Init(m_lightBufferView->GetDevice(), sceneSrgData);
 			m_sceneSrg->Compile();
 
+			RHI::Graphics::GetImguiManager().PushSpawnableWindow(std::bind(&Scene::SpawnImGuiWindow, this));
+
 			// m_camera.SetViewport(Viewport(0, 0, g_Config.WindowWidth, g_Config.WindowHeight));
 			// m_camera.SetTranslation(glm::vec3(0.0, 0.0, 3.0));
 			// m_camera.SetRotation(glm::quat(glm::vec3(glm::radians(90.0), glm::radians(180.0), glm::radians(0.0))));
@@ -73,10 +75,10 @@ namespace CGE
 			m_needLightUpdate = true;
 		}
 
-		void Scene::LoadModel(const std::string& pathString, Pass::ForwardPass* pForwardPass)
+		void Scene::LoadModel(const std::string& pathString, const std::string& modelName)
 		{
-			m_models.emplace_back();
-			m_models.back().LoadFromFile(pathString, pForwardPass);
+			m_models.emplace_back(modelName);
+			m_models.back().LoadFromFile(pathString, modelName);
 		}
 
 		Camera& Scene::GetCamera()
@@ -115,58 +117,102 @@ namespace CGE
 
 					ImGui::Text("Light %d", m_currentSelectedLight + 1);
 
-					switch (selectedLight.m_Type)
+					switch (selectedLight.m_type)
 					{
 					case Light::LightType::Directional:
 					{
-						updateChange(ImGui::DragFloat4("Direction WS", &selectedLight.m_DirectionWS[0]));
-						updateChange(ImGui::DragFloat4("Direction VS", &selectedLight.m_DirectionVS[0]));
-						updateChange(ImGui::ColorEdit4("Color", &selectedLight.m_Color[0]));
-						updateChange(ImGui::DragFloat("Intensity", &selectedLight.m_Intensity));
-						updateChange(ImGui::Checkbox("Enabled", (bool*)&selectedLight.m_Enabled));
-						updateChange(ImGui::Checkbox("Selected", (bool*)&selectedLight.m_Selected));
+						updateChange(ImGui::DragFloat4("Direction WS", &selectedLight.m_directionWS[0]));
+						updateChange(ImGui::ColorEdit4("Color", &selectedLight.m_color[0]));
+						updateChange(ImGui::DragFloat("Intensity", &selectedLight.m_intensity));
+						updateChange(ImGui::Checkbox("Enabled", (bool*)&selectedLight.m_enabled));
+						updateChange(ImGui::Checkbox("Selected", (bool*)&selectedLight.m_selected));
 						break;
 					}
 
 					case Light::LightType::Point:
 					{
-						updateChange(ImGui::DragFloat4("Position WS", &selectedLight.m_PositionWS[0]));
-						updateChange(ImGui::DragFloat4("Position VS", &selectedLight.m_PositionVS[0]));
-						updateChange(ImGui::ColorEdit4("Color", &selectedLight.m_Color[0]));
-						updateChange(ImGui::DragFloat("Range", &selectedLight.m_Range));
-						updateChange(ImGui::DragFloat("Intensity", &selectedLight.m_Intensity));
-						updateChange(ImGui::Checkbox("Enabled", (bool*)&selectedLight.m_Enabled));
-						updateChange(ImGui::Checkbox("Selected", (bool*)&selectedLight.m_Selected));
+						updateChange(ImGui::DragFloat4("Position WS", &selectedLight.m_positionWS[0]));
+						updateChange(ImGui::ColorEdit4("Color", &selectedLight.m_color[0]));
+						updateChange(ImGui::DragFloat("Range", &selectedLight.m_range));
+						updateChange(ImGui::DragFloat("Intensity", &selectedLight.m_intensity));
+						updateChange(ImGui::Checkbox("Enabled", (bool*)&selectedLight.m_enabled));
+						updateChange(ImGui::Checkbox("Selected", (bool*)&selectedLight.m_selected));
 						break;
 					}
 					case Light::LightType::Spot:
 					{
-						updateChange(ImGui::DragFloat4("Direction WS", &selectedLight.m_DirectionWS[0]));
-						updateChange(ImGui::DragFloat4("Direction VS", &selectedLight.m_DirectionVS[0]));
-						updateChange(ImGui::DragFloat4("Position WS", &selectedLight.m_PositionWS[0]));
-						updateChange(ImGui::DragFloat4("Position VS", &selectedLight.m_PositionVS[0]));
-						updateChange(ImGui::ColorEdit4("Color", &selectedLight.m_Color[0]));
-						updateChange(ImGui::DragFloat("Spotlight Angle", &selectedLight.m_SpotlightAngle));
-						updateChange(ImGui::DragFloat("Range", &selectedLight.m_Range));
-						updateChange(ImGui::DragFloat("Intensity", &selectedLight.m_Intensity));
-						updateChange(ImGui::Checkbox("Enabled", (bool*)&selectedLight.m_Enabled));
-						updateChange(ImGui::Checkbox("Selected", (bool*)&selectedLight.m_Selected));
+						updateChange(ImGui::DragFloat4("Direction WS", &selectedLight.m_directionWS[0]));
+						updateChange(ImGui::DragFloat4("Position WS", &selectedLight.m_positionWS[0]));
+						updateChange(ImGui::ColorEdit4("Color", &selectedLight.m_color[0]));
+						updateChange(ImGui::DragFloat("Spotlight Angle", &selectedLight.m_spotlightAngle));
+						updateChange(ImGui::DragFloat("Range", &selectedLight.m_range));
+						updateChange(ImGui::DragFloat("Intensity", &selectedLight.m_intensity));
+						updateChange(ImGui::Checkbox("Enabled", (bool*)&selectedLight.m_enabled));
+						updateChange(ImGui::Checkbox("Selected", (bool*)&selectedLight.m_selected));
 						break;
 					}
 					default:
 						break;
 					}
 				}
-				ImGui::End();
+			}
+			ImGui::End();
+		}
+
+		void Scene::SpawnModelsImGuiWindow()
+		{
+			if (ImGui::Begin("Loaded Models"))
+			{
+				std::vector<std::string> modelNames;
+				for (size_t i = 0; i < m_models.size(); i++)
+				{
+					modelNames.push_back(m_models[i].GetName());
+				}
+
+				// Convert vector to array of const char*
+				std::vector<const char*> modelNamesCStr;
+				for (const auto& name : modelNames)
+				{
+					modelNamesCStr.push_back(name.c_str());
+				}
+
+				// Drop-down list
+				ImGui::Combo("Select Model", &m_currentSelectedModel, modelNamesCStr.data(), modelNamesCStr.size());
+				if (m_currentSelectedModel >= 0 && m_currentSelectedModel < m_models.size())
+				{
+					m_models[m_currentSelectedModel].SpawnImGuiWindow();
+				}
+			}
+			ImGui::End();
+		}
+
+		void Scene::SpawnImGuiWindow()
+		{
+			m_camera.SpawnCameraImGuiWindow();
+
+			if (!m_lights.empty())
+			{
+				SpawnLightImGuiWindow();
+			}
+
+			if (!m_models.empty())
+			{
+				SpawnModelsImGuiWindow();
 			}
 		}
 
 		void Scene::Update()
 		{
+			m_camera.Update();
 			if (m_needLightUpdate)
 			{
 				UpdateLightBuffer();
 				m_needLightUpdate = false;
+			}
+
+			for (auto& model : m_models)
+			{
+				model.Update();
 			}
 		}
 
