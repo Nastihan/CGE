@@ -75,6 +75,7 @@ namespace CGE
             Format m_format = Format::Unknown;
 
             // The parent stream buffer index. This will correspond to InputStreamLayout::m_streamBuffers index number.
+            // Also the slot idx in the input assembler buffer slots.
             uint32_t m_bufferIndex = 0;
 
             // Byte offset from the base of the StreamBufferView to the first element in this channel. 

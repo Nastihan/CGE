@@ -28,6 +28,7 @@ namespace CGE
 	{
 		class Model;
 		class Mesh;
+		class Shape;
 
 		class Scene final
 		{
@@ -36,6 +37,7 @@ namespace CGE
 			void Init();
 			void LoadModel(const std::string& pathString, const std::string& modelName);
 			void AddLight(const Light& light);
+			void AddShape(std::shared_ptr<Shape> shape);
 			Camera& GetCamera();
 			void SpawnImGuiWindow();
 			void Update();
@@ -48,8 +50,12 @@ namespace CGE
 
 		private:
 			Camera m_camera;
+
 			std::vector<Model> m_models;
 			int m_currentSelectedModel = 0;
+
+			std::vector<std::shared_ptr<Shape>> m_shapes;
+			int m_currentSelectedShape = 0;
 
 			// [todo] need to hookup to ImGui
 			// The scene will contain a fixed number of lights for now. (Same as NUM_LIGHTS in Forward shader)

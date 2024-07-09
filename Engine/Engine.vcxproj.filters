@@ -438,6 +438,9 @@
     <ClCompile Include="src\Scene\Light.cpp">
       <Filter>Source Files\Scene</Filter>
     </ClCompile>
+    <ClCompile Include="src\Scene\FixedShapes.cpp">
+      <Filter>Source Files\Scene</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\DX_Interface\DX_Device.h">
@@ -907,6 +910,9 @@
     </ClInclude>
     <ClInclude Include="src\RHI\ShaderCompiler.h">
       <Filter>Header Files\RHI</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Scene\FixedShapes.h">
+      <Filter>Header Files\Scene</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

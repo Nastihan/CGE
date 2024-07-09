@@ -156,8 +156,8 @@ namespace CGE
 			m_modelTransformBufferView = rhiFactory.CreateBufferView();
 			m_modelTransformBufferView->Init(*m_modelTransformCbuff, modelBufferViewDescriptor);
 
-			const RHI::ShaderPermutation& defaultPBRForward_MaterialShader = *RHI::Graphics::GetAssetProcessor().GetShaderPermutation("DefaultPBRForward_MaterialShader");
-			const RHI::ShaderResourceGroupLayout* objectSrgLayout = defaultPBRForward_MaterialShader.m_pipelineLayoutDescriptor->GetShaderResourceGroupLayout(RHI::ShaderResourceGroupType::Object);
+			const RHI::ShaderPermutation& specularGlossiness_Shader = *RHI::Graphics::GetAssetProcessor().GetShaderPermutation("SpecularGlossiness_Shader");
+			const RHI::ShaderResourceGroupLayout* objectSrgLayout = specularGlossiness_Shader.m_pipelineLayoutDescriptor->GetShaderResourceGroupLayout(RHI::ShaderResourceGroupType::Object);
 			m_objectSrg = rhiFactory.CreateShaderResourceGroup();
 			RHI::ShaderResourceGroupData objectSrgData(objectSrgLayout);
 

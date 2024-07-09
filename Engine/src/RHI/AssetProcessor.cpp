@@ -8,6 +8,16 @@
 #include <filesystem>
 #include <fstream>
 
+// DXToolKit
+// [todo] I dont want RHI level classes to be dependant on a platform specific toolkit
+// Need to replace this with a platform independent texture loader later.
+#include <DirectXTex/DirectXTex.h>
+using namespace DirectX;
+
+// DX12
+#include "../DX_Interface/DX_CommonHeaders.h"
+#include "../DX_Interface/DX_Conversions.h"
+
 #define STRINGIFY(x) #x
 #define EXPAND(x) STRINGIFY(x)
 
@@ -25,12 +35,22 @@ namespace CGE
 			m_fullAssetPath = projPath + "Assets";
 			m_fullShaderAssetPath = m_fullAssetPath + "\\Shaders";
 			m_fullModelAssetPath = m_fullAssetPath + "\\Models";
+			m_fullTextureAssetPath = m_fullAssetPath + "\\Textures";
+			m_fullMaterialAssetPath = m_fullAssetPath + "\\Materials";
 
 			for (const auto& entry : std::filesystem::directory_iterator(m_fullShaderAssetPath))
 			{
 				if (entry.is_regular_file() && entry.path().extension() == ".json")
 				{
 					m_shaderFiles.push_back(entry.path().filename().string());
+				}
+			}
+
+			for (const auto& entry : std::filesystem::directory_iterator(m_fullMaterialAssetPath))
+			{
+				if (entry.is_regular_file() && entry.path().extension() == ".json" && (entry.path().filename().string().find("Material.json") != std::string::npos))
+				{
+					m_materialFiles.push_back(entry.path().filename().string());
 				}
 			}
 		}
@@ -123,6 +143,137 @@ namespace CGE
 			return ResultCode::Success;
 		}
 
+		RHI::ResultCode AssetProcessor::BuildMaterials()
+		{
+			for (const auto& fileName : m_materialFiles)
+			{
+				if (m_materials.find(fileName) != m_materials.end())
+				{
+					continue;
+				}
+				std::string fullMaterialFilePath = m_fullMaterialAssetPath + "\\" + fileName;
+				std::ifstream materialFile(fullMaterialFilePath);
+				nlohmann::json materialFileData = nlohmann::json::parse(materialFile);
+
+				assert(materialFileData.contains("Name") && materialFileData.contains("ShaderName") && materialFileData.contains("MaterialLayout"));
+				if (materialFileData.contains("Name"))
+				{
+					m_materials.insert({ materialFileData["Name"], std::make_shared<Scene::Material>() });
+				}
+				Scene::Material& material = *m_materials[materialFileData["Name"]];
+
+				if (materialFileData.contains("ShaderName"))
+				{
+					material.SetShaderPermutation(m_permutationMap[materialFileData["ShaderName"]]);
+				}
+
+				if (materialFileData.contains("MaterialLayout"))
+				{
+					std::string materialLayoutFilePath = m_fullMaterialAssetPath + "\\" + std::string(materialFileData["MaterialLayout"]) + ".json";
+					std::ifstream materialLayoutFile(materialLayoutFilePath);
+					nlohmann::json materialLayoutFileData = nlohmann::json::parse(materialLayoutFile);
+
+					if (materialLayoutFileData.contains("PropertyLayout"))
+					{
+						uint32_t offset = 0;
+						uint32_t totalMaterialPropertySizeInBytes = 0;
+						uint32_t packing = 0;
+						for (const auto& jPropertyLayout : materialLayoutFileData["PropertyLayout"])
+						{
+							Scene::Material::PropertyInfo propertyInfo;
+							std::string propertyName;
+
+							assert(jPropertyLayout.contains("Name") && jPropertyLayout.contains("Type"));
+
+							if (jPropertyLayout.contains("Name"))
+							{
+								propertyName = jPropertyLayout["Name"];
+							}
+							if (jPropertyLayout.contains("Type"))
+							{
+								propertyInfo.m_type = jPropertyLayout["Type"];
+								uint32_t propertyTypeSizeInBytes = GetNumberOfBytes(jPropertyLayout["Type"]);
+								packing += propertyTypeSizeInBytes;
+
+								// Check if we need padding
+								if (packing >= 16)
+								{
+									uint32_t padding = 16 - packing;
+									totalMaterialPropertySizeInBytes += padding;
+									offset += padding;
+									packing = 0;
+								}
+								propertyInfo.m_offset = offset;
+								offset += propertyTypeSizeInBytes;
+								totalMaterialPropertySizeInBytes += propertyTypeSizeInBytes;
+
+								if (jPropertyLayout.contains("ReflectionUI"))
+								{
+									propertyInfo.m_reflectionUI = jPropertyLayout["ReflectionUI"];
+									if (jPropertyLayout.contains("MinValue"))
+									{
+										propertyInfo.m_reflectionMinMax.first = jPropertyLayout["MinValue"];
+									}
+									if (jPropertyLayout.contains("MaxValue"))
+									{
+										propertyInfo.m_reflectionMinMax.second = jPropertyLayout["MaxValue"];
+									}
+								}
+							}
+							material.InsertProperty(propertyName, propertyInfo);
+						}
+						uint32_t endPadding = totalMaterialPropertySizeInBytes % 16;
+						material.InitMaterialProperty(totalMaterialPropertySizeInBytes + endPadding);
+						for (const auto& jPropertyLayout : materialLayoutFileData["PropertyLayout"])
+						{
+							if (jPropertyLayout.contains("Name") && jPropertyLayout.contains("Type") && jPropertyLayout.contains("DefaultValue"))
+							{
+								std::string name = jPropertyLayout["Name"];
+								std::string type = jPropertyLayout["Type"];
+
+								if (type == "float4")
+								{
+									std::vector<float> values = jPropertyLayout["DefaultValue"];
+									glm::vec4 value(values[0], values[1], values[2], values[3]);
+
+									material.SetProperty<glm::vec4>(name, value);
+								}
+								else if (type == "float3")
+								{
+									std::vector<float> values = jPropertyLayout["DefaultValue"];
+									glm::vec3 value(values[0], values[1], values[2]);
+
+									material.SetProperty<glm::vec3>(name, value);
+								}
+								else if (type == "float2")
+								{
+									std::vector<float> values = jPropertyLayout["DefaultValue"];
+									glm::vec2 value(values[0], values[1]);
+
+									material.SetProperty<glm::vec2>(name, value);
+								}
+								else if (type == "float")
+								{
+									float value = jPropertyLayout["DefaultValue"];
+									material.SetProperty<float>(name, value);
+								}
+								else if (type == "bool")
+								{
+									float value = jPropertyLayout["DefaultValue"] == true ? 1.0 : 0.0;
+									material.SetProperty<uint32_t>(name, value);
+								}
+								else
+								{
+									assert(false, "Unknown type");
+								}
+							}
+						}
+					}
+				}
+			}
+			return RHI::ResultCode::Success;
+		}
+
 		const std::shared_ptr<const ShaderPermutation> AssetProcessor::GetShaderPermutation(std::string name) const
 		{
 			if (m_permutationMap.find(name) == m_permutationMap.end())
@@ -134,6 +285,44 @@ namespace CGE
 				// AssetProcessor::GetShaderPermutation so we use .at(name)
 				return std::shared_ptr<const ShaderPermutation>(m_permutationMap.at(name));
 			}
+		}
+
+		RHI::Ptr<RHI::Image> AssetProcessor::CreateTexture2D(const std::string& fileName)
+		{
+			RHI::Ptr<RHI::Image> texture;
+
+			TexMetadata metaData;
+			ScratchImage scratchImage;
+			std::string fullPath = m_fullTextureAssetPath + "\\" + fileName;
+			DX12::DXAssertSuccess(LoadFromWICFile(DX12::s2ws(fullPath).c_str(), WIC_FLAGS_FORCE_RGB, &metaData, scratchImage));
+
+			texture = RHI::Graphics::GetFactory().CreateImage();
+			const auto& imagePool = RHI::Graphics::GetImageSystem().GetSimpleImagePool();
+			RHI::ResultCode result = RHI::ResultCode::Fail;
+
+			// Init the image
+			RHI::ImageInitRequest imageInitRequest;
+			imageInitRequest.m_image = texture.get();
+			imageInitRequest.m_descriptor = RHI::ImageDescriptor::Create2D(RHI::ImageBindFlags::ShaderRead,
+				static_cast<uint32_t>(metaData.width),
+				static_cast<uint32_t>(metaData.width),
+				DX12::ConvertFormat(metaData.format));
+			result = imagePool->InitImage(imageInitRequest);
+			assert(result == RHI::ResultCode::Success);
+
+			// Update the image contents with the scratch image
+			RHI::ImageUpdateRequest imageUpdateRequest;
+			imageUpdateRequest.m_image = texture.get();
+			imageUpdateRequest.m_sourceSubresourceLayout = RHI::GetImageSubresourceLayout(texture->GetDescriptor(), RHI::ImageSubresource{});
+			imageUpdateRequest.m_sourceData = scratchImage.GetImages()[0].pixels;
+			result = imagePool->UpdateImageContents(imageUpdateRequest);
+			assert(result == RHI::ResultCode::Success);
+
+			return texture;
+			RHI::ImageDescriptor imageDesc = texture->GetDescriptor();
+			RHI::Ptr<RHI::ImageView> imageView = RHI::Graphics::GetFactory().CreateImageView();
+			RHI::ImageViewDescriptor imageViewDesc = RHI::ImageViewDescriptor::Create(imageDesc.m_format, 0, 0);
+			imageView->Init(*texture, imageViewDesc);
 		}
 
 		void AssetProcessor::SetRasterState(const nlohmann::json& jRasterState, RHI::RasterState& rasterState)
@@ -677,6 +866,35 @@ namespace CGE
 			{
 				assert(false, "Unknown HardwareQueueClass. Check your .shader file.");
 				return RHI::HardwareQueueClass::Unknown;
+			}
+		}
+
+		uint32_t AssetProcessor::GetNumberOfBytes(const std::string& type)
+		{
+			if (type == "float4")
+			{
+				return 16;
+			}
+			else if (type == "float3")
+			{
+				return 12;
+			}
+			else if (type == "float2")
+			{
+				return 8;
+			}
+			else if (type == "float")
+			{
+				return 4;
+			}
+			else if (type == "bool")
+			{
+				return 4;
+			}
+			else
+			{
+				assert(false, "Unknown type");
+				return -1;
 			}
 		}
 	}

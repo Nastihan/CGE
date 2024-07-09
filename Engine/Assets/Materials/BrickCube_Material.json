@@ -1,0 +1,17 @@
+{
+	"Name" : "BrickCube_Material",
+	"ShaderName" : "SpecularGlossiness_Shader",
+	"MaterialLayout" : "SpecularGlossiness_MaterialLayout",
+	
+	"Textures" : 
+	[
+		{
+			"Name" : "PerMaterial_DiffuseTexture",
+			"File" : "brick_wall_diffuse.jpg"
+		},
+		{
+			"Name" : "PerMaterial_NormalTexture",
+			"File" : "brick_wall_normal.jpg"
+		}
+	]
+}	

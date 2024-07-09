@@ -127,13 +127,13 @@ namespace CGE
 			renderAttachmentLayout.m_subpassLayouts[0].m_rendertargetDescriptors[0] = RHI::RenderAttachmentDescriptor{ 0, RHI::InvalidRenderAttachmentIndex, RHI::AttachmentLoadStoreAction() };
 			renderAttachmentLayout.m_subpassLayouts[0].m_depthStencilDescriptor = RHI::RenderAttachmentDescriptor{ 1, RHI::InvalidRenderAttachmentIndex, RHI::AttachmentLoadStoreAction() };
 
-			const std::shared_ptr<const RHI::ShaderPermutation> defaultPBRForward_MaterialShader = RHI::Graphics::GetAssetProcessor().GetShaderPermutation("DefaultPBRForward_MaterialShader");
+			const std::shared_ptr<const RHI::ShaderPermutation> specularGlossiness_Shader = RHI::Graphics::GetAssetProcessor().GetShaderPermutation("SpecularGlossiness_Shader");
 
-			m_drawPipelineStateDescriptor.m_vertexFunction = defaultPBRForward_MaterialShader->m_vertexShader;
-			m_drawPipelineStateDescriptor.m_fragmentFunction = defaultPBRForward_MaterialShader->m_pixelShader;
-			m_drawPipelineStateDescriptor.m_pipelineLayoutDescriptor = defaultPBRForward_MaterialShader->m_pipelineLayoutDescriptor;
-			m_drawPipelineStateDescriptor.m_inputStreamLayout = defaultPBRForward_MaterialShader->m_inputStreamLayout;
-			m_drawPipelineStateDescriptor.m_renderStates = defaultPBRForward_MaterialShader->m_renderState;
+			m_drawPipelineStateDescriptor.m_vertexFunction = specularGlossiness_Shader->m_vertexShader;
+			m_drawPipelineStateDescriptor.m_fragmentFunction = specularGlossiness_Shader->m_pixelShader;
+			m_drawPipelineStateDescriptor.m_pipelineLayoutDescriptor = specularGlossiness_Shader->m_pipelineLayoutDescriptor;
+			m_drawPipelineStateDescriptor.m_inputStreamLayout = specularGlossiness_Shader->m_inputStreamLayout;
+			m_drawPipelineStateDescriptor.m_renderStates = specularGlossiness_Shader->m_renderState;
 			// The pass should configure this. ([todo] later on json passes)
 			m_drawPipelineStateDescriptor.m_renderAttachmentConfiguration = renderAttachmentConfiguration;
 

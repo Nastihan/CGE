@@ -2,6 +2,7 @@
 // RHI
 #include "../RHI/Image.h"
 #include "../RHI/Graphics.h"
+#include "../RHI/AssetProcessor.h"
 
 // DX12
 #include "../DX_Interface/DX_CommonHeaders.h"
@@ -234,8 +235,10 @@ namespace CGE
 
 		void Material::InitMaterialSrg()
 		{
-			const RHI::ShaderPermutation& defaultPBRForward_MaterialShader = *RHI::Graphics::GetAssetProcessor().GetShaderPermutation("DefaultPBRForward_MaterialShader");
-			const RHI::ShaderResourceGroupLayout* materialSrgLayout = defaultPBRForward_MaterialShader.m_pipelineLayoutDescriptor->GetShaderResourceGroupLayout(RHI::ShaderResourceGroupType::Material);
+			// [todo] Currently I'm building the material srg from the DefaultPBRForward_MaterialShader this will not allow fully custom material layouts.
+			// Later I have to enable a material layout + material json files so the user can create fully custom materials for their usecase.
+			const RHI::ShaderPermutation& specularGlossiness_Shader = *RHI::Graphics::GetAssetProcessor().GetShaderPermutation("SpecularGlossiness_Shader");
+			const RHI::ShaderResourceGroupLayout* materialSrgLayout = specularGlossiness_Shader.m_pipelineLayoutDescriptor->GetShaderResourceGroupLayout(RHI::ShaderResourceGroupType::Material);
 			m_materialSrg = RHI::Graphics::GetFactory().CreateShaderResourceGroup();
 			RHI::ShaderResourceGroupData materialSrgData(materialSrgLayout);
 
@@ -323,6 +326,22 @@ namespace CGE
 				m_dirty = false;
 				return mapSuccess;
 			}
+		}
+
+		void Material::SetShaderPermutation(std::shared_ptr<RHI::ShaderPermutation> permutation)
+		{
+			m_shaderPermutation = permutation;
+		}
+
+		void Material::InsertProperty(const std::string& name, const PropertyInfo& propertyInfo)
+		{
+			assert(m_nameToInfoMap.find(name) == m_nameToInfoMap.end(), "The property map should not contain duplicate names. Check your material layout json file.");
+			m_nameToInfoMap.insert({ name, propertyInfo });
+		}
+
+		void Material::InitMaterialProperty(uint32_t totalSizeInBytes)
+		{
+			m_materialProperties.reserve(totalSizeInBytes);
 		}
 	}
 }

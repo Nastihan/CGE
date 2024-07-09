@@ -95,7 +95,8 @@ float4 MainPS( VertexShaderOutput IN ) : SV_TARGET
 
     float4 P = float4( IN.positionVS, 1 );
 
-    LightingResult lit = DoLighting( PerScene_Lights, mat, eyePos, P, N );
+	float4x4 worldToCamera = ViewTransform;
+    LightingResult lit = DoLighting( PerScene_Lights, mat, eyePos, P, N, worldToCamera );
 
     diffuse *= float4( lit.Diffuse.rgb, 1.0f ); // Discard the alpha value from the lighting calculations.
 

@@ -19,7 +19,10 @@
 #include <filesystem>
 
 // DXToolKit
+// [todo] I dont want RHI level classes to be dependant on a platform specific toolkit
+// Need to replace this with a platform independent texture loader later.
 #include <DirectXTex/DirectXTex.h>
+using namespace DirectX;
 
 // glm
 #include <glm/gtx/compatibility.hpp>
@@ -40,7 +43,6 @@
 #define STRINGIFY(x) #x
 #define EXPAND(x) STRINGIFY(x)
 
-using namespace DirectX;
 
 namespace CGE
 {
@@ -124,8 +126,15 @@ namespace CGE
 
             std::shared_ptr<Material> pMaterial = std::make_shared<Material>();
 
+            uint32_t offset = 0;
+            uint32_t packing = 0;
+            uint32_t totalMaterialPropertySizeInBytes = 0;
+
             if (material.Get(AI_MATKEY_COLOR_AMBIENT, ambientColor) == aiReturn_SUCCESS)
             {
+                //Material::PropertyInfo propertyInfo;
+                //propertyInfo.
+                //pMaterial->InsertProperty()
                 pMaterial->SetAmbientColor(glm::vec4(ambientColor.r, ambientColor.g, ambientColor.b, ambientColor.a));
             }
             if (material.Get(AI_MATKEY_COLOR_EMISSIVE, emissiveColor) == aiReturn_SUCCESS)

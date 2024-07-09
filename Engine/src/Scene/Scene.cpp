@@ -14,6 +14,8 @@
 #include "../imgui/imgui.h"
 #include "../imgui/imgui_impl_glfw.h"
 
+#include "FixedShapes.h"
+
 namespace CGE
 {
 	namespace Scene
@@ -23,9 +25,9 @@ namespace CGE
 			for (size_t i = 0; i < 1; i++)
 			{
 				Light light;
-				light.m_type = Light::LightType::Point;
-				light.m_positionWS = glm::vec4(-10.0f, 1.7f, 0.6f, 1.0f);
-				light.m_color = glm::vec4(1.0f, 1.0f, 0.0f, 0.0f);
+				light.m_type = Light::LightType::Directional;
+				light.m_directionWS = glm::vec4(0.5, -0.5, 0.5, 1.0);
+				light.m_color = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
 				light.m_intensity = 3.5;
 				m_lights.push_back(light);
 			}
@@ -52,8 +54,8 @@ namespace CGE
 			RHI::BufferViewDescriptor lightBufferViewDescriptor = RHI::BufferViewDescriptor::CreateStructured(0, m_lights.size(), sizeof(Light));
 			m_lightBufferView->Init(*m_lightBuffer, lightBufferViewDescriptor);
 
-			const RHI::ShaderPermutation& defaultPBRForward_MaterialShader = *RHI::Graphics::GetAssetProcessor().GetShaderPermutation("DefaultPBRForward_MaterialShader");
-			const RHI::ShaderResourceGroupLayout* sceneSrgLayout = defaultPBRForward_MaterialShader.m_pipelineLayoutDescriptor->GetShaderResourceGroupLayout(RHI::ShaderResourceGroupType::Scene);
+			const RHI::ShaderPermutation& specularGlossiness_Shader = *RHI::Graphics::GetAssetProcessor().GetShaderPermutation("SpecularGlossiness_Shader");
+			const RHI::ShaderResourceGroupLayout* sceneSrgLayout = specularGlossiness_Shader.m_pipelineLayoutDescriptor->GetShaderResourceGroupLayout(RHI::ShaderResourceGroupType::Scene);
 			m_sceneSrg = rhiFactory.CreateShaderResourceGroup();
 			RHI::ShaderResourceGroupData sceneSrgData(sceneSrgLayout);
 			RHI::ShaderInputBufferIndex lightBufferInputIdx = sceneSrgLayout->FindShaderInputBufferIndex("PerScene_Lights");
@@ -79,6 +81,11 @@ namespace CGE
 		{
 			m_models.emplace_back(modelName);
 			m_models.back().LoadFromFile(pathString, modelName);
+		}
+
+		void Scene::AddShape(std::shared_ptr<Shape> shape)
+		{
+			m_shapes.push_back(shape);
 		}
 
 		Camera& Scene::GetCamera()
@@ -246,6 +253,10 @@ namespace CGE
 			for (const auto& model : m_models)
 			{
 				model.BuildDrawList(drawItems, srgsToBind);
+			}
+			for (const auto& shape : m_shapes)
+			{
+				shape->BuildDrawList(drawItems, srgsToBind);
 			}
 			return drawItems;
 		}

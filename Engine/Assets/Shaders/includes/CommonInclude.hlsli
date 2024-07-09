@@ -143,6 +143,14 @@ cbuffer PerMaterial_MaterialProperties : register( b2 )
     Material Mat;
 };
 
+cbuffer PerView_CameraMatrix : register( b1 )
+{
+	float4x4 ViewTransform;
+	float4x4 InverseViewTransform;
+	float4x4 ProjectionTransform;
+	float4x4 InverseProjectionTransform;
+};
+
 Texture2D PerMaterial_AmbientTexture        : register( t0 );
 Texture2D PerMaterial_EmissiveTexture       : register( t1 );
 Texture2D PerMaterial_DiffuseTexture        : register( t2 );
@@ -356,10 +364,10 @@ LightingResult DoPointLight( Light light, Material mat, float4 V, float4 P, floa
     return result;
 }
 
-LightingResult DoDirectionalLight( Light light, Material mat, float4 V, float4 P, float4 N )
+LightingResult DoDirectionalLight( Light light, Material mat, float4 V, float4 P, float4 N, float4x4 worldToView )
 {
     LightingResult result;
-
+	light.DirectionVS = mul(worldToView, light.DirectionWS);
     float4 L = normalize( -light.DirectionVS );
 
     result.Diffuse = DoDiffuse( light, L, N ) * light.Intensity;
@@ -385,7 +393,7 @@ LightingResult DoSpotLight( Light light, Material mat, float4 V, float4 P, float
     return result;
 }
 
-LightingResult DoLighting( StructuredBuffer<Light> lights, Material mat, float4 eyePos, float4 P, float4 N )
+LightingResult DoLighting( StructuredBuffer<Light> lights, Material mat, float4 eyePos, float4 P, float4 N, float4x4 worldToView )
 {
     float4 V = normalize( eyePos - P );
 
@@ -404,7 +412,7 @@ LightingResult DoLighting( StructuredBuffer<Light> lights, Material mat, float4 
         {
         case DIRECTIONAL_LIGHT:
         {
-            result = DoDirectionalLight( lights[i], mat, V, P, N );
+            result = DoDirectionalLight( lights[i], mat, V, P, N, worldToView );
         }
         break;
         case POINT_LIGHT:

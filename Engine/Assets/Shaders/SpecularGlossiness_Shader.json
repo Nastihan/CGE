@@ -1,6 +1,6 @@
  
  {
-	 "Name" : "DefaultPBRForward_MaterialShader",
+	 "Name" : "SpecularGlossiness_Shader",
 	 
 	 "ShaderPermutationType" : "Material",
 	 
@@ -69,12 +69,12 @@
             {
                 "name" : "MainVS",
                 "type" : "Vertex",
-				"source" : "DefaultPBRForwardVS.hlsl"
+				"source" : "SpecularGlossinessVS.hlsl"
             },
             {
                 "name" : "MainPS",
                 "type" : "Fragment",
-				"source" : "DefaultPBRForwardPS.hlsl"
+				"source" : "SpecularGlossinessPS.hlsl"
             }
         ]
      }

@@ -1,0 +1,134 @@
+
+{
+	"Name" : "SpecularGlossiness_MaterialLayout",
+	
+	"ShaderName" : "SpecularGlossiness_Shader",
+	
+	"PropertyLayout" : 
+	[
+		{
+			"Name" : "GlobalAmbient",
+			"Type" : "float4",
+			"DefaultValue" : [0.1, 0.1, 0.15, 1.0],
+			"ReflectionUI" : "ColorEdit4"
+		},
+		{
+			"Name" : "AmbientColor",
+			"Type" : "float4",
+			"DefaultValue" : [0.0, 0.0, 0.0, 1.0],
+			"ReflectionUI" : "ColorEdit4"
+		},
+		{
+			"Name" : "EmissiveColor",
+			"Type" : "float4",
+			"DefaultValue" : [0.0, 0.0, 0.0, 1.0],
+			"ReflectionUI" : "ColorEdit4"
+		},
+		{
+			"Name" : "DiffuseColor",
+			"Type" : "float4",
+			"DefaultValue" : [1.0, 1.0, 1.0, 1.0],
+			"ReflectionUI" : "ColorEdit4"
+		},
+		{
+			"Name" : "SpecularColor",
+			"Type" : "float4",
+			"DefaultValue" : [0.0, 0.0, 0.0, 1.0],
+			"ReflectionUI" : "ColorEdit4"
+		},
+		{
+			"Name" : "Reflectance",
+			"Type" : "float4",
+			"DefaultValue" : [0.0, 0.0, 0.0, 0.0],
+			"ReflectionUI" : "ColorEdit4"
+		},
+		{
+			"Name" : "Opacity",
+			"Type" : "float",
+			"DefaultValue" : 1.0,
+			"ReflectionUI" : "SliderFloat",
+			"MinValue" : 0.0,
+			"MaxValue" : 1.0
+		},
+		{
+			"Name" : "SpecularPower",
+			"Type" : "float",
+			"DefaultValue" : 0.0,
+			"ReflectionUI" : "SliderFloat",
+			"MinValue" : 0.0,
+			"MaxValue" : 128.0
+		},
+		{
+			"Name" : "IndexOfRefraction",
+			"Type" : "float",
+			"DefaultValue" : 0.0,
+			"ReflectionUI" : "SliderFloat",
+			"MinValue" : 0.0,
+			"MaxValue" : 5.0
+		},
+		{
+			"Name" : "HasAmbientTexture",
+			"Type" : "bool",
+			"DefaultValue" : "false"
+		},
+		{
+			"Name" : "HasEmissiveTexture",
+			"Type" : "bool",
+			"DefaultValue" : "false"
+		},
+		{
+			"Name" : "HasDiffuseTexture",
+			"Type" : "bool",
+			"DefaultValue" : "false"
+		},
+		{
+			"Name" : "HasSpecularTexture",
+			"Type" : "bool",
+			"DefaultValue" : "false"
+		},
+		{
+			"Name" : "HasSpecularPowerTexture",
+			"Type" : "bool",
+			"DefaultValue" : "false"
+		},
+		{
+			"Name" : "HasNormalTexture",
+			"Type" : "bool",
+			"DefaultValue" : "false"
+		},
+		{
+			"Name" : "HasBumpTexture",
+			"Type" : "bool",
+			"DefaultValue" : "false"
+		},
+		{
+			"Name" : "HasOpacityTexture",
+			"Type" : "bool",
+			"DefaultValue" : "false"
+		},
+		{
+			"Name" : "BumpIntensity",
+			"Type" : "float",
+			"DefaultValue" : 5.0,
+			"ReflectionUI" : "SliderFloat",
+			"MinValue" : 0.0,
+			"MaxValue" : 10.0
+		},
+		{
+			"Name" : "SpecularScale",
+			"Type" : "float",
+			"DefaultValue" : 128.0,
+			"ReflectionUI" : "SliderFloat",
+			"MinValue" : 0.0,
+			"MaxValue" : 128.0
+		},
+		{
+			"Name" : "AlphaThreshold",
+			"Type" : "float",
+			"DefaultValue" : 0.1,
+			"ReflectionUI" : "SliderFloat",
+			"MinValue" : 0.0,
+			"MaxValue" : 1.0
+		}
+	]
+}

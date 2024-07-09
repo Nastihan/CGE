@@ -101,6 +101,8 @@ namespace CGE
 			const PipelineState* m_pipelineState = nullptr;
 
 			// Vertex buffer view
+			// Pay very close mind to how you order and set these buffers both in the shader and draw item.
+			// They should match or you'll be using the wrong values in the shader.
 			uint8_t m_streamBufferViewCount = 0;
 			const StreamBufferView* m_streamBufferViews = nullptr;
 			
@@ -117,6 +119,11 @@ namespace CGE
 			uint8_t m_viewportsCount = 0;
 			const Viewport* m_viewports = nullptr;
 			const Scissor* m_scissors = nullptr;
+
+			// Once the draw item gets submitted to the pass draw list, the pass adds the RenderAttachmentConfiguration which is the final touch
+			// to build and set the m_pipelineState for this current draw item.
+			// The ShaderPermutation will be set and add to the item from an EngineShader or MaterialShader File.
+			// const ShaderPermutation& m_shaderPermutation;
 		};
 	}
 }

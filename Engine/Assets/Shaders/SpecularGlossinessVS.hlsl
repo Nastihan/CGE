@@ -3,24 +3,16 @@
 struct AppData
 {
     float3 position : POSITION;
+	float3 normal : NORMAL;
     float3 tangent : TANGENT;
     float3 binormal : BINORMAL;
-    float3 normal : NORMAL;
     float2 texCoord : TEXCOORD0;
 };
 
 cbuffer PerObject_Model : register(b0)
 {
     float4x4 ModelTransform;
-}
-
-cbuffer PerView_CameraMatrix : register(b1)
-{
-	float4x4 ViewTransform;
-	float4x4 InverseViewTransform;
-	float4x4 ProjectionTransform;
-	float4x4 InverseProjectionTransform;
-}
+};
 
 VertexShaderOutput MainVS(AppData IN)
 {
@@ -42,7 +34,6 @@ VertexShaderOutput MainVS(AppData IN)
     OUT.tangentVS = mul((float3x3) ModelView, IN.tangent);
     OUT.binormalVS = mul((float3x3) ModelView, IN.binormal);
     OUT.normalVS = mul((float3x3) ModelView, IN.normal);
-
     OUT.texCoord = IN.texCoord;
 
     return OUT;

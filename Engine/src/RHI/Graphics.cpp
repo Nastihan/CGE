@@ -68,6 +68,7 @@ namespace CGE
 			
 			m_assetProcessor->InitShaderCompiler();
 			m_assetProcessor->BuildShaderPermutations();
+			m_assetProcessor->BuildMaterials();
 
 			m_frameGraphExecuter = m_factory->CreateFrameGraphExecuter();
 			m_frameGraphExecuter->Init(*m_device);

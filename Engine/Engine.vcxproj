@@ -129,6 +129,7 @@
     <ClCompile Include="src\RHI\TypeHash.cpp" />
     <ClCompile Include="src\RHI\Viewport.cpp" />
     <ClCompile Include="src\Scene\Camera.cpp" />
+    <ClCompile Include="src\Scene\FixedShapes.cpp" />
     <ClCompile Include="src\Scene\Light.cpp" />
     <ClCompile Include="src\Scene\Material.cpp" />
     <ClCompile Include="src\Scene\Mesh.cpp" />
@@ -287,6 +288,7 @@
     <ClInclude Include="src\RHI\TypeHash.h" />
     <ClInclude Include="src\RHI\Viewport.h" />
     <ClInclude Include="src\Scene\Camera.h" />
+    <ClInclude Include="src\Scene\FixedShapes.h" />
     <ClInclude Include="src\Scene\Light.h" />
     <ClInclude Include="src\Scene\Material.h" />
     <ClInclude Include="src\Scene\Mesh.h" />

@@ -1,6 +1,15 @@
+
 #include "App.h"
+
+// RHI
 #include "RHI/Limits.h"
+
+// DX12
 #include "DX_Interface/DX_ImguiManager.h"
+
+// Scene
+#include "Scene/FixedShapes.h"
+
 #include "imgui/imgui.h"
 
 namespace CGE
@@ -10,14 +19,17 @@ namespace CGE
 		window.InitImgui();
 		m_scene = std::make_shared<Scene::Scene>();
 		m_scene->Init();
-		// m_scene->LoadModel("nano_textured\\nanosuit.obj", gfx.GetFrameGraphExecuter()->GetForwardPass());
-		// m_scene->LoadModel("suzanne\\suzanne.obj", gfx.GetFrameGraphExecuter()->GetForwardPass());
-		// m_scene->LoadModel("lord_inquisitor_servo_skull_gltf\\scene.gltf", gfx.GetFrameGraphExecuter()->GetForwardPass());
-		// m_scene->LoadModel("demon_skull_ring_gltf\\scene.gltf", gfx.GetFrameGraphExecuter()->GetForwardPass());
+		// m_scene->LoadModel("nano_textured\\nanosuit.obj", "Nano");
+		// m_scene->LoadModel("suzanne\\suzanne.obj", "Suzanne");
+		// m_scene->LoadModel("lord_inquisitor_servo_skull_gltf\\scene.gltf", "Skull");
+		// m_scene->LoadModel("demon_skull_ring_gltf\\scene.gltf", "Skull Ring");
 		m_scene->LoadModel("Sponza\\glTF\\Sponza.gltf", "Sponza");
 		gfx.GetFrameGraphExecuter()->GetForwardPass()->SetScenePtr(m_scene);
 		RegisterKeyboardEventCallback(m_scene->GetCamera().GetKeyPressedFunctionBindable());
 		// RHI::Graphics::GetImguiManager().PushSpawnableWindow(std::bind(&Scene::Camera::SpawnCameraImGuiWindow, &m_scene->GetCamera()));
+
+		std::shared_ptr<Scene::Shape> box = std::make_shared<Scene::Box>(glm::vec3(0.0, 0.0, 3.0)
+			, glm::vec3(1.0, 1.0, 1.0), glm::quat(glm::vec3(glm::radians(0.0), glm::radians(0.0), glm::radians(0.0))));
 	}
 	
 	App::~App() {}
