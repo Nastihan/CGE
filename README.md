@@ -6,6 +6,7 @@ This is a personal rendering engine for learning purposes.<br><br>
 Learning from some cool open source projects:<br>
 **Open 3D Engine (O3DE)**: https://github.com/o3de/o3de<br>
 **Diligent Engine**: https://github.com/DiligentGraphics/DiligentEngine<br>
+**3dgep's ForwardPlus**: https://github.com/3dgep/ForwardPlus<br>
 **Wicked Engine**: https://github.com/turanszkij/WickedEngine<br>
 
 Rasterizer (Working)<br>
