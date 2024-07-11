@@ -19,5 +19,5 @@ DXR (Ray Tracing and then Path Tracing)<br>
 Instancing - Mesh Shaders - GPU Driven Stuff<br>
 Multi-Threaded Command Recording<br>
 
-**Important Note**: This is currently a broken peace of software with lots of stuff going wrong in it, which we try to add to and improve upon daily.
+**Important Note**: This is currently a broken piece of software with lots of stuff going wrong in it, which we try to add to and improve upon daily.
 Once Features get completed and fully functional I'll update this page.
