@@ -124,50 +124,47 @@ namespace CGE
 
             const auto rootPath = parentPath + "\\";
 
+            // [todo] For now models loaded will use the SpecularGlossiness_MaterialLayout
+            // Later on I will enable to switch materials
             std::shared_ptr<Material> pMaterial = std::make_shared<Material>();
-
-            uint32_t offset = 0;
-            uint32_t packing = 0;
-            uint32_t totalMaterialPropertySizeInBytes = 0;
+            // Copy the material so the instance is unique to the mesh
+            *pMaterial = *RHI::Graphics::GetAssetProcessor().GetMaterialLayout("SpecularGlossiness_MaterialLayout");
 
             if (material.Get(AI_MATKEY_COLOR_AMBIENT, ambientColor) == aiReturn_SUCCESS)
             {
-                //Material::PropertyInfo propertyInfo;
-                //propertyInfo.
-                //pMaterial->InsertProperty()
-                pMaterial->SetAmbientColor(glm::vec4(ambientColor.r, ambientColor.g, ambientColor.b, ambientColor.a));
+                pMaterial->SetProperty("AmbientColor", glm::vec4(ambientColor.r, ambientColor.g, ambientColor.b, ambientColor.a));
             }
             if (material.Get(AI_MATKEY_COLOR_EMISSIVE, emissiveColor) == aiReturn_SUCCESS)
             {
-                pMaterial->SetEmissiveColor(glm::vec4(emissiveColor.r, emissiveColor.g, emissiveColor.b, emissiveColor.a));
+                pMaterial->SetProperty("EmissiveColor", glm::vec4(emissiveColor.r, emissiveColor.g, emissiveColor.b, emissiveColor.a));
             }
             if (material.Get(AI_MATKEY_COLOR_DIFFUSE, diffuseColor) == aiReturn_SUCCESS)
             {
-                pMaterial->SetDiffuseColor(glm::vec4(diffuseColor.r, diffuseColor.g, diffuseColor.b, diffuseColor.a));
+                pMaterial->SetProperty("DiffuseColor", glm::vec4(diffuseColor.r, diffuseColor.g, diffuseColor.b, diffuseColor.a));
             }
             if (material.Get(AI_MATKEY_COLOR_SPECULAR, specularColor) == aiReturn_SUCCESS)
             {
-                pMaterial->SetSpecularColor(glm::vec4(specularColor.r, specularColor.g, specularColor.b, specularColor.a));
+                pMaterial->SetProperty("SpecularColor", glm::vec4(specularColor.r, specularColor.g, specularColor.b, specularColor.a));
             }
             if (material.Get(AI_MATKEY_SHININESS, shininess) == aiReturn_SUCCESS)
             {
-                pMaterial->SetSpecularPower(shininess);
+                pMaterial->SetProperty("SpecularPower", shininess);
             }
             if (material.Get(AI_MATKEY_OPACITY, opacity) == aiReturn_SUCCESS)
             {
-                pMaterial->SetOpacity(opacity);
+                pMaterial->SetProperty("Opacity", opacity);
             }
             if (material.Get(AI_MATKEY_REFRACTI, indexOfRefraction))
             {
-                pMaterial->SetIndexOfRefraction(indexOfRefraction);
+                pMaterial->SetProperty("IndexOfRefraction", indexOfRefraction);
             }
             if (material.Get(AI_MATKEY_REFLECTIVITY, reflectivity) == aiReturn_SUCCESS)
             {
-                pMaterial->SetReflectance(glm::float4(reflectivity));
+                pMaterial->SetProperty("Reflectance", glm::float4(reflectivity));
             }
             if (material.Get(AI_MATKEY_BUMPSCALING, bumpIntensity) == aiReturn_SUCCESS)
             {
-                pMaterial->SetBumpIntensity(bumpIntensity);
+                pMaterial->SetProperty("BumpIntensity", bumpIntensity);
             }
 
             const auto& imagePool = RHI::Graphics::GetImageSystem().GetSimpleImagePool();
@@ -189,7 +186,8 @@ namespace CGE
                 RHI::ImageViewDescriptor imageViewDesc = RHI::ImageViewDescriptor::Create(imageDesc.m_format, 0, 0);
                 imageView->Init(*image, imageViewDesc);
 
-                pMaterial->SetTexture(Material::TextureType::Ambient, image, imageView);
+                pMaterial->SetProperty("HasAmbientTexture", true);
+                pMaterial->SetTexture("PerMaterial_AmbientTexture", image, imageView);
             }
 
             // Load emissive textures.
@@ -209,7 +207,8 @@ namespace CGE
                 RHI::ImageViewDescriptor imageViewDesc = RHI::ImageViewDescriptor::Create(imageDesc.m_format, 0, 0);
                 imageView->Init(*image, imageViewDesc);
 
-                pMaterial->SetTexture(Material::TextureType::Emissive, image, imageView);
+                pMaterial->SetProperty("HasEmissiveTexture", true);
+                pMaterial->SetTexture("PerMaterial_EmissiveTexture", image, imageView);
             }
 
             // Load diffuse textures.
@@ -229,7 +228,8 @@ namespace CGE
                 RHI::ImageViewDescriptor imageViewDesc = RHI::ImageViewDescriptor::Create(imageDesc.m_format, 0, 0);
                 imageView->Init(*image, imageViewDesc);
 
-                pMaterial->SetTexture(Material::TextureType::Diffuse, image, imageView);
+                pMaterial->SetProperty("HasDiffuseTexture", true);
+                pMaterial->SetTexture("PerMaterial_DiffuseTexture", image, imageView);
             }
 
             // Load specular texture.
@@ -249,7 +249,8 @@ namespace CGE
                 RHI::ImageViewDescriptor imageViewDesc = RHI::ImageViewDescriptor::Create(imageDesc.m_format, 0, 0);
                 imageView->Init(*image, imageViewDesc);
 
-                pMaterial->SetTexture(Material::TextureType::Specular, image, imageView);
+                pMaterial->SetProperty("HasSpecularTexture", true);
+                pMaterial->SetTexture("PerMaterial_SpecularTexture", image, imageView);
             }
 
 
@@ -270,7 +271,8 @@ namespace CGE
                 RHI::ImageViewDescriptor imageViewDesc = RHI::ImageViewDescriptor::Create(imageDesc.m_format, 0, 0);
                 imageView->Init(*image, imageViewDesc);
 
-                pMaterial->SetTexture(Material::TextureType::SpecularPower, image, imageView);
+                pMaterial->SetProperty("HasSpecularPowerTexture", true);
+                pMaterial->SetTexture("PerMaterial_SpecularPowerTexture", image, imageView);
             }
 
             if (material.GetTextureCount(aiTextureType_OPACITY) > 0 &&
@@ -289,7 +291,8 @@ namespace CGE
                 RHI::ImageViewDescriptor imageViewDesc = RHI::ImageViewDescriptor::Create(imageDesc.m_format, 0, 0);
                 imageView->Init(*image, imageViewDesc);
 
-                pMaterial->SetTexture(Material::TextureType::Opacity, image, imageView);
+                pMaterial->SetProperty("HasOpacityTexture", true);
+                pMaterial->SetTexture("PerMaterial_OpacityTexture", image, imageView);
             }
 
             // Load normal map texture.
@@ -309,7 +312,8 @@ namespace CGE
                 RHI::ImageViewDescriptor imageViewDesc = RHI::ImageViewDescriptor::Create(imageDesc.m_format, 0, 0);
                 imageView->Init(*image, imageViewDesc);
 
-                pMaterial->SetTexture(Material::TextureType::Normal, image, imageView);
+                pMaterial->SetProperty("HasNormalTexture", true);
+                pMaterial->SetTexture("PerMaterial_NormalTexture", image, imageView);
             }
             // Load bump map (only if there is no normal map).
             else if (material.GetTextureCount(aiTextureType_HEIGHT) > 0 &&
@@ -328,7 +332,8 @@ namespace CGE
                 RHI::ImageViewDescriptor imageViewDesc = RHI::ImageViewDescriptor::Create(imageDesc.m_format, 0, 0);
                 imageView->Init(*image, imageViewDesc);
 
-                pMaterial->SetTexture(Material::TextureType::Bump, image, imageView);
+                pMaterial->SetProperty("HasBumpTexture", true);
+                pMaterial->SetTexture("PerMaterial_BumpTexture", image, imageView);
             }
             pMaterial->InitMaterialCbuff();
             pMaterial->InitMaterialSrg();

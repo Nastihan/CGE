@@ -46,7 +46,7 @@ namespace CGE
 				glm::mat4 m_modelTransform;
 			};
 		public:
-			Shape(glm::vec3 pos, glm::vec3 scale, glm::quat rotation);
+			Shape(glm::vec3 pos, glm::vec3 scale, glm::quat rotation, std::shared_ptr<Material> material);
 			Shape() = delete;
 			virtual ~Shape() = default;
 
@@ -80,7 +80,7 @@ namespace CGE
 		{
 			using Base = Shape;
 		public:
-			Box(glm::vec3 pos, glm::vec3 scale, glm::quat rotation);
+			Box(glm::vec3 pos, glm::vec3 scale, glm::quat rotation, std::shared_ptr<Material> material);
 			Box() = delete;
 			~Box() = default;
 		};
@@ -94,7 +94,8 @@ namespace CGE
 				, glm::quat rotation
 				, float radius
 				, uint32_t latitudeDivisions
-				, uint32_t longitudeDivisions);
+				, uint32_t longitudeDivisions
+				, std::shared_ptr<Material> material);
 			~Sphere() = default;
 		};
 	}

@@ -28,8 +28,8 @@ namespace CGE
 		RegisterKeyboardEventCallback(m_scene->GetCamera().GetKeyPressedFunctionBindable());
 		// RHI::Graphics::GetImguiManager().PushSpawnableWindow(std::bind(&Scene::Camera::SpawnCameraImGuiWindow, &m_scene->GetCamera()));
 
-		std::shared_ptr<Scene::Shape> box = std::make_shared<Scene::Box>(glm::vec3(0.0, 0.0, 3.0)
-			, glm::vec3(1.0, 1.0, 1.0), glm::quat(glm::vec3(glm::radians(0.0), glm::radians(0.0), glm::radians(0.0))));
+		//std::shared_ptr<Scene::Shape> box = std::make_shared<Scene::Box>(glm::vec3(0.0, 0.0, 3.0)
+			//, glm::vec3(1.0, 1.0, 1.0), glm::quat(glm::vec3(glm::radians(0.0), glm::radians(0.0), glm::radians(0.0))));
 	}
 	
 	App::~App() {}

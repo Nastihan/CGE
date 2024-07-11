@@ -1,6 +1,6 @@
 {
 	"Name" : "BrickCube_Material",
-	"ShaderName" : "SpecularGlossiness_Shader",
+	
 	"MaterialLayout" : "SpecularGlossiness_MaterialLayout",
 	
 	"Textures" : 

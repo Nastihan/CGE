@@ -52,6 +52,10 @@ namespace CGE
 				{
 					m_materialFiles.push_back(entry.path().filename().string());
 				}
+				else
+				{
+					m_materialLayoutFiles.push_back(entry.path().filename().string());
+				}
 			}
 		}
 
@@ -143,6 +147,131 @@ namespace CGE
 			return ResultCode::Success;
 		}
 
+		RHI::ResultCode AssetProcessor::BuildMaterialLayouts()
+		{
+			for (const auto& fileName : m_materialLayoutFiles)
+			{
+				if (m_materialLayouts.find(fileName) != m_materialLayouts.end())
+				{
+					continue;
+				}
+				std::string fullMaterialLayoutFilePath = m_fullMaterialAssetPath + "\\" + fileName;
+				std::ifstream materialLayoutFile(fullMaterialLayoutFilePath);
+				nlohmann::json materialLayoutFileData = nlohmann::json::parse(materialLayoutFile);
+
+				assert(materialLayoutFileData.contains("Name") && materialLayoutFileData.contains("ShaderName") && materialLayoutFileData.contains("PropertyLayout"));
+				if (materialLayoutFileData.contains("Name"))
+				{
+					m_materialLayouts.insert({ materialLayoutFileData["Name"], std::make_shared<Scene::Material>() });
+				}
+
+				Scene::Material& material = *m_materialLayouts[materialLayoutFileData["Name"]];
+
+				if (materialLayoutFileData.contains("ShaderName"))
+				{
+					material.SetShaderPermutation(m_permutationMap[materialLayoutFileData["ShaderName"]]);
+				}
+
+				if (materialLayoutFileData.contains("PropertyLayout"))
+				{
+					uint32_t offset = 0;
+					uint32_t totalMaterialPropertySizeInBytes = 0;
+					uint32_t packing = 0;
+					for (const auto& jPropertyLayout : materialLayoutFileData["PropertyLayout"])
+					{
+						Scene::Material::PropertyInfo propertyInfo;
+						std::string propertyName;
+
+						assert(jPropertyLayout.contains("Name") && jPropertyLayout.contains("Type"));
+
+						if (jPropertyLayout.contains("Name"))
+						{
+							propertyName = jPropertyLayout["Name"];
+						}
+						if (jPropertyLayout.contains("Type"))
+						{
+							propertyInfo.m_type = jPropertyLayout["Type"];
+							uint32_t propertyTypeSizeInBytes = GetNumberOfBytes(jPropertyLayout["Type"]);
+							packing += propertyTypeSizeInBytes;
+
+							// Check if we need padding
+							if (packing >= 16)
+							{
+								uint32_t padding = 16 - packing;
+								totalMaterialPropertySizeInBytes += padding;
+								offset += padding;
+								packing = 0;
+							}
+							propertyInfo.m_offset = offset;
+							offset += propertyTypeSizeInBytes;
+							totalMaterialPropertySizeInBytes += propertyTypeSizeInBytes;
+
+							if (jPropertyLayout.contains("ReflectionUI"))
+							{
+								propertyInfo.m_reflectionUI = jPropertyLayout["ReflectionUI"];
+								if (jPropertyLayout.contains("MinValue"))
+								{
+									propertyInfo.m_reflectionMinMax.first = jPropertyLayout["MinValue"];
+								}
+								if (jPropertyLayout.contains("MaxValue"))
+								{
+									propertyInfo.m_reflectionMinMax.second = jPropertyLayout["MaxValue"];
+								}
+							}
+						}
+						material.InsertProperty(propertyName, propertyInfo);
+					}
+					uint32_t endPadding = totalMaterialPropertySizeInBytes % 16;
+					material.InitMaterialProperty(totalMaterialPropertySizeInBytes + endPadding);
+					for (const auto& jPropertyLayout : materialLayoutFileData["PropertyLayout"])
+					{
+						if (jPropertyLayout.contains("Name") && jPropertyLayout.contains("Type") && jPropertyLayout.contains("DefaultValue"))
+						{
+							std::string name = jPropertyLayout["Name"];
+							std::string type = jPropertyLayout["Type"];
+
+							if (type == "float4")
+							{
+								std::vector<float> values = jPropertyLayout["DefaultValue"];
+								glm::vec4 value(values[0], values[1], values[2], values[3]);
+
+								material.SetProperty<glm::vec4>(name, value);
+							}
+							else if (type == "float3")
+							{
+								std::vector<float> values = jPropertyLayout["DefaultValue"];
+								glm::vec3 value(values[0], values[1], values[2]);
+
+								material.SetProperty<glm::vec3>(name, value);
+							}
+							else if (type == "float2")
+							{
+								std::vector<float> values = jPropertyLayout["DefaultValue"];
+								glm::vec2 value(values[0], values[1]);
+
+								material.SetProperty<glm::vec2>(name, value);
+							}
+							else if (type == "float")
+							{
+								float value = jPropertyLayout["DefaultValue"];
+								material.SetProperty<float>(name, value);
+							}
+							else if (type == "bool")
+							{
+								float value = jPropertyLayout["DefaultValue"] == true ? 1.0 : 0.0;
+								material.SetProperty<uint32_t>(name, value);
+							}
+							else
+							{
+								assert(false, "Unknown type");
+							}
+						}
+					}
+				}
+			}
+			return RHI::ResultCode::Success;
+		}
+
 		RHI::ResultCode AssetProcessor::BuildMaterials()
 		{
 			for (const auto& fileName : m_materialFiles)
@@ -155,126 +284,101 @@ namespace CGE
 				std::ifstream materialFile(fullMaterialFilePath);
 				nlohmann::json materialFileData = nlohmann::json::parse(materialFile);
 
-				assert(materialFileData.contains("Name") && materialFileData.contains("ShaderName") && materialFileData.contains("MaterialLayout"));
+				assert(materialFileData.contains("Name") && materialFileData.contains("MaterialLayout"));
 				if (materialFileData.contains("Name"))
 				{
 					m_materials.insert({ materialFileData["Name"], std::make_shared<Scene::Material>() });
 				}
 				Scene::Material& material = *m_materials[materialFileData["Name"]];
 
-				if (materialFileData.contains("ShaderName"))
-				{
-					material.SetShaderPermutation(m_permutationMap[materialFileData["ShaderName"]]);
-				}
-
 				if (materialFileData.contains("MaterialLayout"))
 				{
-					std::string materialLayoutFilePath = m_fullMaterialAssetPath + "\\" + std::string(materialFileData["MaterialLayout"]) + ".json";
-					std::ifstream materialLayoutFile(materialLayoutFilePath);
-					nlohmann::json materialLayoutFileData = nlohmann::json::parse(materialLayoutFile);
+					material = *m_materialLayouts[materialFileData["MaterialLayout"]];
+				}
 
-					if (materialLayoutFileData.contains("PropertyLayout"))
+				if (materialFileData.contains("Properties"))
+				{
+					for (const auto& jProperty : materialFileData["Properties"])
 					{
-						uint32_t offset = 0;
-						uint32_t totalMaterialPropertySizeInBytes = 0;
-						uint32_t packing = 0;
-						for (const auto& jPropertyLayout : materialLayoutFileData["PropertyLayout"])
+						assert(jProperty.contains("Name") && jProperty.contains("Value"));
+						if (jProperty.contains("Name") && jProperty.contains("Value"))
 						{
-							Scene::Material::PropertyInfo propertyInfo;
-							std::string propertyName;
-
-							assert(jPropertyLayout.contains("Name") && jPropertyLayout.contains("Type"));
-
-							if (jPropertyLayout.contains("Name"))
+							std::string propertyName = jProperty["Name"];
+							const auto& propertyInfo = material.GetPropertyInfo(propertyName);
+							if (propertyInfo.m_type == "float4")
 							{
-								propertyName = jPropertyLayout["Name"];
+								std::vector<float> values = jProperty["Value"];
+								glm::vec4 value(values[0], values[1], values[2], values[3]);
+
+								material.SetProperty<glm::vec4>(propertyName, value);
 							}
-							if (jPropertyLayout.contains("Type"))
+							else if (propertyInfo.m_type == "float3")
 							{
-								propertyInfo.m_type = jPropertyLayout["Type"];
-								uint32_t propertyTypeSizeInBytes = GetNumberOfBytes(jPropertyLayout["Type"]);
-								packing += propertyTypeSizeInBytes;
+								std::vector<float> values = jProperty["Value"];
+								glm::vec3 value(values[0], values[1], values[2]);
 
-								// Check if we need padding
-								if (packing >= 16)
-								{
-									uint32_t padding = 16 - packing;
-									totalMaterialPropertySizeInBytes += padding;
-									offset += padding;
-									packing = 0;
-								}
-								propertyInfo.m_offset = offset;
-								offset += propertyTypeSizeInBytes;
-								totalMaterialPropertySizeInBytes += propertyTypeSizeInBytes;
-
-								if (jPropertyLayout.contains("ReflectionUI"))
-								{
-									propertyInfo.m_reflectionUI = jPropertyLayout["ReflectionUI"];
-									if (jPropertyLayout.contains("MinValue"))
-									{
-										propertyInfo.m_reflectionMinMax.first = jPropertyLayout["MinValue"];
-									}
-									if (jPropertyLayout.contains("MaxValue"))
-									{
-										propertyInfo.m_reflectionMinMax.second = jPropertyLayout["MaxValue"];
-									}
-								}
+								material.SetProperty<glm::vec3>(propertyName, value);
 							}
-							material.InsertProperty(propertyName, propertyInfo);
-						}
-						uint32_t endPadding = totalMaterialPropertySizeInBytes % 16;
-						material.InitMaterialProperty(totalMaterialPropertySizeInBytes + endPadding);
-						for (const auto& jPropertyLayout : materialLayoutFileData["PropertyLayout"])
-						{
-							if (jPropertyLayout.contains("Name") && jPropertyLayout.contains("Type") && jPropertyLayout.contains("DefaultValue"))
+							else if (propertyInfo.m_type == "float2")
 							{
-								std::string name = jPropertyLayout["Name"];
-								std::string type = jPropertyLayout["Type"];
+								std::vector<float> values = jProperty["Value"];
+								glm::vec2 value(values[0], values[1]);
 
-								if (type == "float4")
-								{
-									std::vector<float> values = jPropertyLayout["DefaultValue"];
-									glm::vec4 value(values[0], values[1], values[2], values[3]);
-
-									material.SetProperty<glm::vec4>(name, value);
-								}
-								else if (type == "float3")
-								{
-									std::vector<float> values = jPropertyLayout["DefaultValue"];
-									glm::vec3 value(values[0], values[1], values[2]);
-
-									material.SetProperty<glm::vec3>(name, value);
-								}
-								else if (type == "float2")
-								{
-									std::vector<float> values = jPropertyLayout["DefaultValue"];
-									glm::vec2 value(values[0], values[1]);
-
-									material.SetProperty<glm::vec2>(name, value);
-								}
-								else if (type == "float")
-								{
-									float value = jPropertyLayout["DefaultValue"];
-									material.SetProperty<float>(name, value);
-								}
-								else if (type == "bool")
-								{
-									float value = jPropertyLayout["DefaultValue"] == true ? 1.0 : 0.0;
-									material.SetProperty<uint32_t>(name, value);
-								}
-								else
-								{
-									assert(false, "Unknown type");
-								}
+								material.SetProperty<glm::vec2>(propertyName, value);
+							}
+							else if (propertyInfo.m_type == "float")
+							{
+								float value = jProperty["Value"];
+								material.SetProperty<float>(propertyName, value);
+							}
+							else if (propertyInfo.m_type == "bool")
+							{
+								float value = jProperty["Value"] == true ? 1.0 : 0.0;
+								material.SetProperty<uint32_t>(propertyName, value);
+							}
+							else
+							{
+								assert(false, "Unknown type");
 							}
 						}
 					}
 				}
+
+				if (materialFileData.contains("Textures"))
+				{
+					const auto& materialSrgLayout = material.GetShaderPermutation()->m_pipelineLayoutDescriptor->GetShaderResourceGroupLayout(RHI::ShaderResourceGroupType::Material);
+					for (const auto& jTextures : materialFileData["Textures"])
+					{
+						assert(jTextures.contains("Name") && jTextures.contains("File"));
+						if (jTextures.contains("Name") && jTextures.contains("File"))
+						{
+							RHI::ShaderInputImageIndex inputIdx = materialSrgLayout->FindShaderInputImageIndex(jTextures["Name"]);
+							RHI::ShaderInputImageDescriptor inputImageDesc = materialSrgLayout->GetShaderInput(inputIdx);
+
+							// [todo] Add all other types.
+							if (inputImageDesc.m_type == RHI::ShaderInputImageType::Image2D)
+							{
+								std::string name = jTextures["Name"];
+								std::string fileName = jTextures["File"];
+								RHI::Ptr<RHI::Image> image = CreateTexture2D(fileName);
+
+								RHI::ImageDescriptor imageDesc = image->GetDescriptor();
+								RHI::Ptr<RHI::ImageView> imageView = RHI::Graphics::GetFactory().CreateImageView();
+								RHI::ImageViewDescriptor imageViewDesc = RHI::ImageViewDescriptor::Create(imageDesc.m_format, 0, 0);
+								imageView->Init(*image, imageViewDesc);
+
+								material.SetTexture(name, image, imageView);
+							}
+						}
+					}
+				}
+				material.InitMaterialCbuff();
+				material.InitMaterialSrg();
 			}
 			return RHI::ResultCode::Success;
 		}
 
-		const std::shared_ptr<const ShaderPermutation> AssetProcessor::GetShaderPermutation(std::string name) const
+		const std::shared_ptr<const ShaderPermutation> AssetProcessor::GetShaderPermutation(const std::string& name) const
 		{
 			if (m_permutationMap.find(name) == m_permutationMap.end())
 			{
@@ -284,6 +388,19 @@ namespace CGE
 			{
 				// AssetProcessor::GetShaderPermutation so we use .at(name)
 				return std::shared_ptr<const ShaderPermutation>(m_permutationMap.at(name));
+			}
+		}
+
+		const std::shared_ptr<const Scene::Material> AssetProcessor::GetMaterialLayout(const std::string& name) const
+		{
+			if (m_materialLayouts.find(name) == m_materialLayouts.end())
+			{
+				return nullptr;
+			}
+			else
+			{
+				// AssetProcessor::GetShaderPermutation so we use .at(name)
+				return std::shared_ptr<const Scene::Material>(m_materialLayouts.at(name));
 			}
 		}
 

@@ -123,7 +123,7 @@ namespace CGE
 			// Once the draw item gets submitted to the pass draw list, the pass adds the RenderAttachmentConfiguration which is the final touch
 			// to build and set the m_pipelineState for this current draw item.
 			// The ShaderPermutation will be set and add to the item from an EngineShader or MaterialShader File.
-			// const ShaderPermutation& m_shaderPermutation;
+			// std::shared_ptr<RHI::ShaderPermutation> m_shaderPermutation = nullptr;
 		};
 	}
 }

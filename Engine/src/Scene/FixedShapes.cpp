@@ -9,7 +9,7 @@ namespace CGE
 {
 	namespace Scene
 	{
-		Shape::Shape(glm::vec3 pos, glm::vec3 scale, glm::quat rotation) : m_worldPos(pos), m_worldScale(scale), m_worldRotation(rotation)
+		Shape::Shape(glm::vec3 pos, glm::vec3 scale, glm::quat rotation, std::shared_ptr<Material> material) : m_worldPos(pos), m_worldScale(scale), m_worldRotation(rotation)
 		{
 			m_perObjectData = (PerObjectData*)_aligned_malloc(sizeof(PerObjectData), 16);
 
@@ -35,6 +35,9 @@ namespace CGE
 			RHI::BufferViewDescriptor modelBufferViewDescriptor = RHI::BufferViewDescriptor::CreateRaw(0, sizeof(PerObjectData));
 			m_modelToWorldTransformCbuffView = rhiFactory.CreateBufferView();
 			m_modelToWorldTransformCbuffView->Init(*m_modelToWorldTransformCbuff, modelBufferViewDescriptor);
+
+			// Making a copy so each instance of a shape can have its own material.
+			m_material = *material;
 		}
 
 		RHI::DrawItem Shape::GetDrawItem()
@@ -92,7 +95,7 @@ namespace CGE
 			return result;
 		}
 
-		Box::Box(glm::vec3 pos, glm::vec3 scale, glm::quat rotation) : Base(pos, scale, rotation)
+		Box::Box(glm::vec3 pos, glm::vec3 scale, glm::quat rotation, std::shared_ptr<Material> material) : Base(pos, scale, rotation, material)
 		{
 			auto& rhiFactory = RHI::Graphics::GetFactory();
 			const auto& staticInputAssemblyBufferPool = RHI::Graphics::GetBufferSystem().GetCommonBufferPool(RHI::CommonBufferPoolType::StaticInputAssembly);
@@ -342,7 +345,8 @@ namespace CGE
 			, glm::quat rotation
 			, float radius
 			, uint32_t latitudeDivisions
-			, uint32_t longitudeDivisions) : Base(pos, scale, rotation)
+			, uint32_t longitudeDivisions
+			, std::shared_ptr<Material> material) : Base(pos, scale, rotation, material)
 		{
 
 		}

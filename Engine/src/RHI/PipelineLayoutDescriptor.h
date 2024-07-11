@@ -75,7 +75,7 @@ namespace CGE
             static constexpr HashValue64 InvalidHash = ~HashValue64{ 0 };
             using ShaderResourceGroupLayoutInfo = std::pair<Ptr<ShaderResourceGroupLayout>, ShaderResourceGroupBindingInfo>;
 
-            // Each srg gets one. The should be sorted based on frequency on update.
+            // Each srg gets one. Will be sorted based on frequency on update.
             std::vector<ShaderResourceGroupLayoutInfo> m_shaderResourceGroupLayoutsInfo;
             std::array<uint32_t, RHI::Limits::Pipeline::ShaderResourceGroupCountMax> m_bindingSlotToIndex{};
             HashValue64 m_hash = InvalidHash;

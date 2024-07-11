@@ -57,8 +57,10 @@ namespace CGE
 
 			// The materials will get built after all the shader permutations. This way we quarry the shader permutation early on and set it to build the material srg.
 			// The material property Cbuff and textures will get created and set after.
+			RHI::ResultCode BuildMaterialLayouts();
 			RHI::ResultCode BuildMaterials();
-			const std::shared_ptr<const ShaderPermutation> GetShaderPermutation(std::string name) const;
+			const std::shared_ptr<const ShaderPermutation> GetShaderPermutation(const std::string& name) const;
+			const std::shared_ptr<const Scene::Material> GetMaterialLayout(const std::string& name) const;
 			
 			// Make sure the file is in Assets/Textures
 			RHI::Ptr<RHI::Image> CreateTexture2D(const std::string& fileName);
@@ -90,10 +92,12 @@ namespace CGE
 			std::string m_fullMaterialAssetPath;
 
 			std::vector<std::string> m_shaderFiles;
+			std::vector<std::string> m_materialLayoutFiles;
 			std::vector<std::string> m_materialFiles;
 
 			// [todo] Hash to lookup duplicates
 			std::unordered_map<std::string, std::shared_ptr<ShaderPermutation>> m_permutationMap;
+			std::unordered_map<std::string, std::shared_ptr<Scene::Material>> m_materialLayouts;
 			std::unordered_map<std::string, std::shared_ptr<Scene::Material>> m_materials;
 
 			RHI::Ptr<RHI::ShaderCompiler> m_shaderCompiler;
