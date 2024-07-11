@@ -48,12 +48,14 @@ namespace CGE
 			m_dxgiFactory = dxPhysicalDevice.GetFactory();
 			m_dxgiAdapter = dxPhysicalDevice.GetAdapter();
 
+			InitFeatures();
 			return RHI::ResultCode::Success;
 		}
 
 		void DX_Device::ShutdownInternal()
 		{
 			m_releaseQueue.Shutdown();
+			m_pipelineLayoutCache.Shutdown();
 		}
 
 		void DX_Device::EnableD3DDebugLayer()
@@ -187,6 +189,8 @@ namespace CGE
 			m_descriptorContext = std::make_shared<DX_DescriptorContext>();
 			m_descriptorContext->Init(m_device.Get(), dxPlatLimitsDesc);
 
+			m_pipelineLayoutCache.Init(*this);
+
 			return RHI::ResultCode::Success;
 		}
 
@@ -286,6 +290,28 @@ namespace CGE
 			RHI::Ptr<DX_PlatformLimitsDescriptor> platformLimitsDescriptor = new DX_PlatformLimitsDescriptor();
 			platformLimitsDescriptor->LoadPlatformLimitsDescriptor("DX12");
 			m_platformLimitsDescriptor = RHI::Ptr<RHI::PlatformLimitsDescriptor>(platformLimitsDescriptor);
+		}
+
+		void DX_Device::InitFeatures()
+		{
+			// [todo] Check D3D12 Options.
+			m_features.m_unboundedArrays = true;
+		}
+
+		RHI::ResultCode DX_Device::InitInternalBindlessSrg(const RHI::BindlessSrgDescriptor& bindlessSrgDesc)
+		{
+			m_bindlesSrgBindingSlot = bindlessSrgDesc.m_bindlesSrgBindingSlot;
+			return RHI::ResultCode::Success;
+		}
+
+		uint32_t DX_Device::GetBindlessSrgSlot() const
+		{
+			return m_bindlesSrgBindingSlot;
+		}
+
+		RHI::ConstPtr<DX_PipelineLayout> DX_Device::AcquirePipelineLayout(const RHI::PipelineLayoutDescriptor& descriptor)
+		{
+			return m_pipelineLayoutCache.Allocate(descriptor);
 		}
 	}
 }

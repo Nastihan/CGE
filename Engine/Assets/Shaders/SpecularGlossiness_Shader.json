@@ -1,0 +1,81 @@
+ 
+ {
+	 "Name" : "SpecularGlossiness_Shader",
+	 
+	 "ShaderPermutationType" : "Material",
+	 
+	 "HardwareQueueClass" : "Graphics",
+	 
+	 "RasterState" :
+	 {
+		 "FillMode" : "Solid",
+		 "CullMode" : "Back",
+		 "DepthBias" : 0,
+		 "DepthBiasClamp" : 0.0,
+		 "DepthBiasSlopeScale" : 0.0,
+		 "MultisampleEnable" : false,
+		 "DepthClipEnable" : true,
+		 "ConservativeRasterEnable" : false,
+		 "ForcedSampleCount" : 0
+	 },
+	 
+	 "DepthStencilState" :
+	 {
+		 "Depth" :
+		 {
+			 "Enable" : true,
+			 "WriteMask" : "All",
+			 "CompareFunc" : "Less"
+		 },
+		 
+		 "Stencil" :
+		 {
+			 "Enable" : false,
+			 "ReadMask" : "0xFF",
+			 "WriteMask" : "0xFF",
+			 "FrontFace" :
+			 {
+				 "FailOp" : "Keep",
+				 "DepthFailOp" : "Keep",
+				 "PassOp" : "Keep",
+				 "Func" : "Always"
+			 },
+			 "BackFace" :
+			 {
+				 "FailOp" : "Keep",
+				 "DepthFailOp" : "Keep",
+				 "PassOp" : "Keep",
+				 "Func" : "Always"
+			 }
+		 }
+	 },
+	 
+	 "BlendState" : 
+	 {
+		 "Enable" : true,
+		 "writeMask" : "0xF",
+		 "BlendSource" : "One",
+		 "BlendDest" : "Zero",
+		 "BlendOp" : "Add",
+		 "BlendAlphaSource" : "One",
+		 "BlendAlphaDest" : "Zero",
+		 "BlendAlphaOp" : "Add"
+	 },
+	 
+	 "ProgramSettings" :
+     {
+        "ShaderStages" :
+        [
+            {
+                "name" : "MainVS",
+                "type" : "Vertex",
+				"source" : "SpecularGlossinessVS.hlsl"
+            },
+            {
+                "name" : "MainPS",
+                "type" : "Fragment",
+				"source" : "SpecularGlossinessPS.hlsl"
+            }
+        ]
+     }
+ }

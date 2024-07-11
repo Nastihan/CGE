@@ -14,7 +14,7 @@ namespace CGE
 		void ImageSystem::Init(RHI::Device& device)
 		{
 			DeviceObject::Init(device);
-            CreateShaderReadImagePool();
+            CreateImagePool();
 			m_initialized = true;
 		}
 
@@ -24,18 +24,18 @@ namespace CGE
 			{
 				return;
 			}
-            m_shaderReadImagePool = nullptr;
+            m_imagePool = nullptr;
 			m_initialized = false;
 		}
 
 		RHI::Ptr<RHI::ImagePool> ImageSystem::GetSimpleImagePool()
 		{
-			return m_shaderReadImagePool;
+			return m_imagePool;
 		}
 
-		bool ImageSystem::CreateShaderReadImagePool()
+		bool ImageSystem::CreateImagePool()
 		{
-            if (!m_initialized)
+            if (m_initialized)
             {
                 return false;
             }
@@ -43,15 +43,15 @@ namespace CGE
 
             RHI::Ptr<RHI::ImagePool> imagePool = Graphics::GetFactory().CreateImagePool();
             RHI::ImagePoolDescriptor imagePoolDesc;
-            imagePoolDesc.m_bindFlags = RHI::ImageBindFlags::ShaderRead;
-            imagePool->SetName("ShaderReadImagePool");
+            imagePoolDesc.m_bindFlags = RHI::ImageBindFlags::None;
+            imagePool->SetName("ImagePool");
             RHI::ResultCode resultCode = imagePool->Init(*device, imagePoolDesc);
             if (resultCode != RHI::ResultCode::Success)
             {
                 assert(false, "Failed to create image pool");
                 return false;
             }
-            m_shaderReadImagePool = imagePool;
+            m_imagePool = imagePool;
             return true;
 		}
 	}

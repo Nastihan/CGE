@@ -40,5 +40,22 @@ namespace CGE
 		{
 			return *m_platformLimitsDescriptor;
 		}
+
+		const DeviceFeatures& Device::GetFeatures() const
+		{
+			return m_features;
+		}
+
+		ResultCode Device::InitBindlessSrg(RHI::Ptr<RHI::ShaderResourceGroupLayout> bindlessSrgLayout)
+		{
+			BindlessSrgDescriptor bindlessSrgDesc;
+			bindlessSrgDesc.m_bindlesSrgBindingSlot = bindlessSrgLayout->GetBindingSlot();
+			bool isUnboundedArraySupported = GetFeatures().m_unboundedArrays;
+
+			if (isUnboundedArraySupported)
+			{
+				return InitInternalBindlessSrg(bindlessSrgDesc);
+			}
+		}
 	}
 }

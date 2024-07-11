@@ -6,6 +6,12 @@ namespace CGE
 {
 	namespace RHI
 	{
+		ResultCode ShaderStageFunction::Init(ShaderStage stage)
+		{
+			m_shaderStage = stage;
+			return InitInternal();
+		}
+
 		ShaderStage ShaderStageFunction::GetShaderStage() const
 		{
 			return m_shaderStage;

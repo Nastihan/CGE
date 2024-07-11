@@ -34,8 +34,6 @@ namespace CGE
 			// [todo] change to take in image view
 			void CreateRenderTargetView(ID3D12Resource* backBuffer, DX_DescriptorHandle& rtv);
 
-			D3D12_CPU_DESCRIPTOR_HANDLE GetCpuPlatformHandle(DX_DescriptorHandle handle) const;
-
 			// Buffer Views
 			void CreateShaderResourceView(const DX_Buffer& buffer, const RHI::BufferViewDescriptor& bufferViewDescriptor, DX_DescriptorHandle& shaderResourceView, DX_DescriptorHandle& staticView);
 			void CreateUnorderedAccessView(const DX_Buffer& buffer, const RHI::BufferViewDescriptor& bufferViewDescriptor, DX_DescriptorHandle& unorderedAccessView, DX_DescriptorHandle& unorderedAccessViewClear, DX_DescriptorHandle& staticView);
@@ -50,6 +48,29 @@ namespace CGE
 			void ReleaseDescriptor(DX_DescriptorHandle descriptorHandle);
 			void ReleaseStaticDescriptor(DX_DescriptorHandle handle);
 
+			// Creates a GPU-visible descriptor table.
+			DX_DescriptorTable CreateDescriptorTable(D3D12_DESCRIPTOR_HEAP_TYPE descriptorHeapType, uint32_t descriptorCount);
+			// Performs a gather of disjoint CPU-side descriptors and copies to a contiguous GPU-side descriptor table.
+			void UpdateDescriptorTableRange(DX_DescriptorTable gpuDestinationTable, const DX_DescriptorHandle* cpuSourceDescriptors, D3D12_DESCRIPTOR_HEAP_TYPE heapType);
+			//! Releases a GPU-visible descriptor table.
+			void ReleaseDescriptorTable(DX_DescriptorTable descriptorTable);
+
+			DX_DescriptorHandle GetNullHandleSRV(D3D12_SRV_DIMENSION dimension) const;
+			DX_DescriptorHandle GetNullHandleUAV(D3D12_UAV_DIMENSION dimension) const;
+			DX_DescriptorHandle GetNullHandleCBV() const;
+			DX_DescriptorHandle GetNullHandleSampler() const;
+
+			D3D12_CPU_DESCRIPTOR_HANDLE GetCpuPlatformHandle(DX_DescriptorHandle handle) const;
+			D3D12_GPU_DESCRIPTOR_HANDLE GetGpuPlatformHandle(DX_DescriptorHandle handle) const;
+			D3D12_CPU_DESCRIPTOR_HANDLE GetCpuPlatformHandleForTable(DX_DescriptorTable descTable) const;
+			D3D12_GPU_DESCRIPTOR_HANDLE GetGpuPlatformHandleForTable(DX_DescriptorTable descTable) const;
+
+			// Retrieve a descriptor handle to the start of the static region of the shader-visible CBV_SRV_UAV heap
+			// Used in bindless (Check DX_CommandList::CommitShaderResources
+			D3D12_GPU_DESCRIPTOR_HANDLE GetBindlessGpuPlatformHandle() const;
+
+			void SetDescriptorHeaps(ID3D12GraphicsCommandList* commandList) const;
+
 		private:
 			void CopyDescriptor(DX_DescriptorHandle dst, DX_DescriptorHandle src);
 			std::optional<D3D12_DESCRIPTOR_HEAP_TYPE> StringToDescriptorHeapType(std::string heapType);
@@ -62,6 +83,12 @@ namespace CGE
 
 			// Gets a descriptor allocated on the CPU visible heap and creates a copy in the static part of the shader visible heap
 			DX_DescriptorHandle AllocateStaticDescriptor(D3D12_CPU_DESCRIPTOR_HANDLE handle);
+
+			void CreateNullDescriptors();
+			void CreateNullDescriptorsSRV();
+			void CreateNullDescriptorsUAV();
+			void CreateNullDescriptorsCBV();
+			void CreateNullDescriptorsSampler();
 
 		private:
 			static const uint32_t NumHeapFlags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE + 1;
@@ -76,6 +103,13 @@ namespace CGE
 			// Offset from the shader-visible descriptor heap start to the first static descriptor handle
 			uint32_t m_staticDescriptorOffset = 0;
 			RHI::ConstPtr<DX_PlatformLimitsDescriptor> m_platformLimitsDescriptor;
+
+			// If some resources are not avalible in the srg's, bind null descriptors to the commandlist.
+			// These will get initilized once on the cpu heap and then copied into tables in the gpu visible heap when srg's are being compiled.
+			std::unordered_map<D3D12_SRV_DIMENSION, DX_DescriptorHandle> m_nullDescriptorsSRV;
+			std::unordered_map<D3D12_UAV_DIMENSION, DX_DescriptorHandle> m_nullDescriptorsUAV;
+			DX_DescriptorHandle m_nullDescriptorCBV;
+			DX_DescriptorHandle m_nullSamplerDescriptor;
 		};
 	}
 }

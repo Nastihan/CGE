@@ -2,6 +2,11 @@
 
 // RHI
 #include "../RHI/Viewport.h"
+#include "../RHI/Image.h"
+#include "../RHI/Buffer.h"
+#include "../RHI/ShaderResourceGroup.h"
+
+#include "../Events.h"
 
 #include <glm/glm.hpp>
 #include <glm/gtx/euler_angles.hpp>
@@ -17,6 +22,36 @@ namespace CGE
 			{
 				Local,
 				World
+			};
+		private:
+			struct CameraMovement
+			{
+				// Translation movement
+				float m_forward, m_back, m_left, m_right, m_up, m_down;
+				// Rotation movement
+				float m_rollCW, m_rollCCW;
+				float m_pitch, m_yaw;
+				// Move in/out from pivot point.
+				float m_pivotTranslate;
+				// Do you want to go faster?
+				bool m_translateFaster;
+				bool m_rotateFaster;
+
+				CameraMovement()
+					: m_forward(0.0f)
+					, m_back(0.0f)
+					, m_left(0.0f)
+					, m_right(0.0f)
+					, m_up(0.0f)
+					, m_down(0.0f)
+					, m_rollCW(0.0f)
+					, m_rollCCW(0.0f)
+					, m_pitch(0.0f)
+					, m_yaw(0.0f)
+					, m_pivotTranslate(0.0f)
+					, m_translateFaster(false)
+					, m_rotateFaster(false)
+				{}
 			};
 		public:
 			Camera();
@@ -63,9 +98,28 @@ namespace CGE
 
 			glm::mat4 GetViewProjectionInverseMatrix();
 
+			boost::function<void(KeyEventArgs&, UpdateEventArgs&)> GetKeyPressedFunctionBindable();
+			void OnKeyPressed(KeyEventArgs& keyArgs, UpdateEventArgs& updateArgs);
+
+			void SpawnCameraImGuiWindow();
+			void Update();
+
+			RHI::ShaderResourceGroup* GetCameraSrg() const;
+
 		private:
 			void UpdateViewMatrix();
+			void UpdateProjectionMatrix();
 			void UpdateViewProjectionInverse();
+			RHI::ResultCode UpdateCameraBuffer();
+
+		private:
+			__declspec(align(16)) struct PerViewData
+			{
+				glm::mat4 m_view;
+				glm::mat4 m_viewInv;
+				glm::mat4 m_projection;
+				glm::mat4 m_projectionInv;
+			};
 
 		private:
 			RHI::Viewport m_viewport;
@@ -80,10 +134,22 @@ namespace CGE
 			glm::vec3 m_translation;
 			glm::quat m_rotation;
 
+			// Using this to compute the delta in ImGui (In euler angles degrees)
+			glm::vec3 m_previousRotation{};
+			glm::vec3 m_currentRotation{};
+
 			// View and projection matricies
 			glm::mat4 m_viewMatrix;
 			glm::mat4 m_projectionMatrix;
 			glm::mat4 m_viewProjectionInverse;
+
+			bool m_dirty = false;
+
+			PerViewData* m_perViewData;
+			RHI::Ptr<RHI::Buffer> m_cameraCbuffer;
+			RHI::Ptr<RHI::BufferView> m_cameraCbufferView;
+
+			RHI::Ptr<RHI::ShaderResourceGroup> m_viewSrg;
 		};
 	}
 }

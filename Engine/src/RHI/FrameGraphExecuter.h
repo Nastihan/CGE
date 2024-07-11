@@ -2,6 +2,7 @@
 
 // RHI
 #include "DeviceObject.h"
+#include "../Pass/ForwardPass.h"
 
 namespace CGE
 {
@@ -16,8 +17,13 @@ namespace CGE
 			ResultCode Init(Device& device);
 			void RenderFrame();
 
+			// [todo] remove
+			Pass::ForwardPass* GetForwardPass();
+
 		protected:
 			FrameGraphExecuter() = default;
+			// [todo] This will change when I implement the frame graph.
+			Pass::ForwardPass* m_forwardPass;
 
 		private:
 			virtual ResultCode InitInternal(Device& device) = 0;

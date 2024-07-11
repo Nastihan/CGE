@@ -23,7 +23,6 @@ namespace CGE
 		bool PipelineStateDescriptorForDraw::operator==(const PipelineStateDescriptorForDraw& rhs) const
 		{
 			return m_fragmentFunction == rhs.m_fragmentFunction &&
-				m_pipelineLayoutDescriptor == rhs.m_pipelineLayoutDescriptor &&
 				m_renderStates == rhs.m_renderStates &&
 				m_vertexFunction == rhs.m_vertexFunction &&
 				m_inputStreamLayout == rhs.m_inputStreamLayout;
@@ -41,8 +40,9 @@ namespace CGE
 			{
 				seed = TypeHash64(m_fragmentFunction->GetHash(), seed);
 			}
-			// seed = TypeHash64(m_pipelineLayoutDescriptor->GetHash(), seed);
+			seed = TypeHash64(m_pipelineLayoutDescriptor->GetHash(), seed);
 			seed = TypeHash64(m_inputStreamLayout.GetHash(), seed);
+			seed = TypeHash64(m_renderAttachmentConfiguration.GetHash(), seed);
 			seed = m_renderStates.GetHash(seed);
 
 			return seed;

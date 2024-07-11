@@ -14,7 +14,7 @@ namespace CGE
             virtual ~ImagePoolDescriptor() = default;
             ImagePoolDescriptor() = default;
 
-            ImageBindFlags m_bindFlags = ImageBindFlags::Color;
+            ImageBindFlags m_bindFlags = ImageBindFlags::None;
         };
 	}
 }

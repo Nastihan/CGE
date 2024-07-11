@@ -8,11 +8,25 @@
 
 #include <glm/glm.hpp>
 
+#include "../RHI/ShaderResourceGroup.h"
+#include "../RHI/DrawItem.h"
+
 namespace CGE
 {
+	namespace RHI
+	{
+		class CommandList;
+	}
+
+	namespace Pass
+	{
+		class ForwardPass;
+	}
+
 	namespace Scene
 	{
 		class Mesh;
+		class Camera;
 
 		// The scene will consist of models each model is a collection on meshesh.
 		// Each mesh (sub-mesh) position can be offset relative to the base of the model (root) or any other sub-mesh in the model.
@@ -43,6 +57,11 @@ namespace CGE
 			void AddMesh(std::shared_ptr<Mesh> mesh);
 			void RemoveMesh(std::shared_ptr<Mesh> mesh);
 
+			void BuildDrawList(std::vector<RHI::DrawItem>& drawList, std::array<RHI::ShaderResourceGroup*, RHI::Limits::Pipeline::ShaderResourceGroupCountMax>& srgsToBind);
+
+			void SpawnImGuiWindow();
+			void Update();
+
 		private:
 			glm::mat4 GetParentWorldTransform() const;
 
@@ -54,6 +73,7 @@ namespace CGE
 			std::string m_name;
 
 			// Transforms node from parent's space to world space for rendering.
+			// This local transform is relative to its parent.
 			glm::mat4 m_localTransform;
 			glm::mat4 m_inverseTransform;
 

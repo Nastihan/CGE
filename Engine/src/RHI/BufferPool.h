@@ -24,7 +24,7 @@ namespace CGE
             const void* m_initialData = nullptr;
         };
 
-        // used in BufferPool::MapBuffer. Has to be host visible.
+        // used in BufferPool::MapBuffer.
         struct BufferMapRequest
         {
             BufferMapRequest() = default;
@@ -32,7 +32,7 @@ namespace CGE
 
             Buffer* m_buffer = nullptr;
 
-            // After map was called to will map to the begining of the buffer.
+            // After map was called will map to the begining of the buffer.
             // We move the pointer if offset is set. (check DX_BufferPool::MapBufferInternal)
             size_t m_byteOffset = 0;
             size_t m_byteCount = 0;

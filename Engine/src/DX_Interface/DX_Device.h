@@ -7,12 +7,14 @@
 #include "DX_DescriptorContext.h"
 #include "DX_ReleaseQueue.h"
 #include "DX_StagingMemoryAllocator.h"
+#include "DX_PipelineLayout.h"
 
 // RHI
 #include "../RHI/RHI_Common.h"
 #include "../RHI/Device.h"
 #include "../RHI/ClearValue.h"
 #include "../RHI/ImageDescriptor.h"
+#include "../RHI/Limits.h"
 
 // std
 #include <vector>
@@ -45,6 +47,9 @@ namespace CGE
 			DX_DescriptorContext& GetDescriptorContext();
 			// The CommandList and allocator will get collected every frame in DX_Device::EndFrameInternal (deferred release)
 			DX_CommandList* AcquireCommandList(RHI::HardwareQueueClass hardwareQueueClass);
+			uint32_t GetBindlessSrgSlot() const;
+			// Acquires a pipeline layout from the internal cache. PipelineLayouts will be cached in a map based on the generated hash value.
+			RHI::ConstPtr<DX_PipelineLayout> AcquirePipelineLayout(const RHI::PipelineLayoutDescriptor& descriptor);
 
 			// Memory
 			DX_MemoryView AcquireStagingMemory(size_t size, size_t alignment);
@@ -59,13 +64,16 @@ namespace CGE
 			DX_Device();
 			REMOVE_COPY_AND_MOVE(DX_Device);
 
-			// RHI
+			// RHI Device
 			RHI::ResultCode InitInternal(RHI::PhysicalDevice& physicalDevice) override;
 			void ShutdownInternal() override;
 			RHI::ResultCode BeginFrameInternal() override;
 			void EndFrameInternal() override;
 			RHI::ResultCode InitializeLimits() override;
 			void WaitForIdleInternal() override;
+			RHI::ResultCode InitInternalBindlessSrg(const RHI::BindlessSrgDescriptor& bindlessSrgDesc) override;
+
+			void InitFeatures();
 
 			void EnableD3DDebugLayer();
 			void EnableGPUBasedValidation();
@@ -86,6 +94,10 @@ namespace CGE
 			DX_ReleaseQueue m_releaseQueue;
 
 			DX_StagingMemoryAllocator m_stagingMemoryAllocator;
+
+			uint32_t m_bindlesSrgBindingSlot = RHI::Limits::InvalidIndex;
+
+			DX_PipelineLayoutCache m_pipelineLayoutCache;
 		};
 	}
 }

@@ -2,6 +2,7 @@
 
 // RHI
 #include "RHI_Common.h"
+#include "TypeHash.h"
 
 // std
 #include <array>
@@ -23,6 +24,9 @@ namespace CGE
 			static ClearValue CreateDepthStencil(float depth, uint8_t stencil);
 			static ClearValue CreateVector4Float(float x, float y, float z, float w);
 			static ClearValue CreateVector4Uint(uint32_t x, uint32_t y, uint32_t z, uint32_t w);
+
+			HashValue64 GetHash(HashValue64 seed = HashValue64{ 0 }) const;
+			bool operator==(const ClearValue& other) const;
 
 			ClearValueType m_type = ClearValueType::Vector4Float;
 			float m_depth = 0.0f;

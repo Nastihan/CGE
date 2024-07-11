@@ -52,7 +52,7 @@ namespace CGE
 		{
 			for (const auto& channelDescriptor : m_streamChannels)
 			{
-				assert(channelDescriptor.m_bufferIndex >= m_streamBuffers.size(), "InputStreamLayout channel does not exist.");
+				assert(channelDescriptor.m_bufferIndex < m_streamBuffers.size(), "InputStreamLayout channel does not exist.");
 				assert(m_topology != PrimitiveTopology::Undefined, "InputStreamLayout Topology is undefined.");
 			}
 

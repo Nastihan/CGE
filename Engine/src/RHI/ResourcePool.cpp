@@ -105,12 +105,20 @@ namespace CGE
 
 		bool ResourcePool::ValidateIsRegistered(const Resource* resource) const
 		{
-			return resource && (resource->GetPool() == this);
+			if (!resource || resource->GetPool() != this)
+			{
+				return false;
+			}
+			return true;
 		}
 
 		bool ResourcePool::ValidateIsUnregistered(const Resource* resource) const
 		{
-			return !resource && (resource->GetPool() != this);
+			if (!resource || resource->GetPool() != nullptr)
+			{
+				return false;
+			}
+			return true;
 		}
 
 		bool ResourcePool::ValidateIsInitialized() const
@@ -120,7 +128,7 @@ namespace CGE
 
 		bool ResourcePool::ValidateNotProcessingFrame() const
 		{
-			return m_isProcessingFrame;
+			return !m_isProcessingFrame;
 		}
 
 		void ResourcePool::ShutdownResource(Resource* resource)

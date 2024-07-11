@@ -52,7 +52,6 @@ namespace CGE
 			{
 				DX_Device* m_dxDevice;
 				RHI::HardwareQueueClass m_hardwareQueueClass = RHI::HardwareQueueClass::Graphics;
-				std::shared_ptr<DX_DescriptorContext> m_descriptorContext;
 			};
 
 			void Init(const Descriptor& descriptor);

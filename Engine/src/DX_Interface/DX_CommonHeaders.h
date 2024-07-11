@@ -77,6 +77,7 @@ DX12_REFCOUNTED(ID3D12Object);
 DX12_REFCOUNTED(ID3D12Resource);
 
 DX12_REFCOUNTED(ID3D12RootSignature);
+DX12_REFCOUNTED(ID3D12PipelineState);
 
 
 #ifndef LOCAL_HR
@@ -114,6 +115,10 @@ namespace CGE
                 CommittedBuffer = D3D12_DEFAULT_RESOURCE_PLACEMENT_ALIGNMENT
             };
         }
+
+        using GpuDescriptorHandle = D3D12_GPU_DESCRIPTOR_HANDLE;
+        using GpuVirtualAddress = D3D12_GPU_VIRTUAL_ADDRESS;
+        using CpuVirtualAddress = uint8_t*;
     }
 }
 

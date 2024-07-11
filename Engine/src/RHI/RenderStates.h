@@ -4,6 +4,8 @@
 #include "RHI_Common.h"
 #include "Limits.h"
 #include "TypeHash.h"
+#include "SamplerState.h"
+#include "MultisampleState.h"
 
 #include <array>
 
@@ -65,19 +67,6 @@ namespace CGE
             Invalid
         };
 
-        enum class ComparisonFunc : uint32_t
-        {
-            Never,
-            Less,
-            Equal,
-            LessEqual,
-            Greater,
-            NotEqual,
-            GreaterEqual,
-            Always,
-            Invalid
-        };
-
         enum class StencilOp : uint32_t
         {
             Keep,
@@ -91,13 +80,23 @@ namespace CGE
             Invalid
         };
 
+        enum class WriteChannelMask : uint8_t
+        {
+            ColorWriteMaskNone = 0,
+            ColorWriteMaskRed = 1u << 0,
+            ColorWriteMaskGreen = 1u << 1,
+            ColorWriteMaskBlue = 1u << 2,
+            ColorWriteMaskAlpha = 1u << 3,
+            ColorWriteMaskAll = ColorWriteMaskRed | ColorWriteMaskGreen | ColorWriteMaskBlue | ColorWriteMaskAlpha
+        };
+
 		struct RasterState
 		{
             bool operator==(const RasterState& rhs) const;
 
             FillMode m_fillMode = FillMode::Solid;
             CullMode m_cullMode = CullMode::Back;
-            int32_t m_depthBias = 0;
+            int32_t m_depthBias = 0; 
             float m_depthBiasClamp = 0.0f;
             float m_depthBiasSlopeScale = 0.0f;
             uint32_t m_multisampleEnable = 0;
@@ -125,6 +124,8 @@ namespace CGE
             bool operator==(const BlendState& rhs) const;
 
             uint32_t m_alphaToCoverageEnable = 0;
+            // Specifies whether to enable independent blending in simultaneous render targets.Set to TRUE to enable independent blending.
+            // If set to FALSE, only the RenderTarget[0] members are used; RenderTarget[1..7] are ignored.
             uint32_t m_independentBlendEnable = 0;
             std::array<TargetBlendState, Limits::Pipeline::AttachmentColorCountMax> m_targets;
         };
@@ -176,6 +177,7 @@ namespace CGE
             HashValue64 GetHash(HashValue64 seed = HashValue64{ 0 }) const;
             bool operator==(const RenderStates& rhs) const;
 
+            MultisampleState m_multisampleState;
             RasterState m_rasterState;
             BlendState m_blendState;
             DepthStencilState m_depthStencilState;

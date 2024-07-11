@@ -2,6 +2,7 @@
 // RHI
 #include "../RHI/Image.h"
 #include "../RHI/Graphics.h"
+#include "../RHI/AssetProcessor.h"
 
 // DX12
 #include "../DX_Interface/DX_CommonHeaders.h"
@@ -21,197 +22,146 @@
 // Scene
 #include "Material.h"
 
+#include "../imgui/imgui.h"
+#include "../imgui/imgui_impl_glfw.h"
+
 namespace CGE
 {
 	namespace Scene
 	{
-		Material::Material()
+		void Material::SetTexture(const std::string& name, RHI::Ptr<RHI::Image> texture, RHI::Ptr<RHI::ImageView> textureView)
 		{
-			// Material properties have to be 16 byte aligned.
-			// To guarantee alignment, we'll use _aligned_malloc to allocate memory for the material properties.
-			m_pProperties = (MaterialProperties*)_aligned_malloc(sizeof(MaterialProperties), 16);
-			*m_pProperties = MaterialProperties();
+			m_textures.insert({ name, {texture, textureView} });
+		}
 
-			const auto& bufferPool = RHI::Graphics::GetBufferSystem().GetCommonBufferPool(RHI::CommonBufferPoolType::ReadOnly);
+		RHI::Ptr<RHI::BufferView> Material::GetMaterialCbuffView()
+		{
+			return m_materialPropertiesCBuffView;
+		}
+
+		void Material::InitMaterialCbuff()
+		{
+			const auto& constantBufferPool = RHI::Graphics::GetBufferSystem().GetCommonBufferPool(RHI::CommonBufferPoolType::Constant);
+			auto& rhiFactory = RHI::Graphics::GetFactory();
+			m_materialPropertiesCBuff = rhiFactory.CreateBuffer();
 			RHI::ResultCode result = RHI::ResultCode::Fail;
 
 			RHI::BufferInitRequest materialCBufferRequest;
 			materialCBufferRequest.m_buffer = m_materialPropertiesCBuff.get();
-			materialCBufferRequest.m_descriptor.m_byteCount = sizeof(MaterialProperties);
-			materialCBufferRequest.m_descriptor.m_bindFlags = RHI::BufferBindFlags::ShaderRead;
-			materialCBufferRequest.m_initialData = m_pProperties;
-			result = bufferPool->InitBuffer(materialCBufferRequest);
-			assert(result != RHI::ResultCode::Success);
+			materialCBufferRequest.m_descriptor.m_byteCount = m_materialProperties.size();
+			materialCBufferRequest.m_descriptor.m_bindFlags = RHI::BufferBindFlags::Constant;
+			materialCBufferRequest.m_initialData = m_materialProperties.data();
+			result = constantBufferPool->InitBuffer(materialCBufferRequest);
+			assert(result == RHI::ResultCode::Success);
 
-			// [todo] Buffer view (shader read)
+			RHI::BufferViewDescriptor materialPropertiesBufferViewDescriptor = RHI::BufferViewDescriptor::CreateRaw(0, m_materialProperties.size());
+			m_materialPropertiesCBuffView = rhiFactory.CreateBufferView();
+			m_materialPropertiesCBuffView->Init(*m_materialPropertiesCBuff, materialPropertiesBufferViewDescriptor);
 		}
 
-		Material::~Material()
+		void Material::InitMaterialSrg()
 		{
-			if (m_pProperties)
+			const RHI::ShaderResourceGroupLayout* materialSrgLayout = m_shaderPermutation->m_pipelineLayoutDescriptor->GetShaderResourceGroupLayout(RHI::ShaderResourceGroupType::Material);
+			m_materialSrg = RHI::Graphics::GetFactory().CreateShaderResourceGroup();
+			RHI::ShaderResourceGroupData materialSrgData(materialSrgLayout);
+
+			for (const auto& shaderInput : m_textures)
 			{
-				_aligned_free(m_pProperties);
-				m_pProperties = nullptr;
+				RHI::ShaderInputImageIndex inputIdx = materialSrgLayout->FindShaderInputImageIndex(shaderInput.first);
+				materialSrgData.SetImageView(inputIdx, shaderInput.second.second.get(), 0);
+			}
+
+			RHI::ShaderInputBufferIndex materialPropertiesBufferIdx = materialSrgLayout->FindShaderInputBufferIndex("PerMaterial_MaterialProperties");
+			materialSrgData.SetBufferView(materialPropertiesBufferIdx, GetMaterialCbuffView().get(), 0);
+			m_materialSrg->Init(m_materialPropertiesCBuff->GetDevice(), materialSrgData);
+			m_materialSrg->Compile();
+		}
+
+		RHI::ShaderResourceGroup* Material::GetMaterialSrg() const
+		{
+			return m_materialSrg.get();
+		}
+
+		void Material::SpawnImGuiWindow()
+		{
+			const auto updateChange = [this](bool check) {m_dirty = check || m_dirty; };
+
+			if (ImGui::TreeNode("Material"))
+			{
+				for (const auto& propertyInfo : m_nameToInfoMap)
+				{
+					if (propertyInfo.second.m_reflectionUI == "ColorEdit4")
+					{
+						updateChange(ImGui::ColorEdit4(propertyInfo.first.c_str(), reinterpret_cast<float*>(m_materialProperties.data() + propertyInfo.second.m_offset)));
+					}
+					else if (propertyInfo.second.m_reflectionUI == "SliderFloat" || propertyInfo.second.m_reflectionUI == "InputFloat")
+					{
+						if (propertyInfo.second.m_reflectionMinMax.first.has_value() && propertyInfo.second.m_reflectionMinMax.second.has_value())
+						{
+							updateChange(ImGui::SliderFloat(propertyInfo.first.c_str(), reinterpret_cast<float*>(m_materialProperties.data() + propertyInfo.second.m_offset), 0.0f, 1.0f));
+						}
+						else
+						{
+							updateChange(ImGui::InputFloat(propertyInfo.first.c_str(), reinterpret_cast<float*>(m_materialProperties.data() + propertyInfo.second.m_offset)));
+						}
+					}
+					else if (propertyInfo.second.m_reflectionUI == "Checkbox")
+					{
+						updateChange(ImGui::Checkbox(propertyInfo.first.c_str(), reinterpret_cast<bool*>(m_materialProperties.data() + propertyInfo.second.m_offset)));
+					}
+				}
+				ImGui::TreePop();
 			}
 		}
 
-		const glm::vec4& Material::GetGlobalAmbientColor() const
+		RHI::ResultCode Material::UpdateMaterialBuffer()
 		{
-			return m_pProperties->m_GlobalAmbient;
-		}
-
-		void Material::SetGlobalAmbientColor(const glm::vec4& globalAmbient)
-		{
-			m_pProperties->m_GlobalAmbient = globalAmbient;
-		}
-
-		const glm::vec4& Material::GetAmbientColor() const
-		{
-			return m_pProperties->m_AmbientColor;
-		}
-
-		void Material::SetAmbientColor(const glm::vec4& ambient)
-		{
-			m_pProperties->m_AmbientColor = ambient;
-		}
-
-		const glm::vec4& Material::GetDiffuseColor() const
-		{
-			return m_pProperties->m_DiffuseColor;
-		}
-
-		void Material::SetDiffuseColor(const glm::vec4& diffuse)
-		{
-			m_pProperties->m_DiffuseColor = diffuse;
-		}
-
-		const glm::vec4& Material::GetEmissiveColor() const
-		{
-			return m_pProperties->m_EmissiveColor;
-		}
-
-		void Material::SetEmissiveColor(const glm::vec4& emissive)
-		{
-			m_pProperties->m_EmissiveColor = emissive;
-		}
-
-		const glm::vec4& Material::GetSpecularColor() const
-		{
-			return m_pProperties->m_SpecularColor;
-		}
-
-		void Material::SetSpecularColor(const glm::vec4& specular)
-		{
-			m_pProperties->m_SpecularColor = specular;
-		}
-
-		float Material::GetSpecularPower() const
-		{
-			return m_pProperties->m_SpecularPower;
-		}
-
-		const float Material::GetOpacity() const
-		{
-			return m_pProperties->m_Opacity;
-		}
-
-		void Material::SetOpacity(float Opacity)
-		{
-			m_pProperties->m_Opacity = Opacity;
-		}
-
-		void Material::SetSpecularPower(float phongPower)
-		{
-			m_pProperties->m_SpecularPower = phongPower;
-		}
-
-		const glm::vec4& Material::GetReflectance() const
-		{
-			return m_pProperties->m_Reflectance;
-		}
-
-		void Material::SetReflectance(const glm::vec4& reflectance)
-		{
-			m_pProperties->m_Reflectance = reflectance;
-		}
-
-		float Material::GetIndexOfRefraction() const
-		{
-			return m_pProperties->m_IndexOfRefraction;
-		}
-
-		void Material::SetIndexOfRefraction(float indexOfRefraction)
-		{
-			m_pProperties->m_IndexOfRefraction = indexOfRefraction;
-		}
-
-		float Material::GetBumpIntensity() const
-		{
-			return m_pProperties->m_BumpIntensity;
-		}
-		void Material::SetBumpIntensity(float bumpIntensity)
-		{
-			m_pProperties->m_BumpIntensity = bumpIntensity;
-		}
-
-		RHI::Ptr<RHI::Image> Material::GetTexture(TextureType type) const
-		{
-			TextureMap::const_iterator itr = m_Textures.find(type);
-			if (itr != m_Textures.end())
+			if (m_dirty)
 			{
-				return itr->second;
-			}
+				const auto& constantBufferPool = RHI::Graphics::GetBufferSystem().GetCommonBufferPool(RHI::CommonBufferPoolType::Constant);
 
-			return nullptr;
+				RHI::BufferMapRequest mapRequest{};
+				mapRequest.m_buffer = m_materialPropertiesCBuff.get();
+				mapRequest.m_byteCount = m_materialProperties.size();
+				mapRequest.m_byteOffset = 0;
+
+				RHI::BufferMapResponse mapResponse{};
+
+				RHI::ResultCode mapSuccess = constantBufferPool->MapBuffer(mapRequest, mapResponse);
+				if (mapSuccess == RHI::ResultCode::Success)
+				{
+					memcpy(mapResponse.m_data, m_materialProperties.data(), m_materialProperties.size());
+					constantBufferPool->UnmapBuffer(*m_materialPropertiesCBuff);
+				}
+				m_dirty = false;
+				return mapSuccess;
+			}
 		}
 
-		void Material::SetTexture(TextureType type, RHI::Ptr<RHI::Image> texture)
+		void Material::SetShaderPermutation(std::shared_ptr<RHI::ShaderPermutation> permutation)
 		{
-			m_Textures[type] = texture;
+			m_shaderPermutation = permutation;
+		}
 
-			switch (type)
-			{
-			case TextureType::Ambient:
-			{
-				m_pProperties->m_HasAmbientTexture = (texture != nullptr);
-			}
-			break;
-			case TextureType::Emissive:
-			{
-				m_pProperties->m_HasEmissiveTexture = (texture != nullptr);
-			}
-			break;
-			case TextureType::Diffuse:
-			{
-				m_pProperties->m_HasDiffuseTexture = (texture != nullptr);
-			}
-			break;
-			case TextureType::Specular:
-			{
-				m_pProperties->m_HasSpecularTexture = (texture != nullptr);
-			}
-			break;
-			case TextureType::SpecularPower:
-			{
-				m_pProperties->m_HasSpecularPowerTexture = (texture != nullptr);
-			}
-			break;
-			case TextureType::Normal:
-			{
-				m_pProperties->m_HasNormalTexture = (texture != nullptr);
-			}
-			break;
-			case TextureType::Bump:
-			{
-				m_pProperties->m_HasBumpTexture = (texture != nullptr);
-			}
-			break;
-			case TextureType::Opacity:
-			{
-				m_pProperties->m_HasOpacityTexture = (texture != nullptr);
-			}
-			break;
-			}
+		const std::shared_ptr<const RHI::ShaderPermutation> Material::GetShaderPermutation()
+		{
+			return m_shaderPermutation;
+		}
+
+		void Material::InsertProperty(const std::string& name, const PropertyInfo& propertyInfo)
+		{
+			assert(m_nameToInfoMap.find(name) == m_nameToInfoMap.end(), "The property map should not contain duplicate names. Check your material layout json file.");
+			m_nameToInfoMap.insert({ name, propertyInfo });
+		}
+
+		const Material::PropertyInfo& Material::GetPropertyInfo(const std::string& name)
+		{
+			return m_nameToInfoMap[name];
+		}
+
+		void Material::InitMaterialProperty(uint32_t totalSizeInBytes)
+		{
+			m_materialProperties.resize(totalSizeInBytes);
 		}
 	}
 }

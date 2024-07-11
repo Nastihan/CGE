@@ -1,5 +1,8 @@
 #pragma once
 
+// RHI
+#include "Interval.h"
+
 // std
 #include <functional>
 #include <optional>
@@ -10,18 +13,6 @@ namespace CGE
 {
 	namespace RHI
 	{
-        struct Interval
-        {
-            Interval() = default;
-            Interval(uint32_t min, uint32_t max) : m_min{ min }, m_max{ max } {}
-
-            uint32_t m_min = 0;
-            uint32_t m_max = 0;
-
-            bool operator==(const Interval& rhs) const { return m_min == rhs.m_min && m_max == rhs.m_max; }
-            bool operator!=(const Interval& rhs) const { return m_min != rhs.m_min || m_max != rhs.m_max; }
-        };
-
 		// This class is used for tracking image subresource states. (Check ImageProperty.h)
 		template<typename Key, typename T, typename Compare = std::less<Key>>
         class interval_map

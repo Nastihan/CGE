@@ -2,6 +2,8 @@
 // RHI
 #include "ClearValue.h"
 
+#include <limits>
+
 namespace CGE
 {
 	namespace RHI
@@ -53,6 +55,24 @@ namespace CGE
 			value.m_vector4Uint[2] = z;
 			value.m_vector4Uint[3] = w;
 			return value;
+		}
+
+		HashValue64 ClearValue::GetHash(HashValue64 seed) const
+		{
+			return TypeHash64(*this, seed);
+		}
+
+		bool ClearValue::operator==(const ClearValue& other) const
+		{
+			return
+				m_type == other.m_type &&
+				m_depth == other.m_depth &&
+				m_stencil == other.m_stencil &&
+				m_vector4Uint == other.m_vector4Uint &&
+				(m_vector4Float[0] - other.m_vector4Float[0]) <= std::numeric_limits<float>::epsilon() &&
+				(m_vector4Float[1] - other.m_vector4Float[1]) <= std::numeric_limits<float>::epsilon() &&
+				(m_vector4Float[2] - other.m_vector4Float[2]) <= std::numeric_limits<float>::epsilon() &&
+				(m_vector4Float[3] - other.m_vector4Float[3]) <= std::numeric_limits<float>::epsilon();
 		}
 	}
 }

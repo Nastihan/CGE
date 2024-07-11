@@ -5,11 +5,100 @@
 #include <glm/gtx/quaternion.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
+// RHI
+#include "../RHI/Graphics.h"
+
+#include "../imgui/imgui.h"
+#include "../imgui/imgui_impl_glfw.h"
+
+#include <iostream>
+#include <DirectXMath.h>
+
+#ifdef USE_DX12
+#define GLM_FORCE_DEPTH_ZERO_TO_ONE
+#endif // USE_DX12
+
 namespace CGE
 {
 	namespace Scene
 	{
-		Camera::Camera() : m_translation(0) {}
+		Camera::Camera() 
+			: m_translation(0.0f, 0.0f, -4.9f)
+			, m_rotation(glm::quat(glm::vec3(glm::radians(0.0f), glm::radians(0.0f), glm::radians(0.0f))))
+			, m_currentRotation(glm::degrees(glm::eulerAngles(m_rotation)))
+			, m_previousRotation(glm::degrees(glm::eulerAngles(m_rotation)))
+			, m_vFOV(45.0f)
+			, m_aspect(RHI::Limits::Device::ClientWidth / (float)RHI::Limits::Device::ClientHeight)
+			, m_near(0.1f)
+			, m_far(1000.0f)
+		{
+			UpdateViewMatrix();
+
+			SetProjectionLH(m_vFOV, m_aspect, m_near, m_far);
+			m_perViewData = (PerViewData*)_aligned_malloc(sizeof(PerViewData), 16);
+			m_perViewData->m_view = GetViewMatrix();
+			m_perViewData->m_viewInv = glm::inverse(GetViewMatrix());
+			m_perViewData->m_projection = GetProjectionMatrix();
+			m_perViewData->m_projectionInv = glm::inverse(GetProjectionMatrix());
+			/*
+			DirectX::XMMATRIX transform = DirectX::XMMatrixTranslationFromVector(DirectX::XMVECTOR{10.0, 10.0, 10.0});
+			DirectX::XMFLOAT4X4 fView;
+			XMStoreFloat4x4(&fView, transform);
+
+			for (int row = 0; row < 4; ++row)
+			{
+				for (int col = 0; col < 4; ++col)
+				{
+					std::cout << m_viewMatrix[row][col] << " ";
+				}
+				std::cout << std::endl;
+			}
+
+			std::cout << std::endl;
+
+			std::cout << fView._11 << " " << fView._12 << " " << fView._13 << " " << fView._14 << std::endl;
+			std::cout << fView._21 << " " << fView._22 << " " << fView._23 << " " << fView._24 << std::endl;
+			std::cout << fView._31 << " " << fView._32 << " " << fView._33 << " " << fView._34 << std::endl;
+			std::cout << fView._41 << " " << fView._42 << " " << fView._43 << " " << fView._44 << std::endl;
+
+			std::cout << std::endl;
+
+			for (int row = 0; row < 4; ++row)
+			{
+				for (int col = 0; col < 4; ++col)
+				{
+					std::cout << fView.m[row][col] << " ";
+				}
+				std::cout << std::endl;
+			}
+			*/
+			const auto& constantBufferPool = RHI::Graphics::GetBufferSystem().GetCommonBufferPool(RHI::CommonBufferPoolType::Constant);
+			auto& rhiFactory = RHI::Graphics::GetFactory();
+			m_cameraCbuffer = rhiFactory.CreateBuffer();
+			RHI::ResultCode result = RHI::ResultCode::Fail;
+
+			RHI::BufferInitRequest cameraCbufferRequest;
+			cameraCbufferRequest.m_buffer = m_cameraCbuffer.get();
+			cameraCbufferRequest.m_descriptor.m_byteCount = sizeof(PerViewData);
+			cameraCbufferRequest.m_descriptor.m_bindFlags = RHI::BufferBindFlags::Constant;
+			cameraCbufferRequest.m_initialData = m_perViewData;
+			result = constantBufferPool->InitBuffer(cameraCbufferRequest);
+			assert(result == RHI::ResultCode::Success);
+
+			RHI::BufferViewDescriptor cameraBufferViewDescriptor = RHI::BufferViewDescriptor::CreateRaw(0, sizeof(PerViewData));
+			m_cameraCbufferView = rhiFactory.CreateBufferView();
+			m_cameraCbufferView->Init(*m_cameraCbuffer, cameraBufferViewDescriptor);
+
+			const RHI::ShaderPermutation& specularGlossiness_Shader = *RHI::Graphics::GetAssetProcessor().GetShaderPermutation("SpecularGlossiness_Shader");
+			const RHI::ShaderResourceGroupLayout* viewSrgLayout = specularGlossiness_Shader.m_pipelineLayoutDescriptor->GetShaderResourceGroupLayout(RHI::ShaderResourceGroupType::View);
+			m_viewSrg = rhiFactory.CreateShaderResourceGroup();
+			RHI::ShaderResourceGroupData viewSrgData(viewSrgLayout);
+
+			RHI::ShaderInputBufferIndex cameraBufferIdx = viewSrgLayout->FindShaderInputBufferIndex("PerView_CameraMatrix");
+			viewSrgData.SetBufferView(cameraBufferIdx, m_cameraCbufferView.get(), 0);
+			m_viewSrg->Init(m_cameraCbuffer->GetDevice(), viewSrgData);
+			m_viewSrg->Compile();
+		}
 
 		void Camera::SetViewport(const RHI::Viewport& viewport)
 		{
@@ -29,6 +118,8 @@ namespace CGE
 			m_far = zFar;
 
 			m_projectionMatrix = glm::perspective(glm::radians(vFOV), aspect, zNear, zFar);
+
+			m_dirty = true;
 		}
 
 		void Camera::SetProjectionLH(float vFOV, float aspect, float zNear, float zFar)
@@ -38,18 +129,57 @@ namespace CGE
 			m_near = zNear;
 			m_far = zFar;
 
+			m_projectionMatrix = glm::perspectiveLH(glm::radians(vFOV), aspect, zNear, zFar);
+			for (int row = 0; row < 4; ++row)
+			{
+				for (int col = 0; col < 4; ++col)
+				{
+					std::cout << m_projectionMatrix[row][col] << " ";
+				}
+				std::cout << std::endl;
+			}
+
+			std::cout << std::endl;
+
+			m_projectionMatrix = glm::perspective(glm::radians(vFOV), aspect, zNear, zFar);
+			for (int row = 0; row < 4; ++row)
+			{
+				for (int col = 0; col < 4; ++col)
+				{
+					std::cout << m_projectionMatrix[row][col] << " ";
+				}
+				std::cout << std::endl;
+			}
+
+			std::cout << std::endl;
+
 			glm::mat4 fix(
 				1.0f, 0.0f, 0.0f, 0.0f,
 				0.0f, 1.0f, 0.0f, 0.0f,
 				0.0f, 0.0f, 2.0f, 0.0f,
-				0.0f, 0.0f, -1.0f, 1.0f);
+				0.0f, 0.0f, -1.0f, 1.0f
+			);
+			//m_projectionMatrix = fix * glm::perspective(glm::radians(vFOV), aspect, zNear, zFar);
+			for (int row = 0; row < 4; ++row)
+			{
+				for (int col = 0; col < 4; ++col)
+				{
+					std::cout << m_projectionMatrix[row][col] << " ";
+				}
+				std::cout << std::endl;
+			}
 
-			m_projectionMatrix = fix * glm::perspective(glm::radians(vFOV), aspect, zNear, zFar);
+			std::cout << std::endl;
+			std::cout << "=====================================================" << std::endl;
+
+
+			m_dirty = true;
 		}
 
 		void Camera::SetOrthographic(float left, float right, float top, float bottom)
 		{
 			m_projectionMatrix = glm::ortho(left, right, bottom, top);
+			m_dirty = true;
 		}
 
 		float Camera::GetNearClipPlane() const
@@ -72,6 +202,7 @@ namespace CGE
 			case Space::World:
 				m_rotation = glm::angleAxis(glm::radians(fPitch), glm::vec3(1, 0, 0)) * m_rotation;
 			}
+			m_dirty = true;
 		}
 
 		void Camera::AddYaw(float fYaw, Space space)
@@ -85,6 +216,7 @@ namespace CGE
 				m_rotation = glm::angleAxis(glm::radians(fYaw), glm::vec3(0, 1, 0)) * m_rotation;
 				break;
 			}
+			m_dirty = true;
 		}
 
 		void Camera::AddRoll(float fRoll, Space space)
@@ -98,16 +230,19 @@ namespace CGE
 				m_rotation = glm::angleAxis(glm::radians(fRoll), glm::vec3(0, 0, 1)) * m_rotation;
 				break;
 			}
+			m_dirty = true;
 		}
 
 		void Camera::SetEulerAngles(const glm::vec3& eulerAngles)
 		{
 			m_rotation = glm::quat(glm::radians(eulerAngles));
+			m_dirty = true;
 		}
 
 		void Camera::AddRotation(const glm::quat& deltaRot)
 		{
 			m_rotation = m_rotation * deltaRot;
+			m_dirty = true;
 		}
 
 		void Camera::TranslateX(float x, Space space)
@@ -121,6 +256,7 @@ namespace CGE
 				m_translation += glm::vec3(x, 0, 0);
 				break;
 			}
+			m_dirty = true;
 		}
 
 		void Camera::TranslateY(float y, Space space)
@@ -134,6 +270,7 @@ namespace CGE
 				m_translation += glm::vec3(0, y, 0);
 				break;
 			}
+			m_dirty = true;
 		}
 
 		void Camera::TranslateZ(float z, Space space)
@@ -147,26 +284,31 @@ namespace CGE
 				m_translation += glm::vec3(0, 0, z);
 				break;
 			}
+			m_dirty = true;
 		}
 
 		void Camera::SetTranslation(const glm::vec3& translation)
 		{
 			m_translation = translation;
+			m_dirty = true;
 		}
 
 		void Camera::SetRotation(float pitch, float yaw, float roll)
 		{
 			SetRotation(glm::vec3(pitch, yaw, roll));
+			m_dirty = true;
 		}
 
 		void Camera::SetRotation(const glm::vec3& rotation)
 		{
 			SetRotation(glm::quat(glm::radians(rotation)));
+			m_dirty = true;
 		}
 
 		void Camera::SetRotation(const glm::quat& rot)
 		{
 			m_rotation = rot;
+			m_dirty = true;
 		}
 
 		glm::vec3 Camera::GetTranslation() const
@@ -202,17 +344,18 @@ namespace CGE
 			// the unit quaternion.
 			tmp = tmp * invScale;
 			m_rotation = glm::toQuat(tmp);
+			m_dirty = true;
 		}
 
 		glm::mat4 Camera::GetViewMatrix()
 		{
-			UpdateViewMatrix();
 			return m_viewMatrix;
 		}
 
 		void Camera::SetProjectionMatrix(const glm::mat4& projectionMatrix)
 		{
 			m_projectionMatrix = projectionMatrix;
+			m_dirty = true;
 		}
 
 		glm::mat4 Camera::GetProjectionMatrix() const
@@ -228,15 +371,137 @@ namespace CGE
 
 		void Camera::UpdateViewMatrix()
 		{
-			glm::mat4 translateMatrix = glm::translate(glm::mat4{}, m_translation);
+			glm::mat4 translateMatrix = glm::translate(glm::mat4(1.0), m_translation);
 			glm::mat4 rotationMatrix = glm::toMat4(m_rotation);
 			m_viewMatrix = glm::inverse(translateMatrix * rotationMatrix);
+		}
+
+		void Camera::UpdateProjectionMatrix()
+		{
+			SetProjectionLH(m_vFOV, m_aspect, m_near, m_far);
 		}
 
 		void Camera::UpdateViewProjectionInverse()
 		{
 			UpdateViewMatrix();
 			m_viewProjectionInverse = glm::inverse(m_projectionMatrix * m_viewMatrix);
+		}
+
+		void Camera::OnKeyPressed(KeyEventArgs& keyArgs, UpdateEventArgs& updateArgs)
+		{
+			CameraMovement movement;
+			switch (keyArgs.m_key)
+			{
+			case GLFW_KEY_W:
+				movement.m_forward = 1.0f;
+				break;
+			case GLFW_KEY_A:
+				movement.m_left = 1.0f;
+				break;
+			case GLFW_KEY_S:
+				movement.m_back = 1.0f;
+				break;
+			case GLFW_KEY_D:
+				movement.m_right = 1.0f;
+				break;
+			case GLFW_KEY_Q:
+				movement.m_down = 1.0f;
+				break;
+			case GLFW_KEY_E:
+				movement.m_up = 1.0f;
+				break;
+			}
+
+			// [todo] Expose to user
+			float moveMultiplier = 3.0;
+			TranslateX((movement.m_right - movement.m_left) * updateArgs.m_elapsedTime * moveMultiplier);
+			TranslateY((movement.m_up - movement.m_down) * updateArgs.m_elapsedTime * moveMultiplier);
+			TranslateZ((movement.m_forward - movement.m_back) * updateArgs.m_elapsedTime * moveMultiplier);
+		}
+
+		boost::function<void(KeyEventArgs&, UpdateEventArgs&)> Camera::GetKeyPressedFunctionBindable()
+		{
+			return boost::bind(&Camera::OnKeyPressed, this, _1, _2);
+		}
+
+		void Camera::SpawnCameraImGuiWindow()
+		{
+			const auto updateChange = [this](bool check) {m_dirty = check || m_dirty; };
+			if (ImGui::Begin("Camera"))
+			{
+				ImGui::Text("Position");
+				updateChange(ImGui::SliderFloat("Pos X", &m_translation.x, -80.0f, 80.0f, "%.1f"));
+				updateChange(ImGui::SliderFloat("Pos Y", &m_translation.y, -80.0f, 80.0f, "%.1f"));
+				updateChange(ImGui::SliderFloat("Pos Z", &m_translation.z, -80.0f, 80.0f, "%.1f"));
+
+				ImGui::Text("Orientation");
+				updateChange(ImGui::SliderFloat("Roll", &m_currentRotation.z, 0.995f * -180.0f, 0.995f * 180.0f));
+				updateChange(ImGui::SliderFloat("Pitch", &m_currentRotation.x, 0.995f * -180.0f, 0.995f * 180.0f));
+				updateChange(ImGui::SliderFloat("Yaw", &m_currentRotation.y, 0.995f * -180.0f, 0.995f * 180.0f));
+
+				ImGui::Text("Projection");
+				updateChange(ImGui::SliderFloat("FOV", &m_vFOV, 45.0f, 120.0f, "%.1f"));
+				updateChange(ImGui::SliderFloat("Near Z", &m_near, 0.01f, m_far - 0.01f, "%.2f"));
+				updateChange(ImGui::SliderFloat("Far Z", &m_far, m_near + 0.01f, 1000.0f, "%.2f"));
+
+			}
+			ImGui::End();
+		}
+
+		RHI::ResultCode Camera::UpdateCameraBuffer()
+		{
+			m_perViewData->m_projection = GetProjectionMatrix();
+			m_perViewData->m_projectionInv = glm::inverse(GetProjectionMatrix());
+			m_perViewData->m_view = GetViewMatrix();
+			m_perViewData->m_viewInv = glm::inverse(GetViewMatrix());
+
+			const auto& constantBufferPool = RHI::Graphics::GetBufferSystem().GetCommonBufferPool(RHI::CommonBufferPoolType::Constant);
+
+			RHI::BufferMapRequest mapRequest{};
+			mapRequest.m_buffer = m_cameraCbuffer.get();
+			mapRequest.m_byteCount = sizeof(PerViewData);
+			mapRequest.m_byteOffset = 0;
+
+			RHI::BufferMapResponse mapResponse{};
+
+			RHI::ResultCode mapSuccess = constantBufferPool->MapBuffer(mapRequest, mapResponse);
+			if (mapSuccess == RHI::ResultCode::Success)
+			{
+				memcpy(mapResponse.m_data, m_perViewData, sizeof(PerViewData));
+				constantBufferPool->UnmapBuffer(*m_cameraCbuffer);
+			}
+			return mapSuccess;
+		}
+
+		void Camera::Update()
+		{
+			if (m_dirty)
+			{
+				glm::vec3 delta = m_previousRotation - m_currentRotation;
+				if (delta.x > glm::epsilon<float>() || delta.x < glm::epsilon<float>())
+				{
+					AddPitch(delta.x);
+				}
+				if (delta.y > glm::epsilon<float>() || delta.y < glm::epsilon<float>())
+				{
+					AddYaw(delta.y);
+				}
+				if (delta.z > glm::epsilon<float>() || delta.z < glm::epsilon<float>())
+				{
+					AddRoll(delta.z);
+				}
+				m_previousRotation = m_currentRotation;
+
+				UpdateViewMatrix();
+				UpdateProjectionMatrix();
+				UpdateCameraBuffer();
+			}
+			m_dirty = false;
+		}
+
+		RHI::ShaderResourceGroup* Camera::GetCameraSrg() const
+		{
+			return m_viewSrg.get();
 		}
 	}
 }

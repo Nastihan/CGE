@@ -1,5 +1,19 @@
 
+// Scene
 #include "ModelNode.h"
+#include "Scene.h"
+#include "Mesh.h"
+#include "Material.h"
+
+// Pass
+#include "../Pass/ForwardPass.h"
+
+// RHI
+#include "../RHI/CommandList.h"
+#include "../RHI/Graphics.h"
+
+#include "../imgui/imgui.h"
+#include "../imgui/imgui_impl_glfw.h"
 
 namespace CGE
 {
@@ -149,6 +163,63 @@ namespace CGE
                 parentTransform = parent->GetWorldTransfom();
             }
             return parentTransform;
+        }
+
+        void ModelNode::BuildDrawList(std::vector<RHI::DrawItem>& drawList, std::array<RHI::ShaderResourceGroup*, RHI::Limits::Pipeline::ShaderResourceGroupCountMax>& srgsToBind)
+        {
+            for (const auto& mesh : m_meshes)
+            {
+                srgsToBind[RHI::SrgBindingSlot::Object] = mesh->GetObjectSrg();
+                srgsToBind[RHI::SrgBindingSlot::Material] = mesh->GetMaterial()->GetMaterialSrg();
+
+                drawList.push_back(*mesh->BuildAndGetDrawItem());
+                auto& currentItem = drawList.back();
+                
+                std::vector<RHI::ShaderResourceGroup*> srgs;
+                for (RHI::ShaderResourceGroup* srg : srgsToBind)
+                {
+                    if (srg)
+                    {
+                        srgs.push_back(srg);
+                    }
+                }
+                mesh->SetSrgsToBind(srgs);
+
+                currentItem.m_shaderResourceGroupCount = srgs.size();
+                currentItem.m_shaderResourceGroups = mesh->GetSrgsToBind();
+            }
+            for (const auto& node : m_children)
+            {
+                node->BuildDrawList(drawList, srgsToBind);
+            }
+        }
+
+        void ModelNode::SpawnImGuiWindow()
+        {
+            if (ImGui::TreeNode(m_name.c_str()))
+            {
+                for (const auto& mesh : m_meshes)
+                {
+                    mesh->SpawnImGuiWindow();
+                }
+                ImGui::TreePop();
+            }
+            for (const auto& child : m_children)
+            {
+                child->SpawnImGuiWindow();
+            }
+        }
+
+        void ModelNode::Update()
+        {
+            for (const auto& mesh : m_meshes)
+            {
+                mesh->Update();
+            }
+            for (const auto& child : m_children)
+            {
+                child->Update();
+            }
         }
 	}
 }
