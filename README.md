@@ -9,12 +9,15 @@ Learning from some cool open source projects:<br>
 **3dgep's ForwardPlus**: https://github.com/3dgep/ForwardPlus<br>
 **Wicked Engine**: https://github.com/turanszkij/WickedEngine<br>
 
-Rasterizer (Working)<br>
-Data Driven Shader Permutations (Working)<br>
-Data Driven Material Shaders (Working)<br>
-Bindless Resources (In Progress)<br>
-Data Driven Frame Graph (In Progress)<br>
-Async Compute and Copy Engine (In Progress)<br>
+Rasterizer<br>
+Data Driven Shader Permutations<br>
+Data Driven Material Shaders)<br>
+Bindless Resources<br>
+Data Driven Frame Graph)<br>
+Async Compute and Copy Engine<br>
 DXR (Ray Tracing and then Path Tracing)<br>
 Instancing - Mesh Shaders - GPU Driven Stuff<br>
 Multi-Threaded Command Recording<br>
+
+**Important Note**: This is currently a broken peace of software with lots of stuff going wrong in it, which we try to add to and improve upon daily.
+Once Features get completed and fully functional I'll update this page.
