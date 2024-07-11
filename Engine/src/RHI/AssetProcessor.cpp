@@ -258,7 +258,7 @@ namespace CGE
 							}
 							else if (type == "bool")
 							{
-								float value = jPropertyLayout["DefaultValue"] == true ? 1.0 : 0.0;
+								float value = jPropertyLayout["DefaultValue"] == "true" ? 1.0 : 0.0;
 								material.SetProperty<uint32_t>(name, value);
 							}
 							else
@@ -333,7 +333,8 @@ namespace CGE
 							}
 							else if (propertyInfo.m_type == "bool")
 							{
-								float value = jProperty["Value"] == true ? 1.0 : 0.0;
+								auto pro = jProperty["Value"];
+								float value = jProperty["Value"] == "true" ? 1.0 : 0.0;
 								material.SetProperty<uint32_t>(propertyName, value);
 							}
 							else
@@ -401,6 +402,19 @@ namespace CGE
 			{
 				// AssetProcessor::GetShaderPermutation so we use .at(name)
 				return std::shared_ptr<const Scene::Material>(m_materialLayouts.at(name));
+			}
+		}
+
+		const std::shared_ptr<Scene::Material> AssetProcessor::GetMaterial(const std::string& name) const
+		{
+			if (m_materials.find(name) == m_materials.end())
+			{
+				return nullptr;
+			}
+			else
+			{
+				// AssetProcessor::GetShaderPermutation so we use .at(name)
+				return std::shared_ptr<Scene::Material>(m_materials.at(name));
 			}
 		}
 

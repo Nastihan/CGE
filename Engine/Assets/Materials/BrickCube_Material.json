@@ -3,6 +3,18 @@
 	
 	"MaterialLayout" : "SpecularGlossiness_MaterialLayout",
 	
+	"Properties" : 
+	[
+		{
+			"Name" : "HasDiffuseTexture",
+			"Value" : "true"
+		},
+		{
+			"Name" : "HasNormalTexture",
+			"Value" : "true"
+		}
+	],
+	
 	"Textures" : 
 	[
 		{

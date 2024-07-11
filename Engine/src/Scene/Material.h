@@ -58,8 +58,8 @@ namespace CGE
 
             template<typename T>
             void SetProperty(const std::string& propertyName, T value);
+
 		private:
-            // MaterialProperties* m_pProperties;
             RHI::Ptr<RHI::Buffer> m_materialPropertiesCBuff;
             RHI::Ptr<RHI::BufferView> m_materialPropertiesCBuffView;
             bool m_dirty = false;
