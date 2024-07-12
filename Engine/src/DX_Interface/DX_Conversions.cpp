@@ -1338,7 +1338,7 @@ namespace CGE
         D3D12_RASTERIZER_DESC ConvertRasterState(const RHI::RasterState& raster)
         {
             D3D12_RASTERIZER_DESC desc = {};
-            desc.FrontCounterClockwise = true;
+            desc.FrontCounterClockwise = false;
             desc.CullMode = ConvertCullMode(raster.m_cullMode);
             desc.DepthBias = raster.m_depthBias;
             desc.DepthBiasClamp = raster.m_depthBiasClamp;

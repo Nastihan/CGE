@@ -15,7 +15,8 @@ namespace CGE
 
 			glm::mat4 translateMatrix = glm::translate(glm::mat4{ 1.0 }, m_worldPos);
 			glm::mat4 rotationMatrix = glm::toMat4(m_worldRotation);
-			glm::mat4 localTransformation = translateMatrix * rotationMatrix;
+			glm::mat4 scaleMatrix = glm::scale(glm::mat4{ 1.0 }, m_worldScale);
+			glm::mat4 localTransformation = translateMatrix * rotationMatrix * scaleMatrix;
 
 			m_perObjectData->m_modelTransform = localTransformation;
 

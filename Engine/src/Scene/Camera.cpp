@@ -1,3 +1,7 @@
+#ifdef USE_DX12
+#define GLM_FORCE_DEPTH_ZERO_TO_ONE
+//#define GLM_FORCE_LEFT_HANDED
+#endif // USE_DX12
 
 // Scene
 #include "Camera.h"
@@ -14,16 +18,12 @@
 #include <iostream>
 #include <DirectXMath.h>
 
-#ifdef USE_DX12
-#define GLM_FORCE_DEPTH_ZERO_TO_ONE
-#endif // USE_DX12
-
 namespace CGE
 {
 	namespace Scene
 	{
 		Camera::Camera() 
-			: m_translation(0.0f, 0.0f, -4.9f)
+			: m_translation(0.0f, 0.0f, 0.0f)
 			, m_rotation(glm::quat(glm::vec3(glm::radians(0.0f), glm::radians(0.0f), glm::radians(0.0f))))
 			, m_currentRotation(glm::degrees(glm::eulerAngles(m_rotation)))
 			, m_previousRotation(glm::degrees(glm::eulerAngles(m_rotation)))
@@ -40,38 +40,7 @@ namespace CGE
 			m_perViewData->m_viewInv = glm::inverse(GetViewMatrix());
 			m_perViewData->m_projection = GetProjectionMatrix();
 			m_perViewData->m_projectionInv = glm::inverse(GetProjectionMatrix());
-			/*
-			DirectX::XMMATRIX transform = DirectX::XMMatrixTranslationFromVector(DirectX::XMVECTOR{10.0, 10.0, 10.0});
-			DirectX::XMFLOAT4X4 fView;
-			XMStoreFloat4x4(&fView, transform);
 
-			for (int row = 0; row < 4; ++row)
-			{
-				for (int col = 0; col < 4; ++col)
-				{
-					std::cout << m_viewMatrix[row][col] << " ";
-				}
-				std::cout << std::endl;
-			}
-
-			std::cout << std::endl;
-
-			std::cout << fView._11 << " " << fView._12 << " " << fView._13 << " " << fView._14 << std::endl;
-			std::cout << fView._21 << " " << fView._22 << " " << fView._23 << " " << fView._24 << std::endl;
-			std::cout << fView._31 << " " << fView._32 << " " << fView._33 << " " << fView._34 << std::endl;
-			std::cout << fView._41 << " " << fView._42 << " " << fView._43 << " " << fView._44 << std::endl;
-
-			std::cout << std::endl;
-
-			for (int row = 0; row < 4; ++row)
-			{
-				for (int col = 0; col < 4; ++col)
-				{
-					std::cout << fView.m[row][col] << " ";
-				}
-				std::cout << std::endl;
-			}
-			*/
 			const auto& constantBufferPool = RHI::Graphics::GetBufferSystem().GetCommonBufferPool(RHI::CommonBufferPoolType::Constant);
 			auto& rhiFactory = RHI::Graphics::GetFactory();
 			m_cameraCbuffer = rhiFactory.CreateBuffer();
@@ -116,7 +85,6 @@ namespace CGE
 			m_aspect = aspect;
 			m_near = zNear;
 			m_far = zFar;
-
 			m_projectionMatrix = glm::perspective(glm::radians(vFOV), aspect, zNear, zFar);
 
 			m_dirty = true;
@@ -128,50 +96,8 @@ namespace CGE
 			m_aspect = aspect;
 			m_near = zNear;
 			m_far = zFar;
-
 			m_projectionMatrix = glm::perspectiveLH(glm::radians(vFOV), aspect, zNear, zFar);
-			for (int row = 0; row < 4; ++row)
-			{
-				for (int col = 0; col < 4; ++col)
-				{
-					std::cout << m_projectionMatrix[row][col] << " ";
-				}
-				std::cout << std::endl;
-			}
-
-			std::cout << std::endl;
-
-			m_projectionMatrix = glm::perspective(glm::radians(vFOV), aspect, zNear, zFar);
-			for (int row = 0; row < 4; ++row)
-			{
-				for (int col = 0; col < 4; ++col)
-				{
-					std::cout << m_projectionMatrix[row][col] << " ";
-				}
-				std::cout << std::endl;
-			}
-
-			std::cout << std::endl;
-
-			glm::mat4 fix(
-				1.0f, 0.0f, 0.0f, 0.0f,
-				0.0f, 1.0f, 0.0f, 0.0f,
-				0.0f, 0.0f, 2.0f, 0.0f,
-				0.0f, 0.0f, -1.0f, 1.0f
-			);
-			//m_projectionMatrix = fix * glm::perspective(glm::radians(vFOV), aspect, zNear, zFar);
-			for (int row = 0; row < 4; ++row)
-			{
-				for (int col = 0; col < 4; ++col)
-				{
-					std::cout << m_projectionMatrix[row][col] << " ";
-				}
-				std::cout << std::endl;
-			}
-
-			std::cout << std::endl;
-			std::cout << "=====================================================" << std::endl;
-
+			//m_projectionMatrix = glm::scale(m_projectionMatrix, glm::vec3(1.0, 1.0, -1.0));
 
 			m_dirty = true;
 		}

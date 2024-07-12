@@ -26,7 +26,7 @@ namespace CGE
 			{
 				Light light;
 				light.m_type = Light::LightType::Directional;
-				light.m_directionWS = glm::vec4(0.5, -0.5, 0.5, 1.0);
+				light.m_directionWS = glm::vec4(0.0, 0.0, 1.0, 0.0);
 				light.m_color = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
 				light.m_intensity = 3.5;
 				m_lights.push_back(light);
