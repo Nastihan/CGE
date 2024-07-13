@@ -9,6 +9,10 @@ Learning from some cool open source projects:<br>
 **3dgep's ForwardPlus**: https://github.com/3dgep/ForwardPlus<br>
 **Wicked Engine**: https://github.com/turanszkij/WickedEngine<br>
 
+## Models:
+Servo Skull" (https://sketchfab.com/3d-models/lord-inquisitor-servo-skull-8fc2f297b1434e6b9491d60e3b23c719) by Erasmus (https://sketchfab.com/erasmus) licensed under CC-BY-NC-4.0 (http://creativecommons.org/licenses/by-nc/4.0/)<br>
+"Demon Skull Ring" (https://sketchfab.com/3d-models/demon-skull-ring-b389746c8bc8499ebb763f71b2660983) by K (https://sketchfab.com/tanaka.ko91) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)<br>
+
 ## Plans for this engine:
 
 Rasterizer<br>
