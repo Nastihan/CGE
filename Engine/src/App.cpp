@@ -21,9 +21,49 @@ namespace CGE
 		m_scene->Init();
 		// m_scene->LoadModel("nano_textured\\nanosuit.obj", "Nano");
 		// m_scene->LoadModel("suzanne\\suzanne.obj", "Suzanne");
-		// m_scene->LoadModel("lord_inquisitor_servo_skull_gltf\\scene.gltf", "Skull");
-		// m_scene->LoadModel("demon_skull_ring_gltf\\scene.gltf", "Skull Ring");
-		m_scene->LoadModel("Sponza\\glTF\\Sponza.gltf", "Sponza");
+
+		m_scene->LoadModel(
+			"lord_inquisitor_servo_skull_gltf\\scene.gltf"
+			, "Skull"
+			, glm::vec3(5.5, 3.4, 0.4)
+			, glm::vec3(0.01, 0.01, 0.01)
+			, glm::quat(glm::vec3(glm::radians(0.0), glm::radians(0.0), glm::radians(0.0))));
+
+		
+		m_scene->LoadModel(
+			"demon_skull_ring_gltf\\scene.gltf"
+			, "Skull Ring"
+			, glm::vec3(5.5, 2.4, 0.4)
+			, glm::vec3(0.3, 0.3, 0.3)
+			, glm::quat(glm::vec3(glm::radians(0.0), glm::radians(0.0), glm::radians(0.0))));
+
+		m_scene->LoadModel(
+			"demon_skull_ring_gltf\\scene.gltf"
+			, "Skull Ring"
+			, glm::vec3(5.5, 4.4, 0.4)
+			, glm::vec3(0.3, 0.3, 0.3)
+			, glm::quat(glm::vec3(glm::radians(0.0), glm::radians(0.0), glm::radians(0.0))));
+
+		m_scene->LoadModel(
+			"demon_skull_ring_gltf\\scene.gltf"
+			, "Skull Ring"
+			, glm::vec3(5.5, 3.4, 1.4)
+			, glm::vec3(0.3, 0.3, 0.3)
+			, glm::quat(glm::vec3(glm::radians(0.0), glm::radians(0.0), glm::radians(0.0))));
+
+		m_scene->LoadModel(
+			"demon_skull_ring_gltf\\scene.gltf"
+			, "Skull Ring"
+			, glm::vec3(5.5, 3.4, -0.6)
+			, glm::vec3(0.3, 0.3, 0.3)
+			, glm::quat(glm::vec3(glm::radians(0.0), glm::radians(0.0), glm::radians(0.0))));
+
+		m_scene->LoadModel("Sponza\\glTF\\Sponza.gltf"
+			, "Sponza"
+			, glm::vec3(0.0, 0.0, 0.0)
+			, glm::vec3(1.0, 1.0, 1.0)
+			, glm::quat(glm::vec3(glm::radians(0.0), glm::radians(0.0), glm::radians(0.0))));
+
 		gfx.GetFrameGraphExecuter()->GetForwardPass()->SetScenePtr(m_scene);
 		RegisterKeyboardEventCallback(m_scene->GetCamera().GetKeyPressedFunctionBindable());
 		// RHI::Graphics::GetImguiManager().PushSpawnableWindow(std::bind(&Scene::Camera::SpawnCameraImGuiWindow, &m_scene->GetCamera()));

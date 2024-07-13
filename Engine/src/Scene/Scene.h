@@ -35,7 +35,7 @@ namespace CGE
 		public:
 			Scene() = default;
 			void Init();
-			void LoadModel(const std::string& pathString, const std::string& modelName);
+			void LoadModel(const std::string& pathString, const std::string& modelName, glm::vec3 pos, glm::vec3 scale, glm::quat rot);
 			void AddLight(const Light& light);
 			void AddShape(std::shared_ptr<Shape> shape);
 			Camera& GetCamera();

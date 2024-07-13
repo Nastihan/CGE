@@ -49,7 +49,14 @@ namespace CGE
 	namespace Scene
 	{
 
-        Model::Model(const std::string& name) : m_root{ nullptr }, m_modelName{ name } {}
+        Model::Model(const std::string& name, glm::vec3 rootTranslation, glm::vec3 rootScale, glm::quat rootRotation)
+            : m_root{ nullptr }
+            , m_modelName{ name }
+            , m_rootTranslation{ rootTranslation }
+            , m_rootScale{ rootScale }
+            , m_rootRotation{ rootRotation }
+            , m_currentRotation{ glm::degrees(glm::eulerAngles(m_rootRotation)) }
+            , m_previousRotation{ glm::degrees(glm::eulerAngles(m_rootRotation)) } {}
 
 		Model::~Model() {}
 
@@ -95,8 +102,14 @@ namespace CGE
                 ImportMesh(*pScene->mMeshes[i]);
             }
 
+            glm::mat4 translateMatrix = glm::translate(glm::mat4(1.0), m_rootTranslation);
+            glm::mat4 rotationMatrix = glm::toMat4(m_rootRotation);
+            glm::mat4 scaleMatrix = glm::scale(glm::mat4(1.0), m_rootScale);
+            glm::mat4 worldTransform = (translateMatrix * (rotationMatrix * scaleMatrix));
+
             m_root = ImportSceneNode(m_root, pScene->mRootNode);
             m_root->SetLocalTransform(localTransform);
+            m_root->SetWorldTransform(worldTransform);
 
             return true;
 		}
@@ -579,12 +592,55 @@ namespace CGE
 
         void Model::SpawnImGuiWindow()
         {
+            const auto updateChange = [this](bool check) {m_dirty = check || m_dirty; };
+
+            ImGui::Text("Position");
+            updateChange(ImGui::SliderFloat("Pos X", &m_rootTranslation.x, -80.0f, 80.0f, "%.1f"));
+            updateChange(ImGui::SliderFloat("Pos Y", &m_rootTranslation.y, -80.0f, 80.0f, "%.1f"));
+            updateChange(ImGui::SliderFloat("Pos Z", &m_rootTranslation.z, -80.0f, 80.0f, "%.1f"));
+
+            ImGui::Text("Scale");
+            updateChange(ImGui::SliderFloat("Scale X", &m_rootScale.x, 0.001f, 10.0f, "%.3f"));
+            updateChange(ImGui::SliderFloat("Scale Y", &m_rootScale.y, 0.001f, 10.0f, "%.3f"));
+            updateChange(ImGui::SliderFloat("Scale Z", &m_rootScale.z, 0.001f, 10.0f, "%.3f"));
+
+            ImGui::Text("Orientation");
+            updateChange(ImGui::SliderFloat("Roll", &m_currentRotation.z, 0.995f * -180.0f, 0.995f * 180.0f));
+            updateChange(ImGui::SliderFloat("Pitch", &m_currentRotation.x, 0.995f * -180.0f, 0.995f * 180.0f));
+            updateChange(ImGui::SliderFloat("Yaw", &m_currentRotation.y, 0.995f * -180.0f, 0.995f * 180.0f));
+            
             m_root->SpawnImGuiWindow();
         }
 
         void Model::Update()
         {
+            if (m_dirty)
+            {
+                glm::vec3 delta = m_previousRotation - m_currentRotation;
+                if (delta.x > glm::epsilon<float>() || delta.x < glm::epsilon<float>())
+                {
+                    m_rootRotation = glm::angleAxis(glm::radians(delta.x), m_rootRotation * glm::vec3(1, 0, 0)) * m_rootRotation;
+                }
+                if (delta.y > glm::epsilon<float>() || delta.y < glm::epsilon<float>())
+                {
+                    m_rootRotation = glm::angleAxis(glm::radians(delta.y), m_rootRotation * glm::vec3(0, 1, 0)) * m_rootRotation;
+                }
+                if (delta.z > glm::epsilon<float>() || delta.z < glm::epsilon<float>())
+                {
+                    m_rootRotation = glm::angleAxis(glm::radians(delta.z), m_rootRotation * glm::vec3(0, 0, 1)) * m_rootRotation;
+                }
+                m_previousRotation = m_currentRotation;
+
+                glm::mat4 translateMatrix = glm::translate(glm::mat4(1.0), m_rootTranslation);
+                glm::mat4 rotationMatrix = glm::toMat4(m_rootRotation);
+                glm::mat4 scaleMatrix = glm::scale(glm::mat4(1.0), m_rootScale);
+                glm::mat4 worldTransform = (translateMatrix * (rotationMatrix * scaleMatrix));
+
+                m_root->SetWorldTransform(worldTransform);
+            }
+            m_dirty = false;
             m_root->Update();
+            m_root->ClearDirtyFlag();
         }
 	}
 }

@@ -61,9 +61,11 @@ namespace CGE
 
 			void SpawnImGuiWindow();
 			void Update();
+			void ClearDirtyFlag();
 
 		private:
 			glm::mat4 GetParentWorldTransform() const;
+			bool AreAncestorsDirty() const;
 
 		private:
 			typedef std::vector<std::shared_ptr<ModelNode>> NodeList;
@@ -76,6 +78,7 @@ namespace CGE
 			// This local transform is relative to its parent.
 			glm::mat4 m_localTransform;
 			glm::mat4 m_inverseTransform;
+			bool m_dirty = false;
 
 			std::weak_ptr<ModelNode> m_parent;
 			NodeList m_children;

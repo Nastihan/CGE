@@ -46,7 +46,7 @@ namespace CGE
 			void SpawnImGuiWindow();
 			const std::string& GetName();
 			void SetModelNode(const std::shared_ptr<ModelNode> node);
-			RHI::ResultCode Update();
+			RHI::ResultCode Update(bool forcedUpdate);
 			RHI::ShaderResourceGroup* GetObjectSrg();
 
 

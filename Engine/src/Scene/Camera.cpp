@@ -23,8 +23,8 @@ namespace CGE
 	namespace Scene
 	{
 		Camera::Camera() 
-			: m_translation(0.0f, 0.0f, 0.0f)
-			, m_rotation(glm::quat(glm::vec3(glm::radians(0.0f), glm::radians(0.0f), glm::radians(0.0f))))
+			: m_translation(-1.6f, 3.2f, 0.4f)
+			, m_rotation(glm::quat(glm::vec3(glm::radians(0.0f), glm::radians(90.0f), glm::radians(0.0f))))
 			, m_currentRotation(glm::degrees(glm::eulerAngles(m_rotation)))
 			, m_previousRotation(glm::degrees(glm::eulerAngles(m_rotation)))
 			, m_vFOV(45.0f)

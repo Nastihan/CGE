@@ -1,6 +1,6 @@
 #ifndef NUM_LIGHTS
 #pragma message( "NUM_LIGHTS undefined. Default to 8.")
-#define NUM_LIGHTS 8 // should be defined by the application.
+#define NUM_LIGHTS 10 // should be defined by the application.
 #endif
 
 #define POINT_LIGHT 0

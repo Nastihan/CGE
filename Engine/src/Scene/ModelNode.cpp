@@ -69,6 +69,7 @@ namespace CGE
 		{
 			glm::mat4 inverseParentTransform = glm::inverse(GetParentWorldTransform());
 			SetLocalTransform(inverseParentTransform * worldTransform);
+            m_dirty = true;
 		}
 
         void ModelNode::AddChild(std::shared_ptr<ModelNode> pNode)
@@ -214,11 +215,41 @@ namespace CGE
         {
             for (const auto& mesh : m_meshes)
             {
-                mesh->Update();
+                if (m_dirty || AreAncestorsDirty())
+                {
+                    mesh->Update(true);
+                    m_dirty = false;
+                }
+                else
+                {
+                    mesh->Update(false);
+                }
             }
             for (const auto& child : m_children)
             {
                 child->Update();
+            }
+        }
+
+        bool ModelNode::AreAncestorsDirty() const
+        {
+            if (m_dirty)
+            {
+                return true;
+            }
+            if (m_parent.lock() == nullptr)
+            {
+                return m_dirty;
+            }
+            return m_parent.lock()->AreAncestorsDirty();
+        }
+
+        void ModelNode::ClearDirtyFlag()
+        {
+            m_dirty = false;
+            for (const auto& child : m_children)
+            {
+                child->ClearDirtyFlag();
             }
         }
 	}

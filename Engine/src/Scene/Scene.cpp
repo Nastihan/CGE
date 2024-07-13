@@ -28,7 +28,68 @@ namespace CGE
 				light.m_type = Light::LightType::Directional;
 				light.m_directionWS = glm::vec4(0.0, 0.0, 1.0, 0.0);
 				light.m_color = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
-				light.m_intensity = 3.5;
+				light.m_intensity = 1.0;
+				m_lights.push_back(light);
+
+				//Light light;
+				light.m_type = Light::LightType::Directional;
+				light.m_directionWS = glm::vec4(0.0, 0.0, -1.0, 0.0);
+				light.m_color = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
+				light.m_intensity = 1.0;
+				m_lights.push_back(light);
+
+				//Light light;
+				light.m_type = Light::LightType::Directional;
+				light.m_directionWS = glm::vec4(1.0, 0.0, 0.0, 0.0);
+				light.m_color = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
+				light.m_intensity = 1.0;
+				m_lights.push_back(light);
+
+				//Light light;
+				light.m_type = Light::LightType::Directional;
+				light.m_directionWS = glm::vec4(-1.0, 0.0, 0.0, 0.0);
+				light.m_color = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
+				light.m_intensity = 1.0;
+				m_lights.push_back(light);
+
+				light.m_type = Light::LightType::Directional;
+				light.m_directionWS = glm::vec4(0.0, 1.0, 0.0, 0.0);
+				light.m_color = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
+				light.m_intensity = 1.0;
+				m_lights.push_back(light);
+
+				light.m_type = Light::LightType::Directional;
+				light.m_directionWS = glm::vec4(0.0, -1.0, 0.0, 0.0);
+				light.m_color = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
+				light.m_intensity = 1.0;
+				m_lights.push_back(light);
+
+				light.m_type = Light::LightType::Point;
+				light.m_positionWS = glm::vec4(5.5, 2.4, 1.4, 1.0);
+				light.m_color = glm::vec4(1.0f, 0.0f, 0.0f, 1.0f);
+				light.m_intensity = 1.0;
+				light.m_range = 2.0;
+				m_lights.push_back(light);
+
+				light.m_type = Light::LightType::Point;
+				light.m_positionWS = glm::vec4(5.5, 2.4, -0.6, 1.0);
+				light.m_color = glm::vec4(0.0f, 1.0f, 0.0f, 1.0f);
+				light.m_intensity = 1.0;
+				light.m_range = 2.0;
+				m_lights.push_back(light);
+
+				light.m_type = Light::LightType::Point;
+				light.m_positionWS = glm::vec4(5.5, 4.4, 1.4, 1.0);
+				light.m_color = glm::vec4(0.0f, 0.0f, 1.0f, 1.0f);
+				light.m_intensity = 1.0;
+				light.m_range = 2.0;
+				m_lights.push_back(light);
+
+				light.m_type = Light::LightType::Point;
+				light.m_positionWS = glm::vec4(5.5, 4.4, -0.6, 1.0);
+				light.m_color = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
+				light.m_intensity = 1.0;
+				light.m_range = 2.0;
 				m_lights.push_back(light);
 			}
 
@@ -77,9 +138,9 @@ namespace CGE
 			m_needLightUpdate = true;
 		}
 
-		void Scene::LoadModel(const std::string& pathString, const std::string& modelName)
+		void Scene::LoadModel(const std::string& pathString, const std::string& modelName, glm::vec3 pos, glm::vec3 scale, glm::quat rot)
 		{
-			m_models.emplace_back(modelName);
+			m_models.emplace_back(modelName, pos, scale, rot);
 			m_models.back().LoadFromFile(pathString, modelName);
 		}
 
