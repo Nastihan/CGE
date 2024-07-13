@@ -1,21 +1,23 @@
 # CGE
 
-## Plans for this engine
+<img width="1274" alt="Screenshot 2024-07-12 205407" src="https://github.com/user-attachments/assets/8d701344-a90e-416b-b976-cf2e6698fb35"><br>
 
-This is a personal rendering engine for learning purposes.<br><br>
+This is a personal rendering engine for learning purposes.<br>
 Learning from some cool open source projects:<br>
 **Open 3D Engine (O3DE)**: https://github.com/o3de/o3de<br>
 **Diligent Engine**: https://github.com/DiligentGraphics/DiligentEngine<br>
 **3dgep's ForwardPlus**: https://github.com/3dgep/ForwardPlus<br>
 **Wicked Engine**: https://github.com/turanszkij/WickedEngine<br>
 
+## Plans for this engine:
+
 Rasterizer<br>
 Data Driven Shader Permutations<br>
-Data Driven Material Shaders)<br>
+Data Driven Material Shaders<br>
 Bindless Resources<br>
-Data Driven Frame Graph)<br>
+Data Driven Frame Graph<br>
 Async Compute and Copy Engine<br>
-DXR (Ray Tracing and then Path Tracing)<br>
+DXR (Ray Tracing and then Path Tracing<br>
 Instancing - Mesh Shaders - GPU Driven Stuff<br>
 Multi-Threaded Command Recording<br>
 
