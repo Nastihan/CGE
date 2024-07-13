@@ -348,10 +348,11 @@ float DoSpotCone( Light light, float4 L )
     return smoothstep( minCos, maxCos, cosAngle );
 }
 
-LightingResult DoPointLight( Light light, Material mat, float4 V, float4 P, float4 N )
+LightingResult DoPointLight( Light light, Material mat, float4 V, float4 P, float4 N, float4x4 worldToView )
 {
     LightingResult result;
-
+	
+	light.PositionVS = mul(worldToView, light.PositionWS);
     float4 L = light.PositionVS - P;
     float distance = length( L );
     L = L / distance;
@@ -367,7 +368,8 @@ LightingResult DoPointLight( Light light, Material mat, float4 V, float4 P, floa
 LightingResult DoDirectionalLight( Light light, Material mat, float4 V, float4 P, float4 N, float4x4 worldToView )
 {
     LightingResult result;
-	light.DirectionVS = mul(worldToView, light.DirectionWS);
+	
+	light.DirectionVS = normalize( mul(worldToView, light.DirectionWS) );
     float4 L = normalize( -light.DirectionVS );
 
     result.Diffuse = DoDiffuse( light, L, N ) * light.Intensity;
@@ -376,10 +378,11 @@ LightingResult DoDirectionalLight( Light light, Material mat, float4 V, float4 P
     return result;
 }
 
-LightingResult DoSpotLight( Light light, Material mat, float4 V, float4 P, float4 N )
+LightingResult DoSpotLight( Light light, Material mat, float4 V, float4 P, float4 N, float4x4 worldToView )
 {
     LightingResult result;
-
+	
+	light.PositionVS = mul(worldToView, light.PositionWS);
     float4 L = light.PositionVS - P;
     float distance = length( L );
     L = L / distance;
@@ -405,8 +408,10 @@ LightingResult DoLighting( StructuredBuffer<Light> lights, Material mat, float4 
 
         // Skip lights that are not enabled.
         if ( !lights[i].Enabled ) continue;
+		
         // Skip point and spot lights that are out of range of the point being shaded.
-        if ( lights[i].Type != DIRECTIONAL_LIGHT && length( lights[i].PositionVS - P ) > lights[i].Range ) continue;
+		float4 lightPositionVS = mul( worldToView, lights[i].PositionWS );
+        if ( lights[i].Type != DIRECTIONAL_LIGHT && length( lightPositionVS - P ) > lights[i].Range ) continue;
 
         switch ( lights[i].Type )
         {
@@ -417,12 +422,12 @@ LightingResult DoLighting( StructuredBuffer<Light> lights, Material mat, float4 
         break;
         case POINT_LIGHT:
         {
-            result = DoPointLight( lights[i], mat, V, P, N );
+            result = DoPointLight( lights[i], mat, V, P, N, worldToView );
         }
         break;
         case SPOT_LIGHT:
         {
-            result = DoSpotLight( lights[i], mat, V, P, N );
+            result = DoSpotLight( lights[i], mat, V, P, N, worldToView );
         }
         break;
         }
