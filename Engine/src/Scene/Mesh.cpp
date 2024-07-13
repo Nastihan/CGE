@@ -168,9 +168,9 @@ namespace CGE
 			assert(result == RHI::ResultCode::Success);
 		}
 
-		RHI::ResultCode Mesh::Update()
+		RHI::ResultCode Mesh::Update(bool forcedUpdate)
 		{
-			if (m_dirty)
+			if (m_dirty || forcedUpdate)
 			{
 				glm::vec3 delta = m_previousRotation - m_currentRotation;
 				if (delta.x > glm::epsilon<float>() || delta.x < glm::epsilon<float>())

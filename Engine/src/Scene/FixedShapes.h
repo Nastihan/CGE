@@ -53,7 +53,7 @@ namespace CGE
 			// Return to pass for rendering
 			RHI::DrawItem GetDrawItem();
 			Material& GetMaterial();
-			void BuildDrawList(std::vector<RHI::DrawItem>& drawItems, std::array<RHI::ShaderResourceGroup*, RHI::Limits::Pipeline::ShaderResourceGroupCountMax>& srgsToBind) const;
+			void BuildDrawList(std::vector<RHI::DrawItem>& drawItems, std::array<RHI::ShaderResourceGroup*, RHI::Limits::Pipeline::ShaderResourceGroupCountMax>& srgsToBind);
 
 		protected:
 			std::pair<glm::vec3, glm::vec3> CalculateTangentAndBitangent(glm::vec3 v1, glm::vec3 v2, glm::vec3 v3, glm::vec2 uv1, glm::vec2 uv2, glm::vec2 uv3);
@@ -72,6 +72,7 @@ namespace CGE
 			PerObjectData* m_perObjectData;
 			RHI::Ptr<RHI::Buffer> m_modelToWorldTransformCbuff;
 			RHI::Ptr<RHI::BufferView> m_modelToWorldTransformCbuffView;
+			RHI::Ptr<RHI::ShaderResourceGroup> m_objectSrg;
 
 			std::vector<RHI::ShaderResourceGroup*> m_srgsToBind;
 		};

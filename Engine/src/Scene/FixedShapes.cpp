@@ -15,7 +15,8 @@ namespace CGE
 
 			glm::mat4 translateMatrix = glm::translate(glm::mat4{ 1.0 }, m_worldPos);
 			glm::mat4 rotationMatrix = glm::toMat4(m_worldRotation);
-			glm::mat4 localTransformation = translateMatrix * rotationMatrix;
+			glm::mat4 scaleMatrix = glm::scale(glm::mat4{ 1.0 }, m_worldScale);
+			glm::mat4 localTransformation = translateMatrix * rotationMatrix * scaleMatrix;
 
 			m_perObjectData->m_modelTransform = localTransformation;
 
@@ -37,7 +38,20 @@ namespace CGE
 			m_modelToWorldTransformCbuffView->Init(*m_modelToWorldTransformCbuff, modelBufferViewDescriptor);
 
 			// Making a copy so each instance of a shape can have its own material.
+			// [todo] There is a problem some member variables of the class are smart pointer types.
+			// I need to overload copy to manually do a deep copy of the members I see fit.
 			m_material = *material;
+
+			const RHI::ShaderPermutation& shaderPermutation = *m_material.GetShaderPermutation();
+			const RHI::ShaderResourceGroupLayout* objectSrgLayout = shaderPermutation.m_pipelineLayoutDescriptor->GetShaderResourceGroupLayout(RHI::ShaderResourceGroupType::Object);
+			m_objectSrg = rhiFactory.CreateShaderResourceGroup();
+			RHI::ShaderResourceGroupData objectSrgData(objectSrgLayout);
+
+			RHI::ShaderInputBufferIndex modelTransformBufferIdx = objectSrgLayout->FindShaderInputBufferIndex("PerObject_Model");
+			objectSrgData.SetBufferView(modelTransformBufferIdx, m_modelToWorldTransformCbuffView.get(), 0);
+			m_objectSrg->Init(m_modelToWorldTransformCbuff->GetDevice(), objectSrgData);
+			m_objectSrg->Compile();
+			assert(result == RHI::ResultCode::Success);
 		}
 
 		RHI::DrawItem Shape::GetDrawItem()
@@ -50,9 +64,26 @@ namespace CGE
 			return m_material;
 		}
 
-		void Shape::BuildDrawList(std::vector<RHI::DrawItem>& drawItems, std::array<RHI::ShaderResourceGroup*, RHI::Limits::Pipeline::ShaderResourceGroupCountMax>& srgsToBind) const
+		void Shape::BuildDrawList(std::vector<RHI::DrawItem>& drawItems, std::array<RHI::ShaderResourceGroup*, RHI::Limits::Pipeline::ShaderResourceGroupCountMax>& srgsToBind)
 		{
+			srgsToBind[RHI::SrgBindingSlot::Object] = m_objectSrg.get();
+			srgsToBind[RHI::SrgBindingSlot::Material] = m_material.GetMaterialSrg();
 
+			drawItems.push_back(m_drawItem);
+			auto& currentItem = drawItems.back();
+
+			std::vector<RHI::ShaderResourceGroup*> srgs;
+			for (RHI::ShaderResourceGroup* srg : srgsToBind)
+			{
+				if (srg)
+				{
+					srgs.push_back(srg);
+				}
+			}
+			m_srgsToBind = srgs;
+
+			currentItem.m_shaderResourceGroupCount = srgs.size();
+			currentItem.m_shaderResourceGroups = m_srgsToBind.data();
 		}
 
 		std::pair<glm::vec3, glm::vec3> Shape::CalculateTangentAndBitangent(glm::vec3 v1, glm::vec3 v2, glm::vec3 v3, glm::vec2 uv1, glm::vec2 uv2, glm::vec2 uv3)

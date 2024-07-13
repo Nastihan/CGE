@@ -61,6 +61,7 @@ namespace CGE
 			RHI::ResultCode BuildMaterials();
 			const std::shared_ptr<const ShaderPermutation> GetShaderPermutation(const std::string& name) const;
 			const std::shared_ptr<const Scene::Material> GetMaterialLayout(const std::string& name) const;
+			const std::shared_ptr<Scene::Material> GetMaterial(const std::string& name) const;
 			
 			// Make sure the file is in Assets/Textures
 			RHI::Ptr<RHI::Image> CreateTexture2D(const std::string& fileName);
